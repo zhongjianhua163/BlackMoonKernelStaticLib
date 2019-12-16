@@ -1,1 +1,0 @@
-void LTrimZeroChr(char* str);
