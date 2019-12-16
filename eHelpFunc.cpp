@@ -80,7 +80,19 @@ PDESTROY BlackMoonFreeAllUserDll = NULL;
 		if(0 <Param1 && Param1<12)
 			ptxt = sErrorListForE[Param1-1];
 
-		wsprintf(ErrorString, "program internal error number is %d. \r\n%s\r\n错误位置:%d,%d(仅5.8以上版本有效)", Param1,ptxt,MethodId,position);
+		BOOL bThreeParam = FALSE;
+		char *pRetnAddr = (char*)*(&Param1-1); // 取返回地址
+		if (NULL != pRetnAddr)
+		{
+			if (0xC483 == *(unsigned short*)(pRetnAddr)) // 是否为add esp, xxx;
+			{
+				bThreeParam = (0x0C == *(pRetnAddr+2)); // 平栈数量为12，表示有三个参数
+			}
+		}
+		if (bThreeParam) // 易语言5.8版本及以上才会有三个参数，旧的版本只有一个参数。
+		{ wsprintf(ErrorString, "program internal error number is %d. \r\n%s\r\n错误位置:%d,%d", Param1, ptxt, MethodId, position); }
+		else
+		{ wsprintf(ErrorString, "program internal error number is %d. \r\n%s\r\n", Param1, ptxt); }
 
 		INT nNoErrorBox = 0;
   		if (fnEError_callback && !isErrorCallBack)

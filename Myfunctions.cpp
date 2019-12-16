@@ -42,11 +42,11 @@ unsigned char uptable[] =
 	0xE0,0xE1,0xE2,0xE3,0xE4,0xE5,0xE6,0xE7,0xE8,0xE9,0xEA,0xEB,0xEC,0xED,0xEE,0xEF,
 	0xF0,0xF1,0xF2,0xF3,0xF4,0xF5,0xF6,0xF7,0xF8,0xF9,0xFA,0xFB,0xFC,0xFD,0xFE,0xFF
 };
-int bIsSSE2 = FALSE;
-int bIsSSE2Check = FALSE;
 
 int __fastcall isSSE2()
 {
+	static int bIsSSE2 = FALSE;
+	static int bIsSSE2Check = FALSE;
 	if (bIsSSE2Check)
 		return bIsSSE2;
 	int res = 0;
@@ -80,82 +80,13 @@ int inline MyMemCmp(unsigned char* a, unsigned char* b, int len)
 	return 0;
 }
 
-size_t mystrlen(const char *pStr)
+static size_t mystrlen_normal(const char *pStr)
 {
-    const char *char_ptr;
+	const char *char_ptr;
     const unsigned int *longword_ptr;
     register unsigned int longword, himagic, lomagic;
 	const char *cp;
-	size_t res;
-
-	if (isSSE2())
-	{// 下面汇编由 落 提供
-		res = 0;
-		__asm
-		{
-			mov eax, pStr;                        // get pointer to string
-			test eax, eax;
-			je END__;                            // return 0 if eax is NULL
-			mov ecx, eax;                        // copy pointer
-			// pxor xmm0,xmm0;                   // set to zero
-			_EMIT 0x66;
-			_EMIT 0x0F;
-			_EMIT 0xEF;
-			_EMIT 0xC0;
-			and ecx, 0Fh;                        // lower 4 bits indicate misalignment
-			and eax, 0FFFFFFF0h;                 // align pointer by 16
-			// movdqa xmm1, [eax];               // read from nearest preceding boundary
-			_EMIT 0x66; 
-			_EMIT 0x0F; 
-			_EMIT 0x6F; 
-			_EMIT 0x08;
-			// pcmpeqb xmm1,xmm0;                // compare 16 bytes with zero
-			_EMIT 0x66;
-			_EMIT 0x0F;
-			_EMIT 0x74;
-			_EMIT 0xC8;   
-			// pmovmskb edx, xmm1;               // get one bit for each byte result
-			_EMIT 0x66;
-			_EMIT 0x0F;
-			_EMIT 0xD7;
-			_EMIT 0xD1;   
-			shr edx, cl;                         // shift out false bits
-			shl edx, cl;                         // shift back again
-			bsf edx, edx;                        // find first 1 - bit
-			jne A200;                            // found
-			
-			//; Main loop, search 16 bytes at a time
-A100 :		
-			add eax, 10h;                        // increment pointer by 16
-			// movdqa   xmm1, [eax];             // read 16 bytes aligned
-			_EMIT 0x66;
-			_EMIT 0x0F;
-			_EMIT 0x6F;
-			_EMIT 0x08;
-			// pcmpeqb  xmm1, xmm0;              // compare 16 bytes with zero
-			_EMIT 0x66;
-			_EMIT 0x0F;
-			_EMIT 0x74;
-			_EMIT 0xC8;   
-			// pmovmskb edx, xmm1;               // get one bit for each byte result
-			_EMIT 0x66;
-			_EMIT 0x0F;
-			_EMIT 0xD7;
-			_EMIT 0xD1;   
-			bsf edx, edx;                        // find first 1 - bit
-			//; (moving the bsf out of the loop and using test here would be faster for long strings on old processors,
-			//;  but we are assuming that most strings are short, and newer processors have higher priority)
-			je A100;                            // loop if not found
-		
-A200 : //; Zero - byte found.Compute string length
-			sub eax, pStr;                        // subtract start address
-			add eax, edx;                        // add byte index
-			mov res, eax;
-END__:
-		}
-		return res;
-	}
-
+	
     for (char_ptr = pStr; ((unsigned int) char_ptr & (sizeof(unsigned int) - 1)) != 0;
 	++char_ptr) {
         if (*char_ptr == '\0')
@@ -180,6 +111,91 @@ END__:
         }
     }
 }
+
+static size_t mystrlen_SSE2(const char *pStr)
+{
+	size_t res = 0;
+	__asm
+	{
+		mov eax, pStr;                        // get pointer to string
+		test eax, eax;
+		je END__;                            // return 0 if eax is NULL
+		mov ecx, eax;                        // copy pointer
+		// pxor xmm0,xmm0;                   // set to zero
+		_EMIT 0x66;
+		_EMIT 0x0F;
+		_EMIT 0xEF;
+		_EMIT 0xC0;
+		and ecx, 0Fh;                        // lower 4 bits indicate misalignment
+		and eax, 0FFFFFFF0h;                 // align pointer by 16
+		// movdqa xmm1, [eax];               // read from nearest preceding boundary
+		_EMIT 0x66; 
+		_EMIT 0x0F; 
+		_EMIT 0x6F; 
+		_EMIT 0x08;
+		// pcmpeqb xmm1,xmm0;                // compare 16 bytes with zero
+		_EMIT 0x66;
+		_EMIT 0x0F;
+		_EMIT 0x74;
+		_EMIT 0xC8;   
+		// pmovmskb edx, xmm1;               // get one bit for each byte result
+		_EMIT 0x66;
+		_EMIT 0x0F;
+		_EMIT 0xD7;
+		_EMIT 0xD1;   
+		shr edx, cl;                         // shift out false bits
+		shl edx, cl;                         // shift back again
+		bsf edx, edx;                        // find first 1 - bit
+		jne A200;                            // found
+		
+		//; Main loop, search 16 bytes at a time
+A100 :		
+		add eax, 10h;                        // increment pointer by 16
+		// movdqa   xmm1, [eax];             // read 16 bytes aligned
+		_EMIT 0x66;
+		_EMIT 0x0F;
+		_EMIT 0x6F;
+		_EMIT 0x08;
+		// pcmpeqb  xmm1, xmm0;              // compare 16 bytes with zero
+		_EMIT 0x66;
+		_EMIT 0x0F;
+		_EMIT 0x74;
+		_EMIT 0xC8;   
+		// pmovmskb edx, xmm1;               // get one bit for each byte result
+		_EMIT 0x66;
+		_EMIT 0x0F;
+		_EMIT 0xD7;
+		_EMIT 0xD1;   
+		bsf edx, edx;                        // find first 1 - bit
+		//; (moving the bsf out of the loop and using test here would be faster for long strings on old processors,
+		//;  but we are assuming that most strings are short, and newer processors have higher priority)
+		je A100;                            // loop if not found
+		
+A200 : //; Zero - byte found.Compute string length
+		sub eax, pStr;                        // subtract start address
+		add eax, edx;                        // add byte index
+		mov res, eax;
+END__:
+	}
+	return res;
+}
+
+size_t mystrlen_auto(const char *pStr)
+{ // 此函数为自适配函数，只会被调用一次。
+	if (isSSE2())
+	{ // 支持SSE2指令集
+		mystrlen = mystrlen_SSE2;
+		return mystrlen_SSE2(pStr);
+	}
+	else
+	{
+		mystrlen = mystrlen_normal;
+		return mystrlen_normal(pStr);
+	}
+	return 0;
+}
+MYSTRLEN mystrlen = mystrlen_auto;
+
 int __fastcall mymemchr(unsigned char *pSrc, int nLen, unsigned char Des)
 {
 	register unsigned int longword, dmagic, *longword_ptr;

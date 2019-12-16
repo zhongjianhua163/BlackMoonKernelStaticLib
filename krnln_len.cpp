@@ -10,6 +10,5 @@
 */
 LIBAPI(int, krnln_len)
 {
-	//return mystrlen(ArgInf.m_pText);
 	return mystrlen(ArgInf.m_pText);
 }
