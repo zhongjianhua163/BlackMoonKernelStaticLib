@@ -10,6 +10,19 @@
   1.使用VC6.0打开工程文件: kernel.dsw。
   2.编译后，将release目录下的kernel.lib替换到易语言安装目录\BlackMoon\lib\
   kernel.lib中即可。
+  3.如果你的VC6.0版本无法正常打开工程文件，则按以下步骤操作:
+    1)新建一个空的静态LIB工程(Win32 Static Library)
+    2)将所有文件复制到新的工程目录下(.dsw和.dsp文件无需复制)
+    3)将所有文件导入到新的工程中，但不要导入以下文件：
+      EyInit.obj
+      EyComInit.obj
+      BlackMoonDll.obj
+      BlackMoonDll2.obj
+      BlackMoonExe.cpp
+    4)修改工程配置:
+      不使用MFC(Not Using MFC)
+      使用自定义预编译头文件(Through header: stdafx.h)
+      输出文件名: .\Release\krnln.lib
 
 二、源码使用事项
   原则上，只要不是商业用途及非法用途，源码可以任意使用及传播，编译后的静态库
