@@ -25,6 +25,7 @@ LIBAPI(BYTE, krnln_ToByte)
 		}
 		break;
 	case SDT_BYTE:
+	case SDT_BOOL:
 		nRet = ArgInf.m_byte;
 		break;
 	case SDT_SHORT:
@@ -43,6 +44,7 @@ LIBAPI(BYTE, krnln_ToByte)
 		nRet = ArgInf.m_int64;
 		break;
 	default:
+		nRet = ArgInf.m_byte;
 		break;
 
 	}
