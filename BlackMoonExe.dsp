@@ -82,7 +82,7 @@ LINK32=link.exe
 # Name "BlackMoonExe - Win32 Debug"
 # Begin Source File
 
-SOURCE=".\BlackMoonExe.cpp"
+SOURCE=".\BlackMoonExe\BlackMoonExe.cpp"
 
 !IF  "$(CFG)" == "BlackMoonExe - Win32 Release"
 
