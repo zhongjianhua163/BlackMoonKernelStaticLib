@@ -19,7 +19,8 @@ char * ArryToString(void* pArry,DWORD szData)
 	if(dwSize==0)
 		return NULL;
 	INT nMax = dwSize * szData;
-	for(INT i=0;i<nMax;i++)
+	INT i;
+	for(i=0;i<nMax;i++)
 	{
 		if(pText[i]==0)
 			break;

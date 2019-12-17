@@ -30,6 +30,7 @@
   编译后的静态库文件kernel.lib可以用于编译链接到商业作品中。
   在复制与传播时，必须注明开源地址：
   https://github.com/zhongjianhua163/BlackMoonKernelStaticLib
+  https://gitee.com/zhongjianhua163/BlackMoonKernelStaticLib
   
 三、代码编写规范
   如果你想参与更新、优化或修复BUG，请仔细阅读以下事项：
@@ -46,8 +47,8 @@
 
 四、如何参与到项目开发中来？
   1.可以加入此开源项目的管理团队
-  2.可以在github中通过Issues页面提交错误和改进建议
-  3.可以在github中 fork, 修改后通过 pull request 合并代码
+  2.可以在github或gitee中通过Issues页面提交错误和改进建议
+  3.可以在github或gitee中 fork, 修改后通过 pull request 合并代码
 
   
 /////////////////////////////////////////////////////////////////////////////
