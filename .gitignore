@@ -1,0 +1,8 @@
+*.ncb
+*.opt
+*.plg
+Release/*.obj
+Release/*.sbr
+Release/*.bsc
+Release/*.pch
+Release/*.idb
