@@ -24,6 +24,7 @@
       不使用MFC(Not Using MFC)
       使用自定义预编译头文件(Through header: stdafx.h)
       输出文件名: .\Release\krnln.lib
+      多线程模式：Multithread(/MT)
 
 二、源码使用事项
   原则上，只要不是商业用途及非法用途，源码可以任意使用及传播，
