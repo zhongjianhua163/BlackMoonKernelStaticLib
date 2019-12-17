@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include "limits.h"
+#define XCHG(x, y) {x = x^y; y = x^y; x = x^y;}
 
 //算术运算 - 取随机数
 /*
@@ -10,66 +12,26 @@
 */
 LIBAPI(int, krnln_rnd)
 {
-/*
-	INT nMin,nMax;
 	PMDATA_INF pArg = &ArgInf;
-	if(pArg[0].m_dtDataType == _SDT_NULL || pArg[0].m_int < 0)
-		nMin = 0;
-	else
-		nMin = pArg[0].m_int;
 
-	if(pArg[1].m_dtDataType == _SDT_NULL || pArg[1].m_int < 0)
-		nMax = 0x7FFFFFFF;
-	else
-		nMax = pArg[1].m_int;
-	INT nSub = nMax-nMin;
-	if(nSub > 0 && nSub < RAND_MAX)
-	{
-		nSub++;
-		nSub = (int)((double)rand()/((double)RAND_MAX/(double)nSub));
+	register int nMin;
+	register int nMax;
 
-	}else if (nSub > RAND_MAX)
-	{
-		nSub = (int)((double)nSub*((double)rand()/(double)RAND_MAX));
+	// check for min value
+	if (pArg[0].m_dtDataType != _SDT_NULL)
+		nMin = pArg[0].m_int < 0 ? 0 : pArg[0].m_int;
+	else nMin = 0;
 
-	}else if(nSub == RAND_MAX)
-	{
-		nSub = rand();
-	}
+	// check for max value
+	if (pArg[1].m_dtDataType != _SDT_NULL)
+		nMax = pArg[1].m_int < 0 ? 0 : pArg[1].m_int;
+	else nMax = INT_MAX;
 
-	return nSub+nMin;
-*/
-	PMDATA_INF pArg = &ArgInf;
-  int v3; // esi@2
-  int result; // eax@5
-  int v5; // ecx@7
-  signed int v6; // edi@13
-
-  if (pArg[0].m_dtDataType != _SDT_NULL)
-    v3 = pArg[0].m_int & ((pArg[0].m_int < 0) - 1);
-  else
-    v3 = 0;
-  if (pArg[1].m_dtDataType != _SDT_NULL)
-    result = ((pArg[1].m_int < 0) - 1) & pArg[1].m_int;
-  else
-    result = 2147483647;
-  v5 = v3;
-  if ( v3 >= result )
-    v3 = result;
-  if ( v5 > result )
-    result = v5;
-  if ( v3 == result )
-  {
-    result = v3;
-  }
-  else
-  {
-    result -= v3;
-    v6 = 2147483646;
-    if ( result <= 2147483646 )
-      v6 = result;
-    result = v3 + abs(rand()) % (v6 + 1);
-  }
-  return result;
+	// if min bigger than max
+	// xchg them
+	if(nMin > nMax)
+		XCHG(nMin, nMax);
+	
+	return nMin + (rand() % (nMax - nMin + 1));
 
 }
