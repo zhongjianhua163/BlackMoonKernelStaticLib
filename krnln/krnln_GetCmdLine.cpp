@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "mem.h"
 
-//#pragma comment(lib,"shell32.lib") 
+#pragma comment(lib,"shell32.lib") 
 
 //环境存取 - 取命令行
 /*
@@ -52,6 +52,10 @@ LIBAPI(void, krnln_GetCmdLine)
 			}
 		}
 	}
+
+	// ! must release memory
+	if(szArglist)
+		LocalFree(szArglist);
 
 	//!!! 必须先释放原变量数组的数据内容。
 	void * pArry = *ArgInf.m_ppAryData;
