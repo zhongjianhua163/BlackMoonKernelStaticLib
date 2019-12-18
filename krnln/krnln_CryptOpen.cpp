@@ -100,7 +100,7 @@ LIBAPI(void*, krnln_CryptOpen) // 未完成
 			swap_hex(pFile->strMD5, 32); //反转MD5
 
 			memset(pFile->strTable,0,258);
-			E_RC4_init(pFile->strTable, pArgInf[3].m_pText, nKeylen);
+			E_RC4_init(pFile->strTable, (unsigned char*)pArgInf[3].m_pText, nKeylen);
 
 			//明文区长度
 			if(pArgInf[4].m_dtDataType == _SDT_NULL)

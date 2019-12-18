@@ -30,9 +30,9 @@ INT __fastcall mystristr(char* str1, char* str2);
 INT __fastcall mystrstr(char* str1, char* str2);
 
 void swap_hex(unsigned char* string, int length);
-void __stdcall E_RC4_init(unsigned char *keytable, char *key, int keylen);
-void __stdcall E_RC4_updatetable(int len,unsigned char* keytable);
-void __stdcall E_RC4(void *data, int datalen, void *keytable);
+void E_RC4_init(unsigned char* keytable, unsigned char* key, int keylen);
+void E_RC4_updatetable(int len, unsigned char* keytable);
+void E_RC4(unsigned char* data, int datalen, unsigned char* keytable);
 BOOL E_RC4_Calc(int pos, unsigned char *pData,int nDlen, unsigned char *pKeytable, int nCryptStart, unsigned char *pMD5);
 
 #endif
