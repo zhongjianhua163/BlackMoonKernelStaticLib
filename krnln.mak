@@ -1,6 +1,6 @@
 # Microsoft Developer Studio Generated NMAKE File, Based on krnln.dsp
-!IF "$(CFG)" == ""
-CFG=krnln - Win32 Debug
+	!IF "$(CFG)" == ""
+		CFG=krnln - Win32 Debug
 !MESSAGE No configuration specified. Defaulting to krnln - Win32 Debug.
 !ENDIF 
 
