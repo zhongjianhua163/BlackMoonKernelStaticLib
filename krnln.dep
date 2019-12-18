@@ -1,0 +1,406 @@
+# Microsoft Developer Studio Generated Dependency File, included by krnln.mak
+
+".\krnln\BlackMoonCallPropertyVaule.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\CloneTextData.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\FileManager.cpp" : \
+	".\krnln\MyMemFile.h"\
+	
+
+".\krnln\HelpFunc12.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_BJCase.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_CryptOpen.cpp" : \
+	".\krnln\md5t.h"\
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_CurDir.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_DeleteRegItem.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_Dispatch.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_feof.cpp" : \
+	".\krnln\Myfunctions.h"\
+	".\krnln\MyMemFile.h"\
+	
+
+".\krnln\krnln_fputs.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_FSeek.cpp" : \
+	".\krnln\MyMemFile.h"\
+	
+
+".\krnln\krnln_GetAllPY.cpp" : \
+	".\krnln\mem.h"\
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_GetBinElement.cpp" : \
+	".\krnln\mem.h"\
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_GetBinRegItem.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_GetClipBoardText.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_GetCmdLine.cpp" : \
+	".\krnln\mem.h"\
+	
+
+".\krnln\krnln_GetDiskFreeSpace.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_GetDiskLabel.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_GetDiskTotalSpace.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_GetHostName.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_GetKeyText.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_GetNumRegItem.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_GetRunFileName.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_GetRunPath.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_GetSectionNames.cpp" : \
+	".\krnln\mem.h"\
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_GetTempFileName.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_GetTextRegItem.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_HostNameToIP.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_InBin.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_InputBox.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_InsBin.cpp" : \
+	".\krnln\Myfunctions.h"\
+	".\krnln\MyMemFile.h"\
+	
+
+".\krnln\krnln_InsLine.cpp" : \
+	".\krnln\Myfunctions.h"\
+	".\krnln\MyMemFile.h"\
+	
+
+".\krnln\krnln_InsText.cpp" : \
+	".\krnln\Myfunctions.h"\
+	".\krnln\MyMemFile.h"\
+	
+
+".\krnln\krnln_InStr.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_InStrRev.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_IPToHostName.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_IsRegItemExist.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_LCase.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_left.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_len.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_loc.cpp" : \
+	".\krnln\MyMemFile.h"\
+	
+
+".\krnln\krnln_lof.cpp" : \
+	".\krnln\MyMemFile.h"\
+	
+
+".\krnln\krnln_LTrim.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_mid.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_MsgBox.cpp" : \
+	".\krnln\LTrimZeroChr.h"\
+	
+
+".\krnln\krnln_NumToRMB.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_NumToText.cpp" : \
+	".\krnln\LTrimZeroChr.h"\
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_OpenManyFileDialog.cpp" : \
+	".\krnln\mem.h"\
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_OpenMemFile.cpp" : \
+	".\krnln\MyMemFile.h"\
+	
+
+".\krnln\krnln_PlayMID.cpp" : \
+	".\krnln\midi.h"\
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_pstr.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_QJCase.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_read.cpp" : \
+	".\krnln\Myfunctions.h"\
+	".\krnln\MyMemFile.h"\
+	
+
+".\krnln\krnln_ReadBin.cpp" : \
+	".\krnln\Myfunctions.h"\
+	".\krnln\MyMemFile.h"\
+	
+
+".\krnln\krnln_ReadLine.cpp" : \
+	".\krnln\Myfunctions.h"\
+	".\krnln\MyMemFile.h"\
+	
+
+".\krnln\krnln_ReadText.cpp" : \
+	".\krnln\Myfunctions.h"\
+	".\krnln\MyMemFile.h"\
+	
+
+".\krnln\krnln_RemoveData.cpp" : \
+	".\krnln\Myfunctions.h"\
+	".\krnln\MyMemFile.h"\
+	
+
+".\krnln\krnln_ReplaceText.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_right.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_RmDir.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_RpSubBin.cpp" : \
+	".\krnln\mem.h"\
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_RpSubText.cpp" : \
+	".\krnln\mem.h"\
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_RTrim.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_RunConsoleApp.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_SaveRegItem.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_SeekToBegin.cpp" : \
+	".\krnln\MyMemFile.h"\
+	
+
+".\krnln\krnln_SeekToEnd.cpp" : \
+	".\krnln\MyMemFile.h"\
+	
+
+".\krnln\krnln_SetClipBoardText.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_SetDiskLabel.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_split.cpp" : \
+	".\krnln\mem.h"\
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_SplitBin.cpp" : \
+	".\krnln\mem.h"\
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_str.cpp" : \
+	".\krnln\LTrimZeroChr.h"\
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_string.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_TimeToText.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_ToBin.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_ToTime.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_TrimAll.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_UCase.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_UNum.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_write.cpp" : \
+	".\krnln\Myfunctions.h"\
+	".\krnln\MyMemFile.h"\
+	
+
+".\krnln\krnln_WriteBin.cpp" : \
+	".\krnln\Myfunctions.h"\
+	".\krnln\MyMemFile.h"\
+	
+
+".\krnln\krnln_WriteLine.cpp" : \
+	".\krnln\Myfunctions.h"\
+	".\krnln\MyMemFile.h"\
+	
+
+".\krnln\krnln_WriteMem.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\krnln_WriteText.cpp" : \
+	".\krnln\Myfunctions.h"\
+	".\krnln\MyMemFile.h"\
+	
+
+".\krnln\LTrimZeroChr.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\mem.cpp" : \
+	".\krnln\mem.h"\
+	
+
+".\krnln\midi.cpp" : \
+	".\krnln\midi.h"\
+	
+
+".\krnln\Myfunctions.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\MyMemFile.cpp" : \
+	".\krnln\MyMemFile.h"\
+	
+
+".\krnln\NumToChinese.cpp" : \
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\replaceText.cpp" : \
+	".\krnln\mem.h"\
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\SDataToStr.cpp" : \
+	".\krnln\LTrimZeroChr.h"\
+	".\krnln\Myfunctions.h"\
+	
+
+".\krnln\StdAfx.cpp" : \
+	".\krnln\lib2.h"\
+	".\krnln\StdAfx.h"\
+	"c:\program files (x86)\microsoft visual studio\vc98\include\basetsd.h"\
+	
