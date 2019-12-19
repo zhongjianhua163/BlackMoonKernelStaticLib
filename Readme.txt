@@ -15,10 +15,10 @@
     1)新建一个空的静态LIB工程(Win32 Static Library)
     2)将所有文件复制到新的工程目录下(.dsw和.dsp文件无需复制)
     3)将所有文件导入到新的工程中，但不要导入以下文件：
-      EyInit.obj
-      EyComInit.obj
-      BlackMoonDll.obj
-      BlackMoonDll2.obj
+      EyInit.cpp
+      EyComInit.cpp
+      BlackMoonDll.cpp
+      BlackMoonDll2.cpp
       BlackMoonExe.cpp
     4)修改工程配置:
       不使用MFC(Not Using MFC)
