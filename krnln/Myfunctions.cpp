@@ -493,166 +493,62 @@ void swap_hex(unsigned char* str, int len)
 	}
 }
 
-void __stdcall E_RC4_init(unsigned char *keytable, char *key, int keylen)
+void E_RC4_init(unsigned char* keytable, unsigned char* key, int keylen)
 {
-	__asm{
-		sub     esp, 0x104
-		and     byte ptr [ebp-0x104], 0x0
-		push    ebx
-		push    esi
-		push    edi
-		push    0x3F
-		xor     eax, eax
-		pop     ecx
-		lea     edi, dword ptr [ebp-0x103]
-		rep     stos dword ptr es:[edi]
-		mov     ebx, dword ptr [ebp+0x8]
-		and     dword ptr [ebp-0x4], 0x0
-		stos    word ptr es:[edi]
-		stos    byte ptr es:[edi]
-		lea     eax, dword ptr [ebp-0x104]
-		xor     ecx, ecx
-		sub     ebx, eax
-		mov     esi, 0x100
-l1:		mov     eax, ecx
-		xor     edx, edx
-		div     dword ptr [ebp+0x10]
-		mov     eax, dword ptr [ebp+0xC]
-		lea     edi, dword ptr [ebp+ecx-0x104]
-		mov     byte ptr [ebx+edi], cl
-		inc     ecx
-		cmp     ecx, esi
-		mov     al, byte ptr [edx+eax]
-		mov     byte ptr [edi], al
-		jl      short l1
-		mov     ecx, dword ptr [ebp+0x8]
-		lea     eax, dword ptr [ebp-0x104]
-		sub     eax, ecx
-		mov     dword ptr [ebp+0x10], esi
-		mov     dword ptr [ebp+0xC], eax
-		jmp     short l2
-l3:		mov     eax, dword ptr [ebp+0xC]
-l2:		mov     bl, byte ptr [ecx]
-		mov     edi, dword ptr [ebp-0x4]
-		movzx   edx, byte ptr [eax+ecx]
-		movzx   eax, bl
-		add     edi, edx
-		add     eax, edi
-		mov     edi, esi
-		cdq
-		idiv    edi
-		mov     eax, dword ptr [ebp+0x8]
-		mov     dword ptr [ebp-0x4], edx
-		lea     edi, dword ptr [edx+eax]
-		mov     dl, byte ptr [edx+eax]
-		mov     byte ptr [ecx], dl
-		inc     ecx
-		dec     dword ptr [ebp+0x10]
-		mov     byte ptr [edi], bl
-		jnz     short l3
-		mov     byte ptr [eax+0x100], 0x0
-		mov     byte ptr [eax+0x101], 0x0
-		pop     edi
-		pop     esi
-		pop     ebx
-		mov     esp, ebp
-		pop     ebp
-		retn    0x0C
+	int i = 0, j = 0;
+	unsigned char k[256] = { 0 };
+	unsigned char tmp = 0;
+	for (i = 0; i < 256; i++) {
+		keytable[i] = i;
+		k[i] = key[i % keylen];
 	}
+	for (i = 0; i < 256; i++) {
+		tmp = keytable[i];
+		j = (j + tmp + k[i]) % 256;
+		keytable[i] = keytable[j];//交换s[i]和s[j]
+		keytable[j] = tmp;
+	}
+	keytable[256] = 0;
+	keytable[257] = 0;
 }
 
-void __stdcall E_RC4_updatetable(int len,unsigned char* keytable)
+void E_RC4_updatetable(int len, unsigned char* keytable)
 {
-	__asm{
-		sub     esp, 0x8
-		push    ebx
-		push    esi
-		push    edi
-		mov     edi, dword ptr [ebp+0xC]
-		mov     dword ptr [ebp-0x8], edi
-		mov     al, byte ptr [edi+0x100]
-		mov     cl, byte ptr [edi+0x101]
-		mov     byte ptr [ebp+0xF], al
-		mov     byte ptr [ebp-0x1], cl
-		xor     ebx, ebx
-		mov     bl, byte ptr [ebp+0xF]
-		xor     edx, edx
-		mov     dl, byte ptr [ebp-0x1]
-		mov     esi, dword ptr [ebp-0x8]
-		mov     ecx, dword ptr [ebp+0x8]
-		test    ecx, ecx
-		jle     short l1
-l2:		inc     bl
-		mov     al, byte ptr [esi+ebx]
-		add     dl, al
-		xchg    byte ptr [esi+edx], al
-		mov     byte ptr [esi+ebx], al
-		dec     ecx
-		jnz     short l2
-l1:		mov     byte ptr [ebp+0xF], bl
-		mov     byte ptr [ebp-0x1], dl
-		mov     dl, byte ptr [ebp+0xF]
-		mov     al, byte ptr [ebp-0x1]
-		mov     byte ptr [edi+0x100], dl
-		mov     byte ptr [edi+0x101], al
-		pop     edi
-		pop     esi
-		pop     ebx
-		mov     esp, ebp
-		pop     ebp
-		retn    0x08
+	int i;
+	unsigned char tmp;
+	unsigned char x = keytable[256];
+	unsigned char y = keytable[257];
+	for (i = 0; i < len; i++)
+	{
+		x = (x + 1);
+		tmp = keytable[x];
+		y = (y + tmp);
+		keytable[x] = keytable[y];//交换s[x]和s[y]
+		keytable[y] = tmp;
 	}
+	keytable[256] = x;
+	keytable[257] = y;
 }
 
-void __stdcall E_RC4(void *data, int datalen, void *keytable)
+void E_RC4(unsigned char* data, int datalen, unsigned char* keytable)
 {
-	__asm{
-		sub     esp, 0x8
-		mov     eax, dword ptr [ebp+0x10]
-		push    ebx
-		push    esi
-		push    edi
-		mov     cl, byte ptr [eax+0x100]
-		mov     dl, byte ptr [eax+0x101]
-		mov     dword ptr [ebp-0x8], eax
-		mov     byte ptr [ebp-0x1], cl
-		mov     byte ptr [ebp-0x2], dl
-		xor     ebx, ebx
-		mov     bl, byte ptr [ebp-0x1]
-		xor     edx, edx
-		mov     dl, byte ptr [ebp-0x2]
-		mov     esi, dword ptr [ebp-0x8]
-		mov     edi, dword ptr [ebp+0x8]
-		xor     eax, eax
-		mov     ecx, dword ptr [ebp+0xC]
-		test    ecx, ecx
-		jle     short l1
-l2:		inc     bl
-		mov     al, byte ptr [esi+ebx]
-		add     dl, al
-		xchg    byte ptr [esi+edx], al
-		mov     byte ptr [esi+ebx], al
-		add     al, byte ptr [esi+edx]
-		mov     al, byte ptr [esi+eax]
-		xor     byte ptr [edi], al
-		inc     edi
-		dec     ecx
-		jnz     short l2
-l1:		mov     byte ptr [ebp-0x1], bl
-		mov     byte ptr [ebp-0x2], dl
-		mov     eax, dword ptr [ebp+0x10]
-		mov     cl, byte ptr [ebp-0x1]
-		mov     dl, byte ptr [ebp-0x2]
-		pop     edi
-		pop     esi
-		mov     byte ptr [eax+0x100], cl
-		mov     byte ptr [eax+0x101], dl
-		pop     ebx
-		mov     esp, ebp
-		pop     ebp
-		retn    0x0C
+	int i;
+	unsigned char tmp;
+	unsigned char x = keytable[256];
+	unsigned char y = keytable[257];
+	for (i = 0; i < datalen; i++)
+	{
+		x = (x + 1);
+		tmp = keytable[x];
+		y = (y + tmp);
+		keytable[x] = keytable[y];//交换s[x]和s[y]
+		keytable[y] = tmp;
+		data[i] ^= keytable[(unsigned char)(keytable[x] + tmp)];
 	}
+	keytable[256] = x;
+	keytable[257] = y;
 }
+
 #define ERC4_TLEN 258
 #define ERC4_CHUNK 4096
 BOOL E_RC4_Calc(int pos, unsigned char *pData,int nDlen, unsigned char *pKeytable, int nCryptStart, unsigned char *pMD5)
@@ -701,7 +597,7 @@ BOOL E_RC4_Calc(int pos, unsigned char *pData,int nDlen, unsigned char *pKeytabl
 		nTableIndex++;
 		pTableData += 4;
 
-		E_RC4_init(pTableTMP, (char*)pNewPass, 40);
+		E_RC4_init(pTableTMP, pNewPass, 40);
 		E_RC4_updatetable(nChunk + 36, pTableTMP);
 
 		nOChunk = min(ERC4_CHUNK - nChunk, nDlen);
@@ -723,7 +619,7 @@ BOOL E_RC4_Calc(int pos, unsigned char *pData,int nDlen, unsigned char *pKeytabl
 		nTableIndex++;
 		pTableData += 4;
 		
-		E_RC4_init(pTableTMP, (char*)pNewPass, 40);
+		E_RC4_init(pTableTMP, pNewPass, 40);
 		E_RC4_updatetable(nChunk + 36, pTableTMP);
 
 		if (nDlen <= ERC4_CHUNK)
