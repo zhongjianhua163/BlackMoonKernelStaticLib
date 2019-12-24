@@ -13,18 +13,11 @@ LIBAPI(void, krnln_ToLong)
 	switch(ArgInf.m_dtDataType)
 	{
 	case SDT_BYTE:
-		{
-// 			INT nVal = ArgInf.m_byte;
-// 			ArgInf.m_int64 = nVal;
-			nRet = ArgInf.m_byte;
-		}
+	case SDT_BOOL:
+		nRet = ArgInf.m_byte;
 		break;
 	case SDT_SHORT:
-		{
-// 			INT nVal = ArgInf.m_short;
-// 			ArgInf.m_int64 = nVal;
-			nRet = ArgInf.m_short;
-		}
+		nRet = ArgInf.m_short;
 		break;
 	case SDT_TEXT:
 		{
@@ -35,17 +28,20 @@ LIBAPI(void, krnln_ToLong)
 				ArgInf.m_int64 = nRet;
 				E_MFree(pStr);
 			}
-// 			else
-// 				nRet = 0;
 		}
 		break;
 	case SDT_FLOAT:
 		nRet = ArgInf.m_float;
-//		ArgInf.m_int64 = nRet;
 		break;
 	case SDT_DOUBLE:
 		nRet = ArgInf.m_double;
-//		ArgInf.m_int64 = nRet;
+		break;
+	case SDT_SUB_PTR:
+	case SDT_INT:
+		nRet = ArgInf.m_int;
+		break;
+	case SDT_INT64:
+		nRet = ArgInf.m_int64;
 		break;
 	default:
 		break;
