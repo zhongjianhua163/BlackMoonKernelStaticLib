@@ -16,7 +16,7 @@ LIBAPI(void*, krnln_StrToUTF8)
 	int nNum = MultiByteToWideChar(CP_ACP, NULL, pSrc, -1, NULL, NULL);
 	if (nNum <=0) return NULL;
 
-	WCHAR* wcsUnicode = new WCHAR[nNum + 1];
+	WCHAR* wcsUnicode = new WCHAR[nNum];
 	nNum = MultiByteToWideChar(CP_ACP, NULL, pSrc, -1, wcsUnicode, nNum);
 	wcsUnicode[nNum] = 0;
 
@@ -31,7 +31,7 @@ LIBAPI(void*, krnln_StrToUTF8)
 			*(LPINT)pSrc = 1;
 			char* pDes = pSrc + 2*sizeof(int);
 			nNum = WideCharToMultiByte(CP_UTF8, NULL, wcsUnicode, -1, pDes, nNum, NULL, NULL);
-			*(LPINT)(pSrc + sizeof(int)) = nNum;
+			*(LPINT)(pSrc + sizeof(int)) = nNum - 1; // 去掉结尾符'\0' 与易语言保持一致
 		}
 	}
 	delete []wcsUnicode;
