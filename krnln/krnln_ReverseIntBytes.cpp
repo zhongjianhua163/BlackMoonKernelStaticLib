@@ -8,9 +8,9 @@
 // 操作系统需求： Windows、Linux
 LIBAPI(int, krnln_ReverseIntBytes)
 {
-	int nRes = ArgInf.m_int >> 24;
-	nRes |= ((ArgInf.m_int & 0x00FF0000) >> 8);
-	nRes |= ((ArgInf.m_int & 0x0000FF00) << 8);
-	nRes |= ((ArgInf.m_int & 0x000000FF) << 24);
+	unsigned int nRes = ArgInf.m_uint >> 24;
+	nRes |= ((ArgInf.m_uint & 0x00FF0000) >> 8);
+	nRes |= ((ArgInf.m_uint & 0x0000FF00) << 8);
+	nRes |= ((ArgInf.m_uint & 0x000000FF) << 24);
 	return nRes;
 }
