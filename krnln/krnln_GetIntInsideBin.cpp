@@ -23,7 +23,7 @@ LIBAPI(int, krnln_GetIntInsideBin)
 	int nValue = *(LPINT)(pSrc + off + 2*sizeof(int));
 	if (pArgInf[2].m_dtDataType != _SDT_NULL && pArgInf[2].m_bool)
 	{
-		int nTmp = nValue;
+		unsigned int nTmp = (unsigned int)nValue;
 		nValue = nTmp >> 24;
 		nValue |= ((nTmp & 0x00FF0000) >> 8);
 		nValue |= ((nTmp & 0x0000FF00) << 8);
