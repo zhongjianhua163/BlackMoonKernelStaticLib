@@ -9,36 +9,26 @@
 
 LIBAPI(void, krnln_ZeroAry)
 {
-	
-	if(ArgInf.m_ppAryData==NULL)//空数组
+	// no data
+	if(!ArgInf.m_ppAryData)
 		return;
 
-	
+	// not supported data type
 	if(ArgInf.m_dtDataType==SDT_TEXT || ArgInf.m_dtDataType==SDT_BIN)
-	{
-		DWORD dwSize;
-		LPSTR* pAryData = (LPSTR*)GetAryElementInf(*ArgInf.m_ppAryData,dwSize);
+		return;
+	
+	// get single element size
+	// user defined struct is NOT supported, nLen will be zero
+	DWORD dwElementSize = (DWORD)GetSysDataTypeDataSize(ArgInf.m_dtDataType);
+	if(!dwElementSize)
+		return;
 
-		for(UINT n=0;n<dwSize;n++)
-		{
-			if(pAryData[n])
-				E_MFree(pAryData[n]);
-			pAryData[n] = NULL;
+	// get first element and array length
+	DWORD dwArrayLen = 0;
+	void* pFirstElement = GetAryElementInf(*ArgInf.m_ppAryData, dwArrayLen);
+	if(!pFirstElement || !dwArrayLen)
+		return;
 
-		}
-
-	}else{
-
-		INT nLen = GetSysDataTypeDataSize(ArgInf.m_dtDataType);
-		if(nLen==0)//不支持的数据类型
-			return;
-		DWORD dwSize=0;
-		void* pData = GetAryElementInf(*ArgInf.m_ppAryData,dwSize);
-		if(pData==NULL || dwSize==0)
-			return;
-		nLen *= dwSize;
-		memset(pData,0,nLen);
-					
-	}
-
+	// zero all element
+	memset(pFirstElement, 0, dwElementSize * dwArrayLen);	
 }
