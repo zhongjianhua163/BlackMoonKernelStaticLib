@@ -305,8 +305,6 @@ LIBAPI(void, krnln_ToTime)
 		}
 		break;
 	case SDT_DATE_TIME:
-	case SDT_DOUBLE:
-	case SDT_INT64:
 		break;
 	default:
 		ArgInf.m_double = -657434;//100Äê1ÔÂ1ÈÕ
