@@ -93,10 +93,6 @@ SOURCE=".\krnln\BlackMoonCallUserDll.cpp"
 # End Source File
 # Begin Source File
 
-SOURCE=.\krnln\BlackMoonLib.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=".\krnln\BlackMoonLibNotifySys.cpp"
 # End Source File
 # Begin Source File
