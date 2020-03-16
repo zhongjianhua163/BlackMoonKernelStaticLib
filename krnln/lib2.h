@@ -513,7 +513,11 @@ typedef void (WINAPI *PFN_INTERFACE) ();
 #define ITF_LANG_CNV                    9       // 组件数据语言转换
 #define ITF_MSG_FILTER                  11      // 消息过滤
 #define ITF_GET_NOTIFY_RECEIVER         12      // 取组件的附加通知接收者(PFN_ON_NOTIFY_UNIT)
+#if _MSC_VER == 1200
 	typedef INT (WINAPI *PFN_ON_NOTIFY_UNIT) (INT nMsg, DWORD dwParam1 = 0, DWORD dwParam2 = 0);
+#else
+	typedef INT(WINAPI* PFN_ON_NOTIFY_UNIT) (INT nMsg, DWORD dwParam1, DWORD dwParam2);
+#endif
 	#define NU_GET_CREATE_SIZE_IN_DESIGNER		0
 	// 取设计时组件被单击放置到窗体上时的默认创建尺寸.
 	// dwParam1: 类型: INT*, 返回宽度(单位像素)
@@ -529,7 +533,7 @@ typedef PFN_INTERFACE (WINAPI *PFN_GET_INTERFACE) (INT nInterfaceNO);
 typedef HUNIT (WINAPI *PFN_CREATE_UNIT) (LPBYTE pAllData, INT nAllDataSize,
 		DWORD dwStyle, HWND hParentWnd, UINT uID, HMENU hMenu, INT x, INT y, INT cx, INT cy,
 		DWORD dwWinFormID, DWORD dwUnitID,			// 用作通知到系统
-    #ifndef __GCC_
+    #if __GCC_ || _MSC_VER == 1200
 		HWND hDesignWnd = 0, BOOL blInDesignMode = FALSE);
     #else
 		HWND hDesignWnd, BOOL blInDesignMode);
@@ -553,7 +557,7 @@ typedef BOOL (WINAPI *PFN_PROPERTY_UPDATE_UI) (HUNIT hUnit, INT nPropertyIndex);
 // 如果需要重新创建才能修改外形，返回真。如果pblModified不为NULL，在其中返回
 // 修改状态。
 typedef BOOL (WINAPI *PFN_DLG_INIT_CUSTOMIZE_DATA) (HUNIT hUnit, INT nPropertyIndex,
-    #ifndef __GCC_
+    #if __GCC_ || _MSC_VER == 1200
 		BOOL* pblModified = NULL, LPVOID pResultExtraData = NULL);
     #else
 		BOOL* pblModified, LPVOID pResultExtraData);
@@ -650,7 +654,7 @@ typedef union UNIT_PROPERTY_VALUE* PUNIT_PROPERTY_VALUE;
 // 重新创建才能修改外形，返回真。任何情况下如果有相应提示信息，返回到ppszTipText中。
 //   注意：必须进行值的合法性校验。
 typedef BOOL (WINAPI *PFN_NOTIFY_PROPERTY_CHANGED) (HUNIT hUnit, INT nPropertyIndex,
-    #ifndef __GCC_
+    #if __GCC_ || _MSC_VER == 1200
 		PUNIT_PROPERTY_VALUE pPropertyVaule, LPTSTR* ppszTipText = NULL);
     #else
 		PUNIT_PROPERTY_VALUE pPropertyVaule, LPTSTR* ppszTipText);
@@ -1173,7 +1177,7 @@ typedef APP_ICON* PAPP_ICON;
 #define NR_OK		0
 #define NR_ERR		-1
 
-#ifndef __GCC_
+#if __GCC_ || _MSC_VER == 1200
     typedef INT (WINAPI *PFN_NOTIFY_LIB) (INT nMsg, DWORD dwParam1 = 0, DWORD dwParam2 = 0);
 	    // 此函数用作系统通知库有关事件。
     typedef INT (WINAPI *PFN_NOTIFY_SYS) (INT nMsg, DWORD dwParam1 = 0, DWORD dwParam2 = 0);

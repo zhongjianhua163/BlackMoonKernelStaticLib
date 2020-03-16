@@ -201,7 +201,7 @@ LIBAPI(int, krnln_InputBox)
 		if(data.lpUserInput)
 			nLen = mystrlen(data.lpUserInput);
 		else
-			data.lpUserInput = "0";
+			data.lpUserInput = (LPSTR)"0";
 
 		switch (pArgInf[3].m_dtDataType) 
 		{ 

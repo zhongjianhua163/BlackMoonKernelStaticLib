@@ -48,7 +48,7 @@ LIBAPI(void, krnln_val)
 	case SDT_INT64:
 		{
 			INT64 int64 = ArgInf.m_int64;
-			ArgInf.m_double = int64;
+			ArgInf.m_double = (DOUBLE)int64;
 		}
 		break;
 	default:

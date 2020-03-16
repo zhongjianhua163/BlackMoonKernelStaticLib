@@ -31,6 +31,6 @@ EXTERN_C void  _cdecl BlackMoonSetClassPropertyVaule(
 
 	PFN_NOTIFY_PROPERTY_CHANGED pfn;
 	_asm mov pfn,eax;
-	pfn(hUnit,nPropertyIndex,&sProperty);
+	pfn(hUnit, nPropertyIndex, &sProperty, NULL);
 
 }

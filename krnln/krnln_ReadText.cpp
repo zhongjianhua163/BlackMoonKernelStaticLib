@@ -56,7 +56,7 @@ LIBAPI(char*, krnln_ReadText)
 				break;
 			}
 			BOOL bFind = FALSE;
-			for (INT j=0; j < dwNumOfByteRead; j++)
+			for (DWORD j=0; j < dwNumOfByteRead; j++)
 			{
 				if (tmpMEMSP.pData[j] == 0 || tmpMEMSP.pData[j] == 26)
 				{
@@ -179,7 +179,7 @@ LIBAPI(char*, krnln_ReadText)
 			}
 			BOOL bFind = FALSE;
 			E_RC4_Calc(nPos, (unsigned char*)tmpMEMSP.pData, dwNumOfByteRead, pFile->strTable, pFile->nCryptStart, pFile->strMD5);
-			for (INT j=0; j < dwNumOfByteRead; j++)
+			for (DWORD j=0; j < dwNumOfByteRead; j++)
 			{
 				if (tmpMEMSP.pData[j] == 0 || tmpMEMSP.pData[j] == 26)
 				{

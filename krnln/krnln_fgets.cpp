@@ -50,7 +50,11 @@ LIBAPI(char*, krnln_fgets)
 		Buff[2048]=0;
 		do
 		{
+#if _MSC_VER > 1200
+			INT nChr = _getch();
+#else
 			INT nChr = getch();
+#endif
 			Buff[nIdx] = (char)nChr;
 			if ( nChr == 13 )
 				break;

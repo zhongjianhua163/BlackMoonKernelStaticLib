@@ -10,7 +10,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#pragma warning(disable: 4244) // 数据类型不匹配，可能存在数据丢失风险的警告，可以无视！
 
 #define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers
 
@@ -28,6 +27,7 @@ typedef double DATE;
 #endif
 
 #include "lib2.h"
+
 
 //**********************************************//
 // 调用格式： LIBAPI (返回值类型,  函数名)

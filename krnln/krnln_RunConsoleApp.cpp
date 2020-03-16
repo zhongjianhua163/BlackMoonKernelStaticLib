@@ -5,7 +5,7 @@ BOOL __cdecl ReadPepi(HANDLE hFile, LPINT* ppTb)
 {
 	DWORD nSize;
 	char* pBuffer = NULL;
-	char* pHH = "\r\n\0";
+	char* pHH = (char*)"\r\n\0";
 	while(1)
 	{
 		nSize = 0;

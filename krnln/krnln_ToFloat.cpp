@@ -30,16 +30,16 @@ LIBAPI(void, krnln_ToFloat)
 	case SDT_INT:
 	case SDT_SUB_PTR:
 	case SDT_BOOL:
-		nRet = ArgInf.m_int;
+		nRet = (float)ArgInf.m_int;
 		break;
 	case SDT_FLOAT:
 		nRet = ArgInf.m_float;
 		break;
 	case SDT_DOUBLE:
-		nRet = ArgInf.m_double;
+		nRet = (float)ArgInf.m_double;
 		break;
 	case SDT_INT64:
-		nRet = ArgInf.m_int64;
+		nRet = (float)ArgInf.m_int64;
 		break;
 	default:
 		break;

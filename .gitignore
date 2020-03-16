@@ -3,3 +3,7 @@
 *.plg
 Release/*
 Debug/*
+.vs/*
+Project/*.plg
+Project/Release/*
+Project/Debug/*

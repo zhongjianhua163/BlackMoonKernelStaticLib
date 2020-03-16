@@ -49,17 +49,16 @@ LIBAPI(char*, krnln_ReadLine)
 				break;
 			}
 			BOOL bFind = FALSE;
-			for (INT j=0; j < dwNumOfByteRead; j++)
+			for (DWORD j=0; j < dwNumOfByteRead; j++)
 			{
 				if (tmpMEMSP.pData[j] == 0 || tmpMEMSP.pData[j] == '\r' || tmpMEMSP.pData[j] == '\n')
 				{
-					dwNumOfByteRead = j;
-
-					if (j <= dwNumOfByteRead && tmpMEMSP.pData[j] == '\r' && tmpMEMSP.pData[j+1] =='\n')
+					if (j < dwNumOfByteRead - 2 && tmpMEMSP.pData[j] == '\r' && tmpMEMSP.pData[j+1] =='\n')
 						orgLoc+=2;// 跳过这两个字节
 					else
 						orgLoc++;// 跳过这个字节
 
+					dwNumOfByteRead = j;
 					bFind = TRUE;
 					break;
 				}
@@ -214,17 +213,16 @@ LIBAPI(char*, krnln_ReadLine)
 			}
 			BOOL bFind = FALSE;
 			E_RC4_Calc(nPos, (unsigned char*)tmpMEMSP.pData, dwNumOfByteRead, pFile->strTable, pFile->nCryptStart, pFile->strMD5);
-			for (INT j=0; j < dwNumOfByteRead; j++)
+			for (DWORD j=0; j < dwNumOfByteRead; j++)
 			{
 				if (tmpMEMSP.pData[j] == 0 || tmpMEMSP.pData[j] == '\r' || tmpMEMSP.pData[j] == '\n')
 				{
-					dwNumOfByteRead = j;
-
-					if (j <= dwNumOfByteRead && tmpMEMSP.pData[j] == '\r' && tmpMEMSP.pData[j+1] =='\n')
+					if (j < dwNumOfByteRead - 2 && tmpMEMSP.pData[j] == '\r' && tmpMEMSP.pData[j+1] =='\n')
 						orgLoc+=2;// 跳过这两个字节
 					else
 						orgLoc++;// 跳过这个字节
 
+					dwNumOfByteRead = j;
 					bFind = TRUE;
 					break;
 				}

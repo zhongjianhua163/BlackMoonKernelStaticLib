@@ -1,9 +1,21 @@
 Microsoft Developer Studio Workspace File, Format Version 6.00
-# 警告: 不能编辑或删除该工作区文件！
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
 
 ###############################################################################
 
-Project: "BlackMoonExe"=.\BlackMoonExe.dsp - Package Owner=<4>
+Project: "krnln"=.\Project\krnln_VC6.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "krnln_Obj"=.\Project\krnln_VC6_Obj.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

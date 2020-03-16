@@ -1,4 +1,4 @@
-#include <StdAfx.h>
+#include "StdAfx.h"
 #include "mem.h"
 #include "Myfunctions.h"
 
@@ -688,7 +688,7 @@ LIBAPI(BOOL, krnln_CompPY)
 									v26 = *(WORD *)((char *)v25 + v24);
 									if ( !v26 )
 										break;
-									v46 = ConvertNanFangPY(v26, 0, v37);
+									v46 = ConvertNanFangPY((unsigned char)v26, 0, v37);
 									//HIBYTE(v27) = ConvertNanFangPY(HIBYTE(v26), v46, v37);
 									//++v13;
 									//LOBYTE(v27) = v46; //此处有疑问
@@ -708,7 +708,7 @@ LIBAPI(BOOL, krnln_CompPY)
 						}
 						else
 						{
-							v19 = ConvertNanFangPY(v16, 0, v37);
+							v19 = ConvertNanFangPY((unsigned char)v16, 0, v37);
 							v45 = v19;
 							//LOBYTE(v6) = ConvertNanFangPY(HIBYTE(v16), v19, v37);
 							//HIBYTE(v17) = v6;

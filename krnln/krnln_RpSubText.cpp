@@ -57,7 +57,7 @@ LIBAPI(char*, krnln_RpSubText)
 	if (nDLen <=0 || nCount<=0) // 关键参数不合法，直接返回原文本
 		return CloneTextData(pSrc, nSLen);
 	//MessageBox(NULL,"5","432",MB_OK);
-	char* pSub;
+	char* pSub = NULL;
 	INT nSubLen = 0;
 	if (pArgInf[2].m_dtDataType != _SDT_NULL)
 	{

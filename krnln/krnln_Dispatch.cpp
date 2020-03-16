@@ -21,7 +21,7 @@ LPOLESTR ASCII2Unicode(LPSTR pAsciiText)
 	
     if(dwMinSize==0)
 		return NULL;
-    LPOLESTR lpwszStr = new USHORT [dwMinSize];
+    LPOLESTR lpwszStr = (LPOLESTR)new USHORT [dwMinSize];
     // Convert headers from ASCII to Unicode.
     MultiByteToWideChar (CP_ACP, 0, pAsciiText, -1, lpwszStr, dwMinSize);  
 	return lpwszStr;
@@ -91,7 +91,7 @@ HRESULT Dispatch_InvokeHelper(LPDISPATCH lpDispatch,DISPID dwDispID, WORD wFlags
 	memset(&dispparams, 0, sizeof dispparams);
 
 	//检测参数是否有传址
-	BOOL* pbIsRef;
+	BOOL* pbIsRef = NULL;
 	if (nArgCount > 0)
 	{
 		pbIsRef = new BOOL[nArgCount];

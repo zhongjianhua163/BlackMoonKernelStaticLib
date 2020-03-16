@@ -265,7 +265,7 @@ BOOL CalcMD5(LPCTSTR m_filename,unsigned char Orgin[16])
 {
 	MD5_CTX context;
 	FILE* ff;
-	unsigned char *rbuff;
+	unsigned char *rbuff = NULL;
 	DWORD dwSize;
 	DWORD rCount;
 
@@ -281,7 +281,8 @@ BOOL CalcMD5(LPCTSTR m_filename,unsigned char Orgin[16])
 		MD5Update(&context, rbuff,rCount);
 	}
 	MD5Final(&context);
-	delete[] rbuff;
+	if (rbuff)
+		delete[] rbuff;
 	fclose(ff);
 	memcpy(Orgin,(unsigned char*)context.state,16);//返回加密结果，便于调试
 	return TRUE;

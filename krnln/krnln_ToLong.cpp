@@ -31,10 +31,10 @@ LIBAPI(void, krnln_ToLong)
 		}
 		break;
 	case SDT_FLOAT:
-		nRet = ArgInf.m_float;
+		nRet = (INT64)ArgInf.m_float;
 		break;
 	case SDT_DOUBLE:
-		nRet = ArgInf.m_double;
+		nRet = (INT64)ArgInf.m_double;
 		break;
 	case SDT_SUB_PTR:
 	case SDT_INT:

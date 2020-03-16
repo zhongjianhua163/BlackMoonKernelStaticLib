@@ -168,7 +168,7 @@ LIBAPI(void*, krnln_RpSubBin)
 		return CloneBinData(pSrc, nSLen);
 	
 	pDes += 2*sizeof(INT);
-	LPBYTE pSub;
+	LPBYTE pSub = NULL;
 	INT nSubLen = 0;
 	if (pArgInf[2].m_dtDataType != _SDT_NULL)
 	{

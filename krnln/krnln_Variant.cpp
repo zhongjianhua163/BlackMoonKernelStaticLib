@@ -107,7 +107,7 @@ LPOLESTR E_ASCII2Unicode(LPSTR pAsciiText)
 	
     if(dwMinSize==0)
 		return NULL;
-    LPOLESTR lpwszStr = new USHORT [dwMinSize];
+    LPOLESTR lpwszStr = (LPOLESTR)new USHORT [dwMinSize];
     // Convert headers from ASCII to Unicode.
     MultiByteToWideChar (CP_ACP, 0, pAsciiText, -1, lpwszStr, dwMinSize);  
 	return lpwszStr;
@@ -484,9 +484,9 @@ extern "C"
 		if(vargSrc.vt == VT_BOOL)
 		{
 			if(vargSrc.boolVal != 0)
-				pText = CloneTextData("Õæ",2);
+				pText = CloneTextData((LPSTR)"Õæ",2);
 			else
-				pText = CloneTextData("¼Ù",2);
+				pText = CloneTextData((LPSTR)"¼Ù",2);
 			return pText;
 		}
 		BOOL bIsFromChg = FALSE;

@@ -58,7 +58,7 @@ LIBAPI(BOOL, krnln_WriteBin)
 	{
 		HANDLE hFile = (HANDLE)pFile->FileHandle;
 		DWORD dwNumOfByteRead;
-		LPBYTE pData;
+		LPBYTE pData = NULL;
 		INT nMaxLen = 0;
 		INT nLen, i, nPos;
 		bRet = TRUE;

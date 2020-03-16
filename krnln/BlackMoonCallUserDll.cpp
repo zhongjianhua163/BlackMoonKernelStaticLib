@@ -40,8 +40,9 @@ void* _stdcall BlackMoonCallUserDllFunc (char* pDll,char* pName,void** pFunc)
 	char* pFuncName = NULL;
 	if(pName[0]=='#')
 		pFuncName=(char*)atoi(pName+1);
-	else{
-		strcpy(ErrorString,pName);
+	else
+	{
+		strcpy(ErrorString, pName);
 		pFuncName = ErrorString;
 		char* pStr = strchr(pFuncName,'@');
 		if(pStr && pStr[1]=='@')

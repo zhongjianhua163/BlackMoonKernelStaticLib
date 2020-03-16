@@ -34,5 +34,5 @@ double __cdecl ProcessDouble(double a1)
 
 LIBAPI(int, krnln_int)
 {
-	return floor(ProcessDouble(ArgInf.m_double));
+	return (int)floor(ProcessDouble(ArgInf.m_double));
 }

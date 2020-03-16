@@ -41,6 +41,6 @@ LIBAPI(int, krnln_fix)
 		nRet = ceil(ArgInf.m_double);*/
 	double v5;
 	modf(ProcessDouble2(ArgInf.m_double), &v5);
-	nRet = v5;
+	nRet = (INT)v5;
 	return nRet;
 }

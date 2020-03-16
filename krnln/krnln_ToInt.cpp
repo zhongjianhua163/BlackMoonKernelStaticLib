@@ -36,13 +36,13 @@ LIBAPI(INT, krnln_ToInt)
 		nRet = ArgInf.m_int;
 		break;
 	case SDT_FLOAT:
-		nRet = ArgInf.m_float;
+		nRet = (INT)ArgInf.m_float;
 		break;
 	case SDT_DOUBLE:
-		nRet = ArgInf.m_double;
+		nRet = (INT)ArgInf.m_double;
 		break;
 	case SDT_INT64:
-		nRet = ArgInf.m_int64;
+		nRet = (INT)ArgInf.m_int64;
 		break;
 	default:
 		break;

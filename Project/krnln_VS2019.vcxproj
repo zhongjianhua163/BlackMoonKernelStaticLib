@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\krnln\BlackMoonCallPropertyVaule.cpp" />
+    <ClCompile Include="..\krnln\BlackMoonCallUserDll.cpp" />
+    <ClCompile Include="..\krnln\BlackMoonLibNotifySys.cpp" />
+    <ClCompile Include="..\krnln\CloneBinData.cpp" />
+    <ClCompile Include="..\krnln\CloneTextData.cpp" />
+    <ClCompile Include="..\krnln\DateTimeFormat.cpp" />
+    <ClCompile Include="..\krnln\DllEntryFunc.cpp" />
+    <ClCompile Include="..\krnln\eHelpFunc.cpp" />
+    <ClCompile Include="..\krnln\FileManager.cpp" />
+    <ClCompile Include="..\krnln\FreeAryElement.cpp" />
+    <ClCompile Include="..\krnln\GetAryElementInf.cpp" />
+    <ClCompile Include="..\krnln\GetDataTypeType.cpp" />
+    <ClCompile Include="..\krnln\GetDatePart.cpp" />
+    <ClCompile Include="..\krnln\GetDaysOfSpecMonth.cpp" />
+    <ClCompile Include="..\krnln\GetRegRootVal.cpp" />
+    <ClCompile Include="..\krnln\GetSpecTime.cpp" />
+    <ClCompile Include="..\krnln\GetSysDataTypeDataSize.cpp" />
+    <ClCompile Include="..\krnln\GetTimePart.cpp" />
+    <ClCompile Include="..\krnln\GetWeekDay.cpp" />
+    <ClCompile Include="..\krnln\HelpFunc12.cpp" />
+    <ClCompile Include="..\krnln\IsInFileMangerList.cpp" />
+    <ClCompile Include="..\krnln\krnln_abs.cpp" />
+    <ClCompile Include="..\krnln\krnln_asc.cpp" />
+    <ClCompile Include="..\krnln\krnln_atn.cpp" />
+    <ClCompile Include="..\krnln\krnln_band.cpp" />
+    <ClCompile Include="..\krnln\krnln_beep.cpp" />
+    <ClCompile Include="..\krnln\krnln_bin.cpp" />
+    <ClCompile Include="..\krnln\krnln_BinLeft.cpp" />
+    <ClCompile Include="..\krnln\krnln_BinLen.cpp" />
+    <ClCompile Include="..\krnln\krnln_BinMid.cpp" />
+    <ClCompile Include="..\krnln\krnln_BinRight.cpp" />
+    <ClCompile Include="..\krnln\krnln_BJCase.cpp" />
+    <ClCompile Include="..\krnln\krnln_bnot.cpp" />
+    <ClCompile Include="..\krnln\krnln_bor.cpp" />
+    <ClCompile Include="..\krnln\krnln_bxor.cpp" />
+    <ClCompile Include="..\krnln\krnln_ChDir.cpp" />
+    <ClCompile Include="..\krnln\krnln_ChDrive.cpp" />
+    <ClCompile Include="..\krnln\krnln_chr.cpp" />
+    <ClCompile Include="..\krnln\krnln_ClearClipBoard.cpp" />
+    <ClCompile Include="..\krnln\krnln_close.cpp" />
+    <ClCompile Include="..\krnln\krnln_cos.cpp" />
+    <ClCompile Include="..\krnln\krnln_CryptOpen.cpp" />
+    <ClCompile Include="..\krnln\krnln_CurDir.cpp" />
+    <ClCompile Include="..\krnln\krnln_day.cpp" />
+    <ClCompile Include="..\krnln\krnln_DeleteRegItem.cpp" />
+    <ClCompile Include="..\krnln\krnln_Dispatch.cpp" />
+    <ClCompile Include="..\krnln\krnln_DoEvents.cpp" />
+    <ClCompile Include="..\krnln\krnln_exp.cpp" />
+    <ClCompile Include="..\krnln\krnln_feof.cpp" />
+    <ClCompile Include="..\krnln\krnln_fgets.cpp" />
+    <ClCompile Include="..\krnln\krnln_FileCopy.cpp" />
+    <ClCompile Include="..\krnln\krnln_FileDateTime.cpp" />
+    <ClCompile Include="..\krnln\krnln_FileLen.cpp" />
+    <ClCompile Include="..\krnln\krnln_FileMove.cpp" />
+    <ClCompile Include="..\krnln\krnln_fix.cpp" />
+    <ClCompile Include="..\krnln\krnln_fputs.cpp" />
+    <ClCompile Include="..\krnln\krnln_FSeek.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetAllPY.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetAttr.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetBackColor.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetBinElement.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetBinRegItem.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetClipBoardText.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetCmdLine.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetColorCount.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetCursorHorzPos.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetCursorVertPos.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetDataTypeSize.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetDatePart.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetDaysOfSpecMonth.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetDiskFreeSpace.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetDiskLabel.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetDiskTotalSpace.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetEnv.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetHDiskCode.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetHostName.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetIntInsideBin.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetKeyText.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetLastError.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetNumRegItem.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetRunFileName.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetRunPath.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetRuntimeDataType.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetScreenHeight.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetScreenWidth.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetSectionNames.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetSpecTime.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetSysVer.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetTempFileName.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetTextRegItem.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetTickCount.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetTimePart.cpp" />
+    <ClCompile Include="..\krnln\krnln_GetWinPic.cpp" />
+    <ClCompile Include="..\krnln\krnln_hex.cpp" />
+    <ClCompile Include="..\krnln\krnln_HostNameToIP.cpp" />
+    <ClCompile Include="..\krnln\krnln_hour.cpp" />
+    <ClCompile Include="..\krnln\krnln_IDiv.cpp" />
+    <ClCompile Include="..\krnln\krnln_InBin.cpp" />
+    <ClCompile Include="..\krnln\krnln_InBinRev.cpp" />
+    <ClCompile Include="..\krnln\krnln_InputBox.cpp" />
+    <ClCompile Include="..\krnln\krnln_InsBin.cpp" />
+    <ClCompile Include="..\krnln\krnln_InsLine.cpp" />
+    <ClCompile Include="..\krnln\krnln_InsText.cpp" />
+    <ClCompile Include="..\krnln\krnln_InStr.cpp" />
+    <ClCompile Include="..\krnln\krnln_InStrRev.cpp" />
+    <ClCompile Include="..\krnln\krnln_int.cpp" />
+    <ClCompile Include="..\krnln\krnln_IPToHostName.cpp" />
+    <ClCompile Include="..\krnln\krnln_IsCalcOK.cpp" />
+    <ClCompile Include="..\krnln\krnln_IsDebugVer.cpp" />
+    <ClCompile Include="..\krnln\krnln_IsFileExist.cpp" />
+    <ClCompile Include="..\krnln\krnln_IsHaveTextInClip.cpp" />
+    <ClCompile Include="..\krnln\krnln_IsRegItemExist.cpp" />
+    <ClCompile Include="..\krnln\krnln_kill.cpp" />
+    <ClCompile Include="..\krnln\krnln_LCase.cpp" />
+    <ClCompile Include="..\krnln\krnln_left.cpp" />
+    <ClCompile Include="..\krnln\krnln_len.cpp" />
+    <ClCompile Include="..\krnln\krnln_like.cpp" />
+    <ClCompile Include="..\krnln\krnln_loc.cpp" />
+    <ClCompile Include="..\krnln\krnln_lock.cpp" />
+    <ClCompile Include="..\krnln\krnln_lof.cpp" />
+    <ClCompile Include="..\krnln\krnln_log.cpp" />
+    <ClCompile Include="..\krnln\krnln_LTrim.cpp" />
+    <ClCompile Include="..\krnln\krnln_MakeLong.cpp" />
+    <ClCompile Include="..\krnln\krnln_MakeWord.cpp" />
+    <ClCompile Include="..\krnln\krnln_mid.cpp" />
+    <ClCompile Include="..\krnln\krnln_minute.cpp" />
+    <ClCompile Include="..\krnln\krnln_MkDir.cpp" />
+    <ClCompile Include="..\krnln\krnln_mod.cpp" />
+    <ClCompile Include="..\krnln\krnln_month.cpp" />
+    <ClCompile Include="..\krnln\krnln_MsgBox.cpp" />
+    <ClCompile Include="..\krnln\krnln_name.cpp" />
+    <ClCompile Include="..\krnln\krnln_now.cpp" />
+    <ClCompile Include="..\krnln\krnln_NumToRMB.cpp" />
+    <ClCompile Include="..\krnln\krnln_NumToText.cpp" />
+    <ClCompile Include="..\krnln\krnln_oct.cpp" />
+    <ClCompile Include="..\krnln\krnln_open.cpp" />
+    <ClCompile Include="..\krnln\krnln_OpenManyFileDialog.cpp" />
+    <ClCompile Include="..\krnln\krnln_OpenMemFile.cpp" />
+    <ClCompile Include="..\krnln\krnln_p2double.cpp" />
+    <ClCompile Include="..\krnln\krnln_p2float.cpp" />
+    <ClCompile Include="..\krnln\krnln_p2int.cpp" />
+    <ClCompile Include="..\krnln\krnln_pbin.cpp" />
+    <ClCompile Include="..\krnln\krnln_ping.cpp" />
+    <ClCompile Include="..\krnln\krnln_PlayMID.cpp" />
+    <ClCompile Include="..\krnln\krnln_PlayMusic.cpp" />
+    <ClCompile Include="..\krnln\krnln_PlayStop.cpp" />
+    <ClCompile Include="..\krnln\krnln_pow.cpp" />
+    <ClCompile Include="..\krnln\krnln_pstr.cpp" />
+    <ClCompile Include="..\krnln\krnln_PutEnv.cpp" />
+    <ClCompile Include="..\krnln\krnln_QJCase.cpp" />
+    <ClCompile Include="..\krnln\krnln_randomize.cpp" />
+    <ClCompile Include="..\krnln\krnln_read.cpp" />
+    <ClCompile Include="..\krnln\krnln_ReadBin.cpp" />
+    <ClCompile Include="..\krnln\krnln_ReadFile.cpp" />
+    <ClCompile Include="..\krnln\krnln_ReadLine.cpp" />
+    <ClCompile Include="..\krnln\krnln_ReadText.cpp" />
+    <ClCompile Include="..\krnln\krnln_RemoveData.cpp" />
+    <ClCompile Include="..\krnln\krnln_ReplaceText.cpp" />
+    <ClCompile Include="..\krnln\krnln_reset.cpp" />
+    <ClCompile Include="..\krnln\krnln_RestroeCursor.cpp" />
+    <ClCompile Include="..\krnln\krnln_ReverseIntBytes.cpp" />
+    <ClCompile Include="..\krnln\krnln_rgb.cpp" />
+    <ClCompile Include="..\krnln\krnln_right.cpp" />
+    <ClCompile Include="..\krnln\krnln_RmDir.cpp" />
+    <ClCompile Include="..\krnln\krnln_rnd.cpp" />
+    <ClCompile Include="..\krnln\krnln_round.cpp" />
+    <ClCompile Include="..\krnln\krnln_RpBin.cpp" />
+    <ClCompile Include="..\krnln\krnln_RpSubBin.cpp" />
+    <ClCompile Include="..\krnln\krnln_RpSubText.cpp" />
+    <ClCompile Include="..\krnln\krnln_RTrim.cpp" />
+    <ClCompile Include="..\krnln\krnln_run.cpp" />
+    <ClCompile Include="..\krnln\krnln_RunConsoleApp.cpp" />
+    <ClCompile Include="..\krnln\krnln_SaveRegItem.cpp" />
+    <ClCompile Include="..\krnln\krnln_second.cpp" />
+    <ClCompile Include="..\krnln\krnln_SeekToBegin.cpp" />
+    <ClCompile Include="..\krnln\krnln_SeekToEnd.cpp" />
+    <ClCompile Include="..\krnln\krnln_SetAttr.cpp" />
+    <ClCompile Include="..\krnln\krnln_SetClipBoardText.cpp" />
+    <ClCompile Include="..\krnln\krnln_SetDiskLabel.cpp" />
+    <ClCompile Include="..\krnln\krnln_SetIntInsideBin.cpp" />
+    <ClCompile Include="..\krnln\krnln_SetKeyText.cpp" />
+    <ClCompile Include="..\krnln\krnln_SetSysTime.cpp" />
+    <ClCompile Include="..\krnln\krnln_SetWaitCursor.cpp" />
+    <ClCompile Include="..\krnln\krnln_sgn.cpp" />
+    <ClCompile Include="..\krnln\krnln_shl.cpp" />
+    <ClCompile Include="..\krnln\krnln_shr.cpp" />
+    <ClCompile Include="..\krnln\krnln_sin.cpp" />
+    <ClCompile Include="..\krnln\krnln_sleep.cpp" />
+    <ClCompile Include="..\krnln\krnln_SortAry.cpp" />
+    <ClCompile Include="..\krnln\krnln_space.cpp" />
+    <ClCompile Include="..\krnln\krnln_SpaceBin.cpp" />
+    <ClCompile Include="..\krnln\krnln_split.cpp" />
+    <ClCompile Include="..\krnln\krnln_SplitBin.cpp" />
+    <ClCompile Include="..\krnln\krnln_sqr.cpp" />
+    <ClCompile Include="..\krnln\krnln_str.cpp" />
+    <ClCompile Include="..\krnln\krnln_StrComp.cpp" />
+    <ClCompile Include="..\krnln\krnln_string.cpp" />
+    <ClCompile Include="..\krnln\krnln_StrToUTF8.cpp" />
+    <ClCompile Include="..\krnln\krnln_tan.cpp" />
+    <ClCompile Include="..\krnln\krnln_TimeChg.cpp" />
+    <ClCompile Include="..\krnln\krnln_TimeDiff.cpp" />
+    <ClCompile Include="..\krnln\krnln_TimePart.cpp" />
+    <ClCompile Include="..\krnln\krnln_TimeToText.cpp" />
+    <ClCompile Include="..\krnln\krnln_ToBin.cpp" />
+    <ClCompile Include="..\krnln\krnln_ToByte.cpp" />
+    <ClCompile Include="..\krnln\krnln_ToFloat.cpp" />
+    <ClCompile Include="..\krnln\krnln_ToInt.cpp" />
+    <ClCompile Include="..\krnln\krnln_ToLong.cpp" />
+    <ClCompile Include="..\krnln\krnln_ToShort.cpp" />
+    <ClCompile Include="..\krnln\krnln_ToTime.cpp" />
+    <ClCompile Include="..\krnln\krnln_trim.cpp" />
+    <ClCompile Include="..\krnln\krnln_TrimAll.cpp" />
+    <ClCompile Include="..\krnln\krnln_UCase.cpp" />
+    <ClCompile Include="..\krnln\krnln_Unlock.cpp" />
+    <ClCompile Include="..\krnln\krnln_UNum.cpp" />
+    <ClCompile Include="..\krnln\krnln_UTF8ToStr.cpp" />
+    <ClCompile Include="..\krnln\krnln_val.cpp" />
+    <ClCompile Include="..\krnln\krnln_Variant.cpp" />
+    <ClCompile Include="..\krnln\krnln_WeekDay.cpp" />
+    <ClCompile Include="..\krnln\krnln_write.cpp" />
+    <ClCompile Include="..\krnln\krnln_WriteBin.cpp" />
+    <ClCompile Include="..\krnln\krnln_WriteFile.cpp" />
+    <ClCompile Include="..\krnln\krnln_WriteLine.cpp" />
+    <ClCompile Include="..\krnln\krnln_WriteMem.cpp" />
+    <ClCompile Include="..\krnln\krnln_WriteText.cpp" />
+    <ClCompile Include="..\krnln\krnln_year.cpp" />
+    <ClCompile Include="..\krnln\krnln_ZeroAry.cpp" />
+    <ClCompile Include="..\krnln\LTrimZeroChr.cpp" />
+    <ClCompile Include="..\krnln\md5t.cpp" />
+    <ClCompile Include="..\krnln\mem.cpp" />
+    <ClCompile Include="..\krnln\midi.cpp" />
+    <ClCompile Include="..\krnln\Myfunctions.cpp" />
+    <ClCompile Include="..\krnln\MyMemFile.cpp" />
+    <ClCompile Include="..\krnln\NumToChinese.cpp" />
+    <ClCompile Include="..\krnln\replaceText.cpp" />
+    <ClCompile Include="..\krnln\SDataToStr.cpp" />
+    <ClCompile Include="..\krnln\StdAfx.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="..\krnln\Diskid32.obj" />
+    <Object Include="..\krnln\PY.OBJ" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\krnln\lib2.h" />
+    <ClInclude Include="..\krnln\LTrimZeroChr.h" />
+    <ClInclude Include="..\krnln\md5t.h" />
+    <ClInclude Include="..\krnln\mem.h" />
+    <ClInclude Include="..\krnln\midi.h" />
+    <ClInclude Include="..\krnln\Myfunctions.h" />
+    <ClInclude Include="..\krnln\MyMemFile.h" />
+    <ClInclude Include="..\krnln\StdAfx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\Readme.txt" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{90C7C825-74BF-4F91-BF9C-4A1E762F24B9}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>krnln</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>krnln</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <EnableUnitySupport>false</EnableUnitySupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>krnln</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>krnln</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>StdAfx.h</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>StdAfx.h</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <MultiProcessorCompilation>
+      </MultiProcessorCompilation>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <PrecompiledHeaderOutputFile />
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

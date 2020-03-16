@@ -115,15 +115,17 @@ LIBAPI(char*, krnln_QJCase)
 	INT nLen = mystrlen(ArgInf.m_pText);
 	if(nLen==0)return NULL;
 	LPSTR pszSrc = ArgInf.m_pText;
-	BOOL bRet = replaceText(pszSrc,"/","£¯",FALSE);
+	BOOL bRet = replaceText(pszSrc, (LPSTR)"/", (LPSTR)"£¯", FALSE);
 	BOOL bFree =FALSE;
 	bFree|=bRet;	
-	bRet = replaceText(pszSrc,"\\","£Ü",bFree);
+	bRet = replaceText(pszSrc, (LPSTR)"\\", (LPSTR)"£Ü", bFree);
 	bFree|=bRet;
 	
 	nLen = mystrlen(pszSrc);
 	INT nBufLen = (nLen+1)*2;
 	char *pQJText = (char*)malloc(nBufLen);
+	if (!pQJText)
+		return NULL;
 	memset(pQJText,0,nBufLen);
 	//pQJText[0]=0;
 	LCMapString (2052, LCMAP_FULLWIDTH, pszSrc,nLen, pQJText, nBufLen);

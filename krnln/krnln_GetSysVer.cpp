@@ -18,6 +18,10 @@ typedef   struct   OSVERSIONINFOEX1
 	BYTE     wReserved; 
 }   OSVERSIONINFOEXW1; 
 
+#if _MSC_VER >= 1920 //VS2019
+typedef BOOL (WINAPI *MyGetVersionExA)(_Inout_ LPOSVERSIONINFOA lpVersionInformation);
+#endif
+
 //系统处理 - 取操作系统类别
 /*
     调用格式： 〈整数型〉 取操作系统类别 （） - 系统核心支持库->系统处理
@@ -30,7 +34,18 @@ LIBAPI(int, krnln_GetSysVer)
 	INT nRet = 0;
 	memset(&VersionInformation,0,sizeof(OSVERSIONINFO));
 	VersionInformation.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+
+#if _MSC_VER >= 1920
+	HMODULE hKernel32 = GetModuleHandle("Kernel32.dll");
+	if (!hKernel32)
+		return 0;
+	MyGetVersionExA MyGetVersion = (MyGetVersionExA)GetProcAddress(hKernel32, "GetVersionExA");
+	if (!MyGetVersion)
+		return 0;
+	if (MyGetVersion(&VersionInformation))
+#else
 	if(GetVersionEx(&VersionInformation))
+#endif
 	{
 		switch(VersionInformation.dwPlatformId)
 		{
@@ -66,7 +81,18 @@ LIBAPI(int, krnln_GetSysVer2)
 	INT nRet = 0;
 	memset(&VerInfoEx,0,sizeof(OSVERSIONINFOEX1));
 	VerInfoEx.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX1);
+
+#if _MSC_VER >= 1920
+	HMODULE hKernel32 = GetModuleHandle("Kernel32.dll");
+	if (!hKernel32)
+		return 0;
+	MyGetVersionExA MyGetVersion = (MyGetVersionExA)GetProcAddress(hKernel32, "GetVersionExA");
+	if (!MyGetVersion)
+		return 0;
+	if (MyGetVersion((OSVERSIONINFO*)&VerInfoEx))
+#else
 	if(GetVersionEx((OSVERSIONINFO*)&VerInfoEx))
+#endif
 	{
 		switch(VerInfoEx.dwPlatformId)
 		{

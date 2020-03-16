@@ -29,19 +29,19 @@ LIBAPI(BYTE, krnln_ToByte)
 		nRet = ArgInf.m_byte;
 		break;
 	case SDT_SHORT:
-		nRet = ArgInf.m_short;
+		nRet = (BYTE)ArgInf.m_short;
 		break;
 	case SDT_INT:
 		nRet = ArgInf.m_int;
 		break;
 	case SDT_FLOAT:
-		nRet = ArgInf.m_float;
+		nRet = (BYTE)ArgInf.m_float;
 		break;
 	case SDT_DOUBLE:
-		nRet = ArgInf.m_double;
+		nRet = (BYTE)ArgInf.m_double;
 		break;
 	case SDT_INT64:
-		nRet = ArgInf.m_int64;
+		nRet = (BYTE)ArgInf.m_int64;
 		break;
 	default:
 		nRet = ArgInf.m_byte;

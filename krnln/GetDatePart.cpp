@@ -10,7 +10,7 @@ void GetDatePart(DATE dt,INT& nYear,INT& nMonth,INT& nDay)
 	{
 		nYear = 1899;
 		nMonth = 12;
-		nDay = 30+dt;
+		nDay = 30 + (INT)dt;
 		return;
 	}
 	INT nCountDay;
@@ -19,13 +19,13 @@ void GetDatePart(DATE dt,INT& nYear,INT& nMonth,INT& nDay)
 	INT nStep;
 	if(dt>0)
 	{
-		nCountDay = dt-1;//到1900年1月1日为基准
+		nCountDay = (INT)(dt-1);//到1900年1月1日为基准
 		nStatrYear = 1900;
 		nStep=1;
 	}
 	else
 	{
-		nCountDay = fabs(dt-1);//到1899年12月31日为基准
+		nCountDay = (INT)fabs(dt-1);//到1899年12月31日为基准
 		nStatrYear = 1899;
 		nStep = -1;
 	}

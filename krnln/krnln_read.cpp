@@ -192,7 +192,7 @@ BOOL ReadFileTextData_Crypt(PFILEELEMENT pFile,LPSTR& pStr,BOOL& bRet)
 		}
 		BOOL bFind = FALSE;
 		E_RC4_Calc(nPos, (unsigned char*)tmpMEMSP.pData, dwNumOfByteRead, pFile->strTable, pFile->nCryptStart, pFile->strMD5);
-		for (INT j=0; j < dwNumOfByteRead; j++)
+		for (DWORD j=0; j < dwNumOfByteRead; j++)
 		{
 			if (tmpMEMSP.pData[j] == 0)
 			{

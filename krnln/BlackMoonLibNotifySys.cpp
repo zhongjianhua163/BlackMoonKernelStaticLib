@@ -147,13 +147,13 @@ EXTERN_C INT WINAPI BlackMoonFuncForeLibNotifySys (INT nMsg, DWORD dwParam1, DWO
 			case SDT_SHORT:
 				break;
 			case SDT_FLOAT:
-				nNewVal = pArgInf->m_float;
+				nNewVal = (INT)pArgInf->m_float;
 				break;
 			case SDT_INT64:
-				nNewVal = pArgInf->m_int64;
+				nNewVal = (INT)pArgInf->m_int64;
 				break;
 			case SDT_DOUBLE:
-				nNewVal = pArgInf->m_double;
+				nNewVal = (INT)pArgInf->m_double;
 				break;
 			default:
 				break;
@@ -185,7 +185,7 @@ EXTERN_C INT WINAPI BlackMoonFuncForeLibNotifySys (INT nMsg, DWORD dwParam1, DWO
 			pFind++;
 			*pFind=0;
 			pFind++;
-			strcpy(strBlackMoonFileName_Name,pFind);
+			strcpy(strBlackMoonFileName_Name, pFind);
 		}else{
 			strBlackMoonFileName_Path[0]=0;
 			strBlackMoonFileName_Name[0]=0;

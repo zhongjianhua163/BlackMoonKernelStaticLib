@@ -83,7 +83,7 @@ LIBAPI(int, krnln_ping)
 
 				if(IcmpSendEchofun (hICmp,
 					dwAddress,
-					"BlackMoonPing",
+					(LPSTR)"BlackMoonPing",
 					13,
 					0,
 					&icmp,

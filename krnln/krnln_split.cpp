@@ -23,7 +23,7 @@ LIBAPI(void*, krnln_split)
 	if (nCount <= 0) 
 		return E_NULLARRAY();
 
-	char* pSub = pArgInf [1].m_dtDataType == _SDT_NULL ? "," : pArgInf [1].m_pText;
+	char* pSub = pArgInf [1].m_dtDataType == _SDT_NULL ? (LPSTR)"," : pArgInf [1].m_pText;
 	INT nSubLen = mystrlen(pSub);
 
 	char* pSrc = pArgInf[0].m_pText;

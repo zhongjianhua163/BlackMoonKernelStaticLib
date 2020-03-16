@@ -124,11 +124,11 @@ LIBAPI(char*, krnln_BJCase)
 	INT nLen = mystrlen(ArgInf.m_pText);
 	if(nLen==0)return NULL;
 	LPSTR pszSrc = ArgInf.m_pText;
-	BOOL bRet = replaceText(pszSrc,"£¯","/",FALSE);
+	BOOL bRet = replaceText(pszSrc, (LPSTR)"£¯", (LPSTR)"/",FALSE);
 	BOOL bFree =FALSE;
 	bFree |=bRet;
 		
-	bRet = replaceText(pszSrc,"£Ü","\\",bFree);
+	bRet = replaceText(pszSrc, (LPSTR)"£Ü", (LPSTR)"\\",bFree);
 
 	bFree |=bRet;
 	

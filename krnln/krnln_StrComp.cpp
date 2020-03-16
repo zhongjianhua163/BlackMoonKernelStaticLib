@@ -15,5 +15,9 @@ LIBAPI(int, krnln_StrComp)
 	if(pArgInf[2].m_bool)//区分大小写
 		return strcmp(pArgInf[0].m_pText,pArgInf[1].m_pText);
 
+#if _MSC_VER == 1200
 	return stricmp(pArgInf[0].m_pText,pArgInf[1].m_pText);
+#else
+	return _stricmp(pArgInf[0].m_pText, pArgInf[1].m_pText);
+#endif
 }

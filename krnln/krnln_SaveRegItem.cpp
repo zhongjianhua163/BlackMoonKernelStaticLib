@@ -45,7 +45,7 @@ LIBAPI(BOOL, krnln_SaveRegItem)
 		{
 			dwType = REG_DWORD;
 			dwLen = sizeof(INT);
-			dwNewVal = pArgInf[2].m_float;
+			dwNewVal = (DWORD)pArgInf[2].m_float;
 			//pArgInf[2].m_dwSubCodeAdr = dwVal;
 			pData = (LPBYTE)&dwNewVal;
 			break;
@@ -54,7 +54,7 @@ LIBAPI(BOOL, krnln_SaveRegItem)
 		{
 			dwType = REG_DWORD;
 			dwLen = sizeof(INT);
-			dwNewVal = pArgInf[2].m_int64;
+			dwNewVal = (DWORD)pArgInf[2].m_int64;
 			//pArgInf[2].m_dwSubCodeAdr = dwVal;
 			pData = (LPBYTE)&dwNewVal;
 			break;
@@ -63,7 +63,7 @@ LIBAPI(BOOL, krnln_SaveRegItem)
 		{
 			dwType = REG_DWORD;
 			dwLen = sizeof(INT);
-			dwNewVal = pArgInf[2].m_double;
+			dwNewVal = (DWORD)pArgInf[2].m_double;
 			//pArgInf[2].m_dwSubCodeAdr = dwVal;
 			pData = (LPBYTE)&dwNewVal;
 			break;
