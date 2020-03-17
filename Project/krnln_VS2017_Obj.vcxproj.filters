@@ -21,6 +21,9 @@
     <ClCompile Include="..\krnln\BlackMoonDll2.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\krnln\BlackMoonExe.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="..\krnln\BlackMoonResDll.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -28,9 +31,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\krnln\EyInit.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\krnln\BlackMoonExe.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

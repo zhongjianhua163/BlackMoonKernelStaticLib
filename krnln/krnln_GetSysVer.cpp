@@ -18,7 +18,7 @@ typedef   struct   OSVERSIONINFOEX1
 	BYTE     wReserved; 
 }   OSVERSIONINFOEXW1; 
 
-#if _MSC_VER >= 1920 //VS2019
+#if _MSC_VER >= 1916 //VS2017 VS2019
 typedef BOOL (WINAPI *MyGetVersionExA)(_Inout_ LPOSVERSIONINFOA lpVersionInformation);
 #endif
 
@@ -35,7 +35,7 @@ LIBAPI(int, krnln_GetSysVer)
 	memset(&VersionInformation,0,sizeof(OSVERSIONINFO));
 	VersionInformation.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
 
-#if _MSC_VER >= 1920
+#if _MSC_VER >= 1916 //VS2017 VS2019
 	HMODULE hKernel32 = GetModuleHandle("Kernel32.dll");
 	if (!hKernel32)
 		return 0;

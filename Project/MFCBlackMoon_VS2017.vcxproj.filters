@@ -15,28 +15,47 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\krnln\BlackMoonDll.cpp">
+    <ClCompile Include="..\MFCObj\BlackMoonMFCdll.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\krnln\BlackMoonDll2.cpp">
+    <ClCompile Include="..\MFCObj\EyMFCComInit.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\krnln\BlackMoonResDll.cpp">
+    <ClCompile Include="..\MFCObj\MFCBlackMoon.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\krnln\EyComInit.cpp">
+    <ClCompile Include="..\MFCObj\MFCBlackMoonCon.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\krnln\EyInit.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\krnln\BlackMoonExe.cpp">
+    <ClCompile Include="..\MFCObj\StdAfx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\krnln\StdAfx.h">
+    <ClInclude Include="..\MFCObj\EyMFCComInit.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\MFCObj\MFCBlackMoon.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MFCObj\Resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MFCObj\StdAfx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\MFCObj\MFCBlackMoon.def">
+      <Filter>源文件</Filter>
+    </None>
+    <None Include="..\MFCObj\res\MFCBlackMoon.rc2">
+      <Filter>资源文件</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\MFCObj\MFCBlackMoon.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
