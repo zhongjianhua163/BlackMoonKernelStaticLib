@@ -82,7 +82,7 @@ LIBAPI(int, krnln_GetSysVer2)
 	memset(&VerInfoEx,0,sizeof(OSVERSIONINFOEX1));
 	VerInfoEx.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX1);
 
-#if _MSC_VER >= 1920
+#if _MSC_VER >= 1916 //VS2017 VS2019
 	HMODULE hKernel32 = GetModuleHandle("Kernel32.dll");
 	if (!hKernel32)
 		return 0;
