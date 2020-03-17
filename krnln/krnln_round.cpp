@@ -28,7 +28,7 @@ LIBAPI(void, krnln_round)
 		ArgInf.m_double = round(ArgInf.m_double);
 	else if(n>0)
 	{
-		double dbNum = pow(10, n);
+		double dbNum = pow((double)10.0, n);
 		ArgInf.m_double = ArgInf.m_double * dbNum;
 
 		ArgInf.m_double = round(ArgInf.m_double)/dbNum;
@@ -36,7 +36,7 @@ LIBAPI(void, krnln_round)
 	}else
 	{
 		n = abs(n);
-		double dbNum = pow(10, n);
+		double dbNum = pow((double)10.0, n);
 		ArgInf.m_double = ArgInf.m_double / dbNum;
 		ArgInf.m_double = round(ArgInf.m_double)* dbNum;
 	}

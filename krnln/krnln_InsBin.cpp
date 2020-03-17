@@ -81,7 +81,7 @@ LIBAPI(BOOL, krnln_InsBin)
 
 		LPBYTE pBufStart, pBufMax;
 
-		INT nBkLen = pMemFile->GetBufferPtr (CMyMemFile::BufferCommand::bufferRead,-1,(void **)&pBufStart,(void **)&pBufMax);
+		INT nBkLen = pMemFile->GetBufferPtr (CMyMemFile::bufferRead,-1,(void **)&pBufStart,(void **)&pBufMax);
 		LPBYTE pBkData = NULL;
 		if(nBkLen >0)
 		{
@@ -101,7 +101,7 @@ LIBAPI(BOOL, krnln_InsBin)
 			orgLoc = pMemFile->GetPosition();
 			pMemFile->Write(pBkData, nBkLen);
 			delete[] pBkData;
-			pMemFile->Seek (orgLoc,CMyMemFile::SeekPosition::begin);
+			pMemFile->Seek (orgLoc,CMyMemFile::begin);
 		}
 
 	}else if(pFile->nType == 3)//╪сцэнд╪Ч

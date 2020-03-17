@@ -54,6 +54,8 @@ HANDLE hBlackMoonHeap = NULL;
 
 PDESTROY BlackMoonFreeAllUserDll = NULL;
 
+#pragma warning(push)
+#pragma warning(disable : 4731)
 	void  _cdecl E_End (DWORD Param1){
 
 		E_DestroyRes();
@@ -62,6 +64,7 @@ PDESTROY BlackMoonFreeAllUserDll = NULL;
 			 ExitProcess(Param1);
 			 return;
 		}
+
 		__asm {
 			mov eax,Param1;
 			mov ebp,nBMProtectEBP;
@@ -71,6 +74,7 @@ PDESTROY BlackMoonFreeAllUserDll = NULL;
 		}
 
 	}
+#pragma warning(pop)
 
 	void  _cdecl E_ReportError (DWORD Param1, DWORD MethodId, DWORD position){
 		char ErrorString [255];

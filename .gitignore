@@ -1,9 +1,12 @@
 *.ncb
 *.opt
 *.plg
+*.suo
+.vs/*
 Release/*
 Debug/*
-.vs/*
+Project/krnln_VS2005.vcproj.*
+Project/krnln_VS2005_Obj.vcproj.*
 Project/*.plg
 Project/Release/*
 Project/ReleaseDll/*

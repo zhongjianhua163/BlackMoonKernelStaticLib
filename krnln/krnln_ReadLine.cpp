@@ -161,7 +161,7 @@ LIBAPI(char*, krnln_ReadLine)
 		INT nLen = -1;
 		LPSTR pBufStart, pBufMax;
 
-		dwNumOfByteRead = pMemFile->GetBufferPtr (CMyMemFile::BufferCommand::bufferRead,nLen,(void **)&pBufStart,(void **)&pBufMax);
+		dwNumOfByteRead = pMemFile->GetBufferPtr (CMyMemFile::bufferRead,nLen,(void **)&pBufStart,(void **)&pBufMax);
 
 		LPSTR pStr = pBufStart;
 		nLen = 0;
@@ -181,7 +181,7 @@ LIBAPI(char*, krnln_ReadLine)
 			if(*pStr =='\n')
 				orgLoc++;
 		}
-		pMemFile->Seek(orgLoc,CMyMemFile::SeekPosition::begin);
+		pMemFile->Seek(orgLoc,CMyMemFile::begin);
 		strncpy(pszRet,pBufStart,nLen);
 		pszRet[nLen] = 0;
 	}else if(pFile->nType ==3)//╪сцэнд╪Ч

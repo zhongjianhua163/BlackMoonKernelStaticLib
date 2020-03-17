@@ -61,7 +61,7 @@ LIBAPI(BOOL, krnln_feof)
 				INT nData;
 				LPSTR pStr = (LPSTR)&nData;
 				BOOL bRet = pMemFile->Read (pStr, sizeof(BYTE));
-				pMemFile->Seek(nLoc,CMyMemFile::SeekPosition::begin);
+				pMemFile->Seek(nLoc,CMyMemFile::begin);
 				if(bRet && (*pStr==0 || *pStr == 26))
 					nRet = TRUE;
 			}

@@ -69,10 +69,10 @@ LIBAPI(BOOL, krnln_RemoveData)
 		bRet = TRUE;
 		if(nBkLen >0)//ÓÐ²ÐÓàÊý¾Ý
 		{
-			pMemFile->Seek(pArgInf[1].m_int,CMyMemFile::SeekPosition::current);
+			pMemFile->Seek(pArgInf[1].m_int,CMyMemFile::current);
 			pBkData = new BYTE[nBkLen];
 			pMemFile->Read(pBkData,nBkLen);
-			pMemFile->Seek(orgLoc,CMyMemFile::SeekPosition::begin);//»Ö¸´
+			pMemFile->Seek(orgLoc,CMyMemFile::begin);//»Ö¸´
 			pMemFile->Write(pBkData, nBkLen);
 			orgLoc = pMemFile->GetPosition();
 			delete[] pBkData;

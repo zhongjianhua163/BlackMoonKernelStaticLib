@@ -10,7 +10,16 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#ifndef _WIN32_WINNT
+
+#ifdef _WIN32_WINNT_MAXVER
 #define _WIN32_WINNT _WIN32_WINNT_MAXVER
+#else
+#define _WIN32_WINNT 0x0502
+#endif
+
+#endif
+
 #define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers
 
 #include <afxwin.h>         // MFC core and standard components

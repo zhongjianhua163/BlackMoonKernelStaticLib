@@ -130,7 +130,7 @@ LIBAPI(char*, krnln_ReadText)
 		else
 			nLen = pArgInf[1].m_int;
 
-		dwNumOfByteRead = pMemFile->GetBufferPtr (CMyMemFile::BufferCommand::bufferRead,nLen,(void **)&pBufStart,(void **)&pBufMax);
+		dwNumOfByteRead = pMemFile->GetBufferPtr (CMyMemFile::bufferRead,nLen,(void **)&pBufStart,(void **)&pBufMax);
 
 		LPSTR pStr = pBufStart;
 		nLen = 0;
@@ -143,7 +143,7 @@ LIBAPI(char*, krnln_ReadText)
 		}
 		pszRet = (LPSTR)E_MAlloc_Nzero(nLen+1);
 		orgLoc += nLen;
-		pMemFile->Seek(orgLoc,CMyMemFile::SeekPosition::begin);
+		pMemFile->Seek(orgLoc,CMyMemFile::begin);
 		strncpy(pszRet,pBufStart,nLen);
 		pszRet[nLen] = 0;
 	}if(pFile->nType ==3)//╪сцэнд╪Ч

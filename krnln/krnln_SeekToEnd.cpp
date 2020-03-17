@@ -25,7 +25,7 @@ LIBAPI(BOOL, krnln_SeekToEnd)
 	}else if(pFile->nType ==2)//ÄÚ´æÎÄ¼þ
 	{
 		CMyMemFile* pMemFile = (CMyMemFile*) pFile->FileHandle;
-		bRet = (pMemFile->Seek(0,CMyMemFile::SeekPosition::end) != -1);
+		bRet = (pMemFile->Seek(0,CMyMemFile::end) != -1);
 
 	}
 	return bRet;

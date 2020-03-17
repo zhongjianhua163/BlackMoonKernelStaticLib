@@ -44,13 +44,13 @@ LIBAPI(BOOL, krnln_FSeek)
 		switch(pArgInf[1].m_int)
 		{
 		case 2://#文件尾
-			dwMoveMethod = CMyMemFile::SeekPosition::end;
+			dwMoveMethod = CMyMemFile::end;
 			break;
 		case 3://#现行位置
-			dwMoveMethod = CMyMemFile::SeekPosition::current;
+			dwMoveMethod = CMyMemFile::current;
 			break;
 		default://#文件首
-			dwMoveMethod = CMyMemFile::SeekPosition::begin;
+			dwMoveMethod = CMyMemFile::begin;
 		}
 		
 		bRet = (pMemFile->Seek(pArgInf[2].m_int,dwMoveMethod) != -1);

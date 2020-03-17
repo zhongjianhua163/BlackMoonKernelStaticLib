@@ -112,7 +112,7 @@ BOOL ReadMemFileTextData(CMyMemFile* pMemFile,LPSTR& pStr)
 	INT nLen = -1;
 	LPSTR pBufStart, pBufMax;
 	
-	dwNumOfByteRead = pMemFile->GetBufferPtr (CMyMemFile::BufferCommand::bufferRead,nLen,(void **)&pBufStart,(void **)&pBufMax);
+	dwNumOfByteRead = pMemFile->GetBufferPtr (CMyMemFile::bufferRead,nLen,(void **)&pBufStart,(void **)&pBufMax);
 	
 	pStr = pBufStart;
 	nLen = 0;
@@ -128,7 +128,7 @@ BOOL ReadMemFileTextData(CMyMemFile* pMemFile,LPSTR& pStr)
 	}
 	pStr = (LPSTR)E_MAlloc(nLen+1);
 	orgLoc += nLen;
-	pMemFile->Seek(orgLoc,CMyMemFile::SeekPosition::begin);
+	pMemFile->Seek(orgLoc,CMyMemFile::begin);
 	strncpy(pStr,pBufStart,nLen);
 	pStr[nLen] = 0;
 	if(nLen == (INT)dwNumOfByteRead)
