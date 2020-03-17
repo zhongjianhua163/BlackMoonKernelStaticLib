@@ -6,4 +6,5 @@ Debug/*
 .vs/*
 Project/*.plg
 Project/Release/*
+Project/ReleaseDll/*
 Project/Debug/*
