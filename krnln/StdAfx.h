@@ -97,7 +97,7 @@ typedef struct
 	INT nType;  
 	void* FileHandle;
 	void* pLast;
-	unsigned char strMD5[32];
+	unsigned char strMD5[33];
 	unsigned char strTable[258];
 	INT nCryptStart;
 }

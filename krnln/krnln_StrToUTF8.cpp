@@ -13,15 +13,20 @@ LIBAPI(void*, krnln_StrToUTF8)
 	if (!pSrc || !*pSrc) return NULL;
 
 	//先将ASCII转成UNICODE
-	int nNum = MultiByteToWideChar(CP_ACP, NULL, pSrc, -1, NULL, NULL);
+	int nNum = MultiByteToWideChar(CP_ACP, 0, pSrc, -1, NULL, 0);
 	if (nNum <=0) return NULL;
 
 	WCHAR* wcsUnicode = new WCHAR[nNum];
-	nNum = MultiByteToWideChar(CP_ACP, NULL, pSrc, -1, wcsUnicode, nNum);
-	wcsUnicode[nNum] = 0;
+	nNum = MultiByteToWideChar(CP_ACP, 0, pSrc, -1, wcsUnicode, nNum);
+	if (nNum <= 0)
+	{
+		delete []wcsUnicode;
+		return NULL;
+	}
+	wcsUnicode[nNum - 1] = 0;
 
 	//再由UNICODE转UTF8
-	nNum = WideCharToMultiByte(CP_UTF8, NULL, wcsUnicode, -1, NULL, NULL, NULL, NULL);
+	nNum = WideCharToMultiByte(CP_UTF8, 0, wcsUnicode, -1, NULL, 0, NULL, NULL);
 	pSrc = NULL;
 	if (nNum > 0)
 	{
@@ -30,7 +35,7 @@ LIBAPI(void*, krnln_StrToUTF8)
 		{
 			*(LPINT)pSrc = 1;
 			char* pDes = pSrc + 2*sizeof(int);
-			nNum = WideCharToMultiByte(CP_UTF8, NULL, wcsUnicode, -1, pDes, nNum, NULL, NULL);
+			nNum = WideCharToMultiByte(CP_UTF8, 0, wcsUnicode, -1, pDes, nNum, NULL, NULL);
 			*(LPINT)(pSrc + sizeof(int)) = nNum - 1; // 去掉结尾符'\0' 与易语言保持一致
 		}
 	}

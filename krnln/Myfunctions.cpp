@@ -558,7 +558,7 @@ BOOL E_RC4_Calc(int pos, unsigned char *pData,int nDlen, unsigned char *pKeytabl
 	int nChunk, nOChunk;
 	int nF,nB;
 	unsigned char pTableTMP[ERC4_TLEN];
-	unsigned char *pTableData;
+	unsigned char *pTableData, *pTableData2;
 	unsigned char pNewPass[40]; // 4 + 32 + 4
 
 	memcpy(pTableTMP, pKeytable, ERC4_TLEN);
@@ -581,6 +581,7 @@ BOOL E_RC4_Calc(int pos, unsigned char *pData,int nDlen, unsigned char *pKeytabl
 
 	pTableData = new unsigned char[nTableLen];
 	memset(pTableData, 0, nTableLen);
+	pTableData2 = pTableData;
 	E_RC4(pTableData, nTableLen, pTableTMP);
 
 	nTableIndex = pos/ERC4_CHUNK;
@@ -634,6 +635,6 @@ BOOL E_RC4_Calc(int pos, unsigned char *pData,int nDlen, unsigned char *pKeytabl
 		pData += ERC4_CHUNK;
 	}
 
-	delete []pTableData;
+	delete []pTableData2;
 	return TRUE;
 }

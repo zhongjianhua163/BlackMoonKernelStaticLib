@@ -8,12 +8,12 @@ CFG=krnln - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "krnln.mak".
+!MESSAGE NMAKE /f "krnln_VC6.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "krnln.mak" CFG="krnln - Win32 Debug"
+!MESSAGE NMAKE /f "krnln_VC6.mak" CFG="krnln - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 

@@ -19,23 +19,34 @@ LIBAPI(char*, krnln_UTF8ToStr)
 	pSrc += 2*sizeof(INT);
 
 	//先从UTF-8转成UNICODE
-	nl = MultiByteToWideChar(CP_UTF8, NULL, pSrc, -1, NULL, NULL);
+	nl = MultiByteToWideChar(CP_UTF8, 0, pSrc, -1, NULL, 0);
 	if (nl <= 0) return NULL;
 
-	unicodetext = new WCHAR[nl + 1];
-	nl = MultiByteToWideChar(CP_UTF8, NULL, pSrc, -1, unicodetext, nl);
-	unicodetext[nl] = 0;
+	unicodetext = new WCHAR[nl];
+	nl = MultiByteToWideChar(CP_UTF8, 0, pSrc, -1, unicodetext, nl);
+	if (0 >= nl)
+	{
+		delete []unicodetext;
+		return NULL;
+	}
+	unicodetext[nl - 1] = 0;
 
 	//再由UNICDOE转成ANSI
-	al = WideCharToMultiByte(936, NULL, unicodetext, -1, NULL, NULL, NULL, NULL);
+	al = WideCharToMultiByte(936, 0, unicodetext, -1, NULL, 0, NULL, NULL);
 	pSrc = NULL;
 	if (al > 0)
 	{
-		pSrc = (char*)E_MAlloc_Nzero(al + 1);
+		pSrc = (char*)E_MAlloc_Nzero(al);
 		if (pSrc)
 		{
-			al = WideCharToMultiByte(936, NULL, unicodetext, -1, pSrc, al, NULL, NULL);
-			pSrc[al] = 0;
+			al = WideCharToMultiByte(936, 0, unicodetext, -1, pSrc, al, NULL, NULL);
+			if (0 >= al)
+			{
+				delete []unicodetext;
+				E_MFree(pSrc);
+				return NULL;
+			}
+			pSrc[al - 1] = 0;
 		}
 	}
 	delete []unicodetext;
