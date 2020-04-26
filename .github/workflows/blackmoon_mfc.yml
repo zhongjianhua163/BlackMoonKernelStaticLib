@@ -1,0 +1,34 @@
+name: BlackMoon MFC
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  bmmfc-debug-win32:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    # Add msuild to local environment
+    - name: Setup MSBuild
+      uses: warrenbuckley/Setup-MSBuild@v1
+
+    # Test build
+    - name: Build BlackMoon MFC
+      run: msbuild Project/MFCBlackMoon_VS2019.vcxproj /p:configuration=debug /p:platform=win32 -maxcpucount:4
+  
+  bmmfc-release-win32:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    # Add msuild to local environment
+    - name: Setup MSBuild
+      uses: warrenbuckley/Setup-MSBuild@v1
+      
+    # Test build
+    - name: Build BlackMoon MFC
+      run: msbuild Project/MFCBlackMoon_VS2019.vcxproj /p:configuration=release /p:platform=win32 -maxcpucount:4
