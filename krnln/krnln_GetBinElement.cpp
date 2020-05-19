@@ -92,7 +92,7 @@ LIBAPI(void, krnln_GetBinElement) // 直接修改eax,edx,ecx，所以不需要指定返回值类
 
 
 	LPBYTE pData = pArgInf [0].m_pBin + sizeof (INT) * 2;
-	INT nDataSize = *(LPINT)(pData - sizeof (INT));
+	INT nDataSize = *(LPINT)(pData - sizeof (INT)); //字节集长度
 	
 
 	INT nOffset;

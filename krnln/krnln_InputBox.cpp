@@ -19,14 +19,15 @@ BYTE BMInputBoxDialogTemplateData []={
 0x26,0x00,0x43,0x00,0x29,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 
 /*
-    调用格式： 〈逻辑型〉 输入框 （［文本型 提示信息］，［文本型 窗口标题］，［文本型 初始文本］，通用型变量 存放输入内容的变量，［整数型 输入方式］） - 系统核心支持库->系统处理
-    英文名称：InputBox
-    在一对话框中显示提示，等待用户输入正文并按下按钮。如果用户在确认输入后（按下“确认输入”按钮或回车键）退出，返回真，否则返回假。本命令为初级命令。
-    参数<1>的名称为“提示信息”，类型为“文本型（text）”，可以被省略。如果提示信息包含多行，可在各行之间用回车符 (即“字符 (13)”)、换行符 (即“字符 (10)”) 或回车换行符的组合 (即：“字符 (13) + 字符 (10)”) 来分隔。如果提示信息太长或行数过多，超过部分将不会被显示出来。
-    参数<2>的名称为“窗口标题”，类型为“文本型（text）”，可以被省略。参数值指定显示在对话框标题栏中的文本。如果省略，默认为文本“请输入：”。
-    参数<3>的名称为“初始文本”，类型为“文本型（text）”，可以被省略。参数值指定初始设置到对话框输入文本框中的内容。
-    参数<4>的名称为“存放输入内容的变量”，类型为“通用型（all）”，提供参数数据时只能提供变量。参数值所指定的变量可以为数值或文本型，用于以不同的数据类型取回输入内容。
-    参数<5>的名称为“输入方式”，类型为“整数型（int）”，可以被省略。参数值可以为以下常量值： 1、#输入文本； 2、#输入整数； 3、#输入小数； 4、#输入密码。如果省略本参数，默认为“#输入文本”。
+调用格式： 〈逻辑型〉 输入框 （［文本型 提示信息］，［文本型 窗口标题］，［文本型 初始文本］，通用型变量 存放输入内容的变量，［整数型 输入方式］，［通用型 父窗口］） - 系统核心支持库->系统处理
+英文名称：InputBox
+在一对话框中显示提示，等待用户输入正文并按下按钮。如果用户在确认输入后（按下“确认输入”按钮或回车键）退出，返回真，否则返回假。本命令为初级命令。
+参数<1>的名称为“提示信息”，类型为“文本型（text）”，可以被省略。如果提示信息包含多行，可在各行之间用回车符 (即“字符 (13)”)、换行符 (即“字符 (10)”) 或回车换行符的组合 (即：“字符 (13) + 字符 (10)”) 来分隔。如果提示信息太长或行数过多，超过部分将不会被显示出来。
+参数<2>的名称为“窗口标题”，类型为“文本型（text）”，可以被省略。参数值指定显示在对话框标题栏中的文本。如果省略，默认为文本“请输入：”。
+参数<3>的名称为“初始文本”，类型为“文本型（text）”，可以被省略。参数值指定初始设置到对话框输入文本框中的内容。
+参数<4>的名称为“存放输入内容的变量”，类型为“通用型（all）”，提供参数数据时只能提供变量。参数值所指定的变量可以为数值或文本型，用于以不同的数据类型取回输入内容。
+参数<5>的名称为“输入方式”，类型为“整数型（int）”，可以被省略。参数值可以为以下常量值： 1、#输入文本； 2、#输入整数； 3、#输入小数； 4、#输入密码。如果省略本参数，默认为“#输入文本”。
+参数<6>的名称为“父窗口”，类型为“通用型（all）”，可以被省略。指定输入框的父窗口,可以是一个"窗口"类型数据或者一个整数型窗口句柄.如果被省略,默认为无.
 */
 /////////////////////////////////////////////////////////////////////////////
 typedef struct
@@ -154,6 +155,7 @@ BOOL CALLBACK BMInputBoxDlgProc( HWND hwndDlg,  // handle to dialog box
 LIBAPI(int, krnln_InputBox)
 {
 	BMInputBoxDATA data;
+	HWND hParent = NULL;
 	memset(&data,0,sizeof(BMInputBoxDATA));
 	PMDATA_INF pArgInf = &ArgInf;
 	if(pArgInf[0].m_dtDataType !=_SDT_NULL && mystrlen(pArgInf[0].m_pText)>0)
@@ -171,9 +173,14 @@ LIBAPI(int, krnln_InputBox)
 			data.nType = 1;
 	}
 
+	if (6 <= nArgCount)
+	{
+		if(pArgInf[5].m_dtDataType !=_SDT_NULL)
+			hParent = (HWND)pArgInf[5].m_int;
+	}
 	 
 	LPBYTE lpDialogTemplate = BMInputBoxDialogTemplateData;
-	HWND hDlg  = CreateDialogIndirectParam(::GetModuleHandle (NULL),(LPCDLGTEMPLATE)lpDialogTemplate, NULL, (DLGPROC)BMInputBoxDlgProc, (LPARAM)&data); 
+	HWND hDlg  = CreateDialogIndirectParam(::GetModuleHandle (NULL),(LPCDLGTEMPLATE)lpDialogTemplate, hParent, (DLGPROC)BMInputBoxDlgProc, (LPARAM)&data); 
 	if(hDlg){
 		ShowWindow(hDlg , SW_SHOW); 
 		UpdateWindow(hDlg); 
