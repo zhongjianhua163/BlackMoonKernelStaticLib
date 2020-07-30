@@ -109,7 +109,7 @@ LIBAPI(char*, krnln_str)
 			pSrc = str;
 			break;
 		case SDT_DOUBLE:
-			sprintf(str,"%lf",ArgInf.m_double);
+			sprintf(str,"%.13g",ArgInf.m_double);
 			LTrimZeroChr(str);
 			nLen = mystrlen(str);
 			pSrc = str;

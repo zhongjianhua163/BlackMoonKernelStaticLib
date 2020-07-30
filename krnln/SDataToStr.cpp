@@ -29,7 +29,7 @@ char* SDataToStr (PMDATA_INF pArgInf)
 			pSrc = str;
 			break;
 		case SDT_DOUBLE:
-			sprintf(str,"%lf",pArgInf->m_double);
+			sprintf(str,"%.13g",pArgInf->m_double);
 			LTrimZeroChr(str);
 			pSrc = str;
 			break;
