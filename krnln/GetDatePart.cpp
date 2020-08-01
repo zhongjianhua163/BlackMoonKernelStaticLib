@@ -66,3 +66,33 @@ void GetDatePart(DATE dt,INT& nYear,INT& nMonth,INT& nDay)
 		
 }
 
+DATE toMyDate(DATE dt)
+{
+	if (dt >= 0) return dt;
+
+	DATE dtZS;
+	DATE dtXS = modf(dt, &dtZS);
+	if(dtXS != 0)
+	{
+		dtXS = 0.0 - (1.0 + dtXS);
+	}
+	if (dtZS < 0)
+	{
+		dtZS += 1.0;
+	}
+	return dtZS + dtXS;
+}
+
+DATE toEDate(DATE dt)
+{
+	if (dt >= 0) return dt;
+
+	DATE dtZS;
+	DATE dtXS = modf(dt, &dtZS);
+	if(dtXS != 0)
+	{
+		dtXS = 0.0 - (1.0 + dtXS);
+	}
+	dtZS -= 1.0;
+	return dtZS + dtXS;
+}

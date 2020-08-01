@@ -100,20 +100,19 @@ LIBAPI(void, krnln_TimeChg)
 	case 4://#周
 		{
 			DATE objDate;
-			DATE dt = modf(pArgInf[0].m_date,&objDate);
+			DATE dt = modf(toMyDate(pArgInf[0].m_date), &objDate);
 			objDate+=(7*pArgInf[2].m_int);
 			objDate+=dt;
-			pArgInf[0].m_date =objDate;
+			pArgInf[0].m_date = toEDate(objDate);
 			break;
 		}
 	case 5://#日
 		{
-
 			DATE objDate;
-			DATE dt = modf(pArgInf[0].m_date,&objDate);
+			DATE dt = modf(toMyDate(pArgInf[0].m_date), &objDate);
 			objDate+=pArgInf[2].m_int;
 			objDate+=dt;
-			pArgInf[0].m_date =objDate;
+			pArgInf[0].m_date = toEDate(objDate);
 			break;
 		}
 	case 6://#小时
@@ -131,8 +130,10 @@ LIBAPI(void, krnln_TimeChg)
 			double nSgn = objDate < 0 ? -1:1;
 			
 			pArgInf[0].m_date =(fabs(objDate)+dt)* nSgn;
-			*/
+*/
+			pArgInf[0].m_date = toMyDate(pArgInf[0].m_date);
 			pArgInf[0].m_date +=double(pArgInf[2].m_int)/24;
+			pArgInf[0].m_date = toEDate(pArgInf[0].m_date);
 			break;
 		}
 	case 7://#分钟
@@ -150,7 +151,9 @@ LIBAPI(void, krnln_TimeChg)
 			double nSgn = objDate < 0 ? -1:1;
 			
 			pArgInf[0].m_date =(fabs(objDate)+dt)* nSgn;*/
+			pArgInf[0].m_date = toMyDate(pArgInf[0].m_date);
 			pArgInf[0].m_date +=double(pArgInf[2].m_int)/1440;
+			pArgInf[0].m_date = toEDate(pArgInf[0].m_date);
 			break;
 		}
 	case 8://#秒。
@@ -168,7 +171,9 @@ LIBAPI(void, krnln_TimeChg)
 			double nSgn = objDate < 0 ? -1:1;
 			
 			pArgInf[0].m_date =(fabs(objDate)+dt)* nSgn;*/
+			pArgInf[0].m_date = toMyDate(pArgInf[0].m_date);
 			pArgInf[0].m_date +=double(pArgInf[2].m_int)/86400;
+			pArgInf[0].m_date = toEDate(pArgInf[0].m_date);
 			break;
 		}
 	}

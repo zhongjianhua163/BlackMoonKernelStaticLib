@@ -59,6 +59,10 @@ void* GetAryElementInf(void* pAryData ,DWORD& AryElementCount);
 void FreeAryElement (void* pAryData);
 void GetTimePart(DATE dt,INT& nHour,INT& nMinute,INT& nSecond);
 void GetDatePart(DATE dt,INT& nYear,INT& nMonth,INT& nDay);
+//将易的日期时间型，转换成自定义的时间型，单位是 天数。
+DATE toMyDate(DATE dt);
+//将自定义的时间型转换成易的日期时间型
+DATE toEDate(DATE dt);
 void DateTimeFormat(LPSTR strValue,DATE dt,BOOL bOnlyDatePart=FALSE);
 double GetSpecDateTime(INT nYear, INT nMonth, INT nDay, INT nHour,INT nMinute,INT nSecond);
 

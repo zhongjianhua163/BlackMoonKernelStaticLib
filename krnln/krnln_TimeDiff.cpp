@@ -23,6 +23,7 @@ double GetWeekDayNum(DATE dt)
 LIBAPI(void, krnln_TimeDiff)
 {
 	PMDATA_INF pArgInf = &ArgInf;
+	
 	switch(pArgInf[2].m_int)
 	{
 	case 1://#年份
@@ -70,40 +71,42 @@ LIBAPI(void, krnln_TimeDiff)
 	case 4://#周
 		{
 			DATE objDate, objDate1;
-			DATE dt = modf(pArgInf[0].m_date,&objDate);
-			dt = modf(pArgInf[1].m_date,&objDate1);
+			DATE dt = modf(toMyDate(pArgInf[0].m_date), &objDate);
+			dt = modf(toMyDate(pArgInf[1].m_date), &objDate1);
 
-			pArgInf[0].m_date =GetWeekDayNum(objDate) - GetWeekDayNum(objDate1);
+			pArgInf[0].m_date = GetWeekDayNum(objDate) - GetWeekDayNum(objDate1);
 			break;
 		}
 	case 5://#日
 		{
-
-			DATE objDate = pArgInf[0].m_date - pArgInf[1].m_date;
+			DATE objDate = toMyDate(pArgInf[0].m_date) - toMyDate(pArgInf[1].m_date);
 			pArgInf[0].m_date = objDate;
 			break;
 		}
 	case 6://#小时
 		{
-			DATE objDate = pArgInf[0].m_date - pArgInf[1].m_date;
+			DATE objDate = toMyDate(pArgInf[0].m_date) - toMyDate(pArgInf[1].m_date);
 			double nSecCount = 86400 * objDate;//总秒数
 			objDate = nSecCount / 3600; //换算成小时
-			pArgInf[0].m_date =objDate;
+			//pArgInf[0].m_date = objDate;
+			modf(objDate, &pArgInf[0].m_date);
 			break;
 		}
 	case 7://#分钟
 		{
-			DATE objDate = pArgInf[0].m_date - pArgInf[1].m_date;
+			DATE objDate = toMyDate(pArgInf[0].m_date) - toMyDate(pArgInf[1].m_date);
 			double nSecCount = 86400 * objDate;//总秒数
-			objDate = nSecCount / 60; //换算成小时
-			pArgInf[0].m_date =objDate;
+			objDate = nSecCount / 60; //换算成分钟
+			//pArgInf[0].m_date =objDate;
+			modf(objDate, &pArgInf[0].m_date);
 			break;
 		}
 	case 8://#秒。
 		{
-			DATE objDate = pArgInf[0].m_date - pArgInf[1].m_date;
+			DATE objDate = toMyDate(pArgInf[0].m_date) - toMyDate(pArgInf[1].m_date);
 			double nSecCount = 86400 * objDate;//总秒数
-			pArgInf[0].m_date = nSecCount;
+			//pArgInf[0].m_date = nSecCount;
+			modf(nSecCount, &pArgInf[0].m_date);
 			break;
 		}
 	default:
