@@ -37,7 +37,11 @@ LIBAPI(char*, krnln_TrimAll)
 		}
 		if (!*str1) break;
 		pFirst = str1;
-		str1++;
+		if (*str1 < 0) {
+			str1+=2;
+		} else {
+			str1++;
+		}
 		//урн╡
 		while ( *str1 )
 		{
@@ -46,8 +50,9 @@ LIBAPI(char*, krnln_TrimAll)
 			else if (*((unsigned short*)str1) == 0xA1A1)
 				break;
 			if (*str1 < 0)
+				str1+=2;
+			else
 				str1++;
-			str1++;
 		}
 		if (str1 - pFirst > 0)
 			recSub(&pTb, (INT)pFirst, str1 - pFirst);
