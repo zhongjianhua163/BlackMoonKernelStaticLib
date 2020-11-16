@@ -9,10 +9,8 @@
 */
 LIBAPI(void, krnln_GetTimePart) // 直接修改了Eax和edx，所以不需要指定返回值类型
 {
-	DATE objDate;
-	DATE dt = modf(ArgInf.m_date,&objDate);
 	INT nHour, nMinute, nSecond;
-	GetTimePart(dt,nHour, nMinute, nSecond);
+	GetTimePart(ArgInf.m_date, nHour, nMinute, nSecond);
 	ArgInf.m_date = GetSpecDateTime(2000,1,1,nHour, nMinute, nSecond);
 	__asm{
 		mov eax, ArgInf.m_unit.m_dwFormID;

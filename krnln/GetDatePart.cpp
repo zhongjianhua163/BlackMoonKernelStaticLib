@@ -1,11 +1,20 @@
 #include "stdafx.h"
 #include <math.h>
 #include <stdio.h>
+#include <oleauto.h>
+#pragma comment(lib, "OleAut32.lib")
+
 //取日期部分,参数1为只有日期部分的DATE数据
 //1899年12月30日0时00分00秒 为0基准,单位为天数的小数值
 
 void GetDatePart(DATE dt,INT& nYear,INT& nMonth,INT& nDay)
 {
+	SYSTEMTIME st = {0};
+	VariantTimeToSystemTime(dt, &st);
+	nYear = (INT)st.wYear;
+	nMonth = (INT)st.wMonth;
+	nDay = (INT)st.wDay;
+	/*
 	if(dt==0 || dt==1)
 	{
 		nYear = 1899;
@@ -63,36 +72,39 @@ void GetDatePart(DATE dt,INT& nYear,INT& nMonth,INT& nDay)
 		nCountDay-=nMonDay[i];
 
 	}
-		
+		*/
+}
+
+//将两个小数整合到一起，a为整数部分,b为小数部分,符号以a为准
+//请确保a只有整数，b只有小数
+double makedb(double a, double b)
+{
+	if (((*(INT64*)&a)&0x8000000000000000) == ((*(INT64*)&b)&0x8000000000000000))
+	{//符号相同直接加
+		return a+b;
+	}
+	//符号不同则相减
+	return a-b;
 }
 
 DATE toMyDate(DATE dt)
 {
-	if (dt >= 0) return dt;
+	if (dt > -1.0e-7) return dt; //大于等于0
 
 	DATE dtZS;
 	DATE dtXS = modf(dt, &dtZS);
-	if(dtXS != 0)
-	{
-		dtXS = 0.0 - (1.0 + dtXS);
-	}
-	if (dtZS < 0)
-	{
-		dtZS += 1.0;
-	}
-	return dtZS + dtXS;
+	return dtZS + fabs(dtXS);
 }
 
 DATE toEDate(DATE dt)
 {
-	if (dt >= 0) return dt;
+	if (dt > -1.0e-7) return dt; //大于等于0
 
 	DATE dtZS;
 	DATE dtXS = modf(dt, &dtZS);
-	if(dtXS != 0)
-	{
-		dtXS = 0.0 - (1.0 + dtXS);
+	if (dtXS < 1.0e-7) { //小数部分为0
+		return dtZS;//直接返回整数部分
 	}
-	dtZS -= 1.0;
-	return dtZS + dtXS;
+	dtZS -= 2.0;
+	return dtZS - dtXS;
 }

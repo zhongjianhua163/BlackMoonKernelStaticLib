@@ -11,13 +11,11 @@
 */
 INT GetDaysFromYear(DATE date)
 {
-	DATE objDate;
 	INT nYear, nMonth, nDay;
-	DATE dt = modf(date,&objDate);
-	GetDatePart(objDate,nYear, nMonth, nDay);
+	GetDatePart(date, nYear, nMonth, nDay);
 	INT nCountDay = nDay;
-	for(INT i=1;i< nMonth;i++)
-		nCountDay += GetDaysOfSpecMonth(nYear,i);
+	for(INT i = 1; i < nMonth; i++)
+		nCountDay += GetDaysOfSpecMonth(nYear, i);
 	return nCountDay;
 }
 
@@ -29,83 +27,64 @@ LIBAPI(int, krnln_TimePart)
 	{
 	case 1://#年份
 		{
-			DATE objDate;
 			INT nYear, nMonth, nDay;
-			DATE dt = modf(pArgInf[0].m_date,&objDate);
-			GetDatePart(objDate,nYear, nMonth, nDay);
+			GetDatePart(pArgInf[0].m_date, nYear, nMonth, nDay);
 			nRet = nYear;
 			break;
 		}
 	case 2://#季度
 		{
-			DATE objDate;
 			INT nYear, nMonth, nDay;
-			DATE dt = modf(pArgInf[0].m_date,&objDate);
-			GetDatePart(objDate,nYear, nMonth, nDay);
-			nRet = nMonth/3;
-			if(nMonth % 3)nRet++;
+			GetDatePart(pArgInf[0].m_date, nYear, nMonth, nDay);
+			nRet = nMonth / 3;
+			if(nMonth % 3) nRet++;
 			break;
 		}
 	case 3://#月份
 		{
-			DATE objDate;
 			INT nYear, nMonth, nDay;
-			DATE dt = modf(pArgInf[0].m_date,&objDate);
-			GetDatePart(objDate,nYear, nMonth, nDay);
+			GetDatePart(pArgInf[0].m_date, nYear, nMonth, nDay);
 			nRet = nMonth;
 			break;
 		}
 	case 4://#自年首周数
 		{
 			INT nCountDay = GetDaysFromYear(pArgInf[0].m_date);
-			nRet = nCountDay/7;
-			if(nCountDay % 7)nRet++;
+			nRet = nCountDay / 7;
+			if(nCountDay % 7) nRet++;
 			break;
 		}
 	case 5://#日
 		{
-			DATE objDate;
 			INT nYear, nMonth, nDay;
-			DATE dt = modf(pArgInf[0].m_date,&objDate);
-			GetDatePart(objDate,nYear, nMonth, nDay);
+			GetDatePart(pArgInf[0].m_date, nYear, nMonth, nDay);
 			nRet = nDay;
 			break;
 		}
 	case 6://#小时
 		{
-
-			DATE objDate;
-			DATE dt = modf(pArgInf[0].m_date,&objDate);
 			INT nHour, nMinute, nSecond;
-			GetTimePart(dt,nHour, nMinute, nSecond);
+			GetTimePart(pArgInf[0].m_date, nHour, nMinute, nSecond);
 			nRet = nHour;
-
 			break;
 		}
 	case 7://#分钟
 		{
-			DATE objDate;
-			DATE dt = modf(pArgInf[0].m_date,&objDate);
 			INT nHour, nMinute, nSecond;
-			GetTimePart(dt,nHour, nMinute, nSecond);
+			GetTimePart(pArgInf[0].m_date, nHour, nMinute, nSecond);
 			nRet = nMinute;
-
 			break;
 		}
 	case 8://#秒。
 		{
-			DATE objDate;
-			DATE dt = modf(pArgInf[0].m_date,&objDate);
 			INT nHour, nMinute, nSecond;
-			GetTimePart(dt,nHour, nMinute, nSecond);
+			GetTimePart(pArgInf[0].m_date, nHour, nMinute, nSecond);
 			nRet = nSecond;
-
 			break;
 		}
 	case 9://#星期几
 		{
 			nRet = GetWeekDay(pArgInf[0].m_date);
-
 			break;
 		}
 	case 10://#自年首天数

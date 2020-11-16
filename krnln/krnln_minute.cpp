@@ -9,9 +9,7 @@
 */
 LIBAPI(int, krnln_minute)
 {
-	DATE objDate;
-	DATE dt = modf(ArgInf.m_date,&objDate);
 	INT nHour, nMinute, nSecond;
-	GetTimePart(dt,nHour, nMinute, nSecond);
+	GetTimePart(ArgInf.m_date, nHour, nMinute, nSecond);
 	return nMinute;
 }

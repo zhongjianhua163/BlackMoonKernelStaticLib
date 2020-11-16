@@ -1,5 +1,9 @@
 #include "stdafx.h"
 #include <math.h>
+
+#include <oleauto.h>
+#pragma comment(lib, "OleAut32.lib")
+
 //时间操作 - 增减时间
 /*void GetDatePart(DATE dt,INT& nYear,INT& nMonth,INT& nDay)
     调用格式： 〈日期时间型〉 增减时间 （日期时间型 时间，整数型 被增加部分，整数型 增加值） - 系统核心支持库->时间操作
@@ -13,166 +17,115 @@
 LIBAPI(void, krnln_TimeChg)
 {
 	PMDATA_INF pArgInf = &ArgInf;
+
+	SYSTEMTIME st = {0};
+	VariantTimeToSystemTime(pArgInf[0].m_date, &st);
+
 	switch(pArgInf[1].m_int)
 	{
 	case 1://#年份
 		{
-			DATE objDate;
-			INT nYear, nMonth, nDay;
-			INT nHour, nMinute, nSecond;
-			DATE dt = modf(pArgInf[0].m_date,&objDate);
-			GetDatePart(objDate,nYear, nMonth, nDay);
-			GetTimePart(dt,nHour, nMinute, nSecond);
-			nYear+=pArgInf[2].m_int;
-			if(nMonth==2 && nDay ==29)
-				nDay = GetDaysOfSpecMonth(nYear,2);
-			pArgInf[0].m_date =GetSpecDateTime(nYear,nMonth,nDay,nHour, nMinute, nSecond);
+			st.wYear += pArgInf[2].m_int;
+			if(st.wMonth == 2 && st.wDay == 29)
+				st.wDay = GetDaysOfSpecMonth(st.wYear, 2);
+
+			SystemTimeToVariantTime(&st, &pArgInf[0].m_date);
 			break;
 		}
 	case 2://#季度
 		{
-			DATE objDate;
-			INT nYear, nMonth, nDay;
-			INT nHour, nMinute, nSecond;
-			nHour = nMinute = nSecond =0;
-			DATE dt = modf(pArgInf[0].m_date,&objDate);
-			GetDatePart(objDate,nYear, nMonth, nDay);
-			if(dt !=0)
-				GetTimePart(dt,nHour, nMinute, nSecond);
-
-			nMonth+=(pArgInf[2].m_int*3);
+			INT nMonth;
+			nMonth = st.wMonth + (pArgInf[2].m_int * 3);
 			if(nMonth>0)
 			{
-				nYear+=(nMonth/12);
+				st.wYear += (nMonth / 12);
 				nMonth %= 12;
 			}
 			else
 			{
-				INT decYear = nMonth/12;
-				if(nMonth % 12 !=0)
-					decYear --;
-				nYear+=decYear;
+				INT decYear = nMonth / 12;
+				if(nMonth % 12 != 0)
+					decYear--;
+				st.wYear += decYear;
 				nMonth = 12 + (nMonth % 12);
 			}
+			st.wMonth = nMonth;
 
-			INT nMaxDay = GetDaysOfSpecMonth(nYear,nMonth);
-			if(nDay > nMaxDay)
-				nDay = nMaxDay;
-			pArgInf[0].m_date =GetSpecDateTime(nYear,nMonth,nDay,nHour, nMinute, nSecond);
+			INT nMaxDay = GetDaysOfSpecMonth(st.wYear, nMonth);
+			if(st.wDay > nMaxDay)
+				st.wDay = nMaxDay;
+
+			SystemTimeToVariantTime(&st, &pArgInf[0].m_date);
 			break;
 		}
 	case 3://#月份
 		{
-			DATE objDate;
-			INT nYear, nMonth, nDay;
-			INT nHour, nMinute, nSecond;
-			nHour = nMinute = nSecond =0;
-			DATE dt = modf(pArgInf[0].m_date,&objDate);
-			GetDatePart(objDate,nYear, nMonth, nDay);
-			if(dt !=0)
-				GetTimePart(dt,nHour, nMinute, nSecond);
+			INT nMonth;
 
-			nMonth+=pArgInf[2].m_int;
-			if(nMonth>0)
+			nMonth = st.wMonth + pArgInf[2].m_int;
+			if(nMonth > 0)
 			{
 				if(nMonth > 12)
-					nYear+=(nMonth/12);
+					st.wYear += (nMonth / 12);
 				nMonth %= 12;
-				if(nMonth ==0)
+				if(nMonth == 0)
 					nMonth = 12;
 
 			}
 			else
 			{
-				INT decYear = nMonth/12;
+				INT decYear = nMonth / 12;
 				if(nMonth % 12 !=0 || nMonth ==0)
-					decYear --;
-				nYear+=decYear;
+					decYear--;
+				st.wYear += decYear;
 				nMonth = 12 + (nMonth % 12);
 			}
+			st.wMonth = nMonth;
 
-			INT nMaxDay = GetDaysOfSpecMonth(nYear,nMonth);
-			if(nDay > nMaxDay)
-				nDay = nMaxDay;
-			pArgInf[0].m_date =GetSpecDateTime(nYear,nMonth,nDay,nHour, nMinute, nSecond);
+			INT nMaxDay = GetDaysOfSpecMonth(st.wYear, nMonth);
+			if(st.wDay > nMaxDay)
+				st.wDay = nMaxDay;
+			
+			SystemTimeToVariantTime(&st, &pArgInf[0].m_date);
 			break;
 		}
 	case 4://#周
 		{
 			DATE objDate;
-			DATE dt = modf(toMyDate(pArgInf[0].m_date), &objDate);
-			objDate+=(7*pArgInf[2].m_int);
-			objDate+=dt;
-			pArgInf[0].m_date = toEDate(objDate);
+			DATE dt = modf(pArgInf[0].m_date, &objDate);
+			objDate += (7 * pArgInf[2].m_int);
+			pArgInf[0].m_date = makedb(objDate, dt);
 			break;
 		}
 	case 5://#日
 		{
 			DATE objDate;
-			DATE dt = modf(toMyDate(pArgInf[0].m_date), &objDate);
-			objDate+=pArgInf[2].m_int;
-			objDate+=dt;
-			pArgInf[0].m_date = toEDate(objDate);
+			DATE dt = modf(pArgInf[0].m_date, &objDate);
+			objDate += pArgInf[2].m_int;
+			pArgInf[0].m_date = makedb(objDate, dt);
 			break;
 		}
 	case 6://#小时
 		{
-
-/*			DATE objDate;
-			DATE dt = modf(pArgInf[0].m_date,&objDate);
-			
-			double nSecCount =86400 * fabs(dt);//总秒数
-			nSecCount +=(pArgInf[2].m_int*3600);
-			INT nDay =  INT(nSecCount / 86400);
-			nSecCount = fmod (fabs(nSecCount),86400);
-			objDate +=nDay;
-			dt = nSecCount/86400;
-			double nSgn = objDate < 0 ? -1:1;
-			
-			pArgInf[0].m_date =(fabs(objDate)+dt)* nSgn;
-*/
+			SystemTimeToVariantTime(&st, &pArgInf[0].m_date); //防止多次运算后，时间精度越来越低
 			pArgInf[0].m_date = toMyDate(pArgInf[0].m_date);
-			pArgInf[0].m_date +=double(pArgInf[2].m_int)/24;
+			pArgInf[0].m_date += double(pArgInf[2].m_int) / 24.0;
 			pArgInf[0].m_date = toEDate(pArgInf[0].m_date);
 			break;
 		}
 	case 7://#分钟
 		{
-/*
-			DATE objDate;
-			DATE dt = modf(pArgInf[0].m_date,&objDate);
-
-			double nSecCount =86400 * fabs(dt);//总秒数DATE( 86400 * fabs(dt)+0.5);
-			nSecCount +=(pArgInf[2].m_int*60);
-			INT nDay =  INT(nSecCount / 86400);
-			nSecCount = fmod (fabs(nSecCount),86400);
-			objDate +=nDay;
-			dt = nSecCount/86400;
-			double nSgn = objDate < 0 ? -1:1;
-			
-			pArgInf[0].m_date =(fabs(objDate)+dt)* nSgn;*/
+			SystemTimeToVariantTime(&st, &pArgInf[0].m_date); //防止多次运算后，时间精度越来越低
 			pArgInf[0].m_date = toMyDate(pArgInf[0].m_date);
-			pArgInf[0].m_date +=double(pArgInf[2].m_int)/1440;
+			pArgInf[0].m_date += double(pArgInf[2].m_int) / 1440.0;
 			pArgInf[0].m_date = toEDate(pArgInf[0].m_date);
 			break;
 		}
 	case 8://#秒。
 		{
-/*
-			DATE objDate;
-			DATE dt = modf(pArgInf[0].m_date,&objDate);
-
-			double nSecCount = 86400 * fabs(dt);//总秒数
-			nSecCount +=pArgInf[2].m_int;
-			INT nDay =  INT(nSecCount / 86400);
-			nSecCount = fmod (fabs(nSecCount),86400);
-			objDate +=nDay;
-			dt = nSecCount/86400;
-			double nSgn = objDate < 0 ? -1:1;
-			
-			pArgInf[0].m_date =(fabs(objDate)+dt)* nSgn;*/
+			SystemTimeToVariantTime(&st, &pArgInf[0].m_date); //防止多次运算后，时间精度越来越低
 			pArgInf[0].m_date = toMyDate(pArgInf[0].m_date);
-			pArgInf[0].m_date +=double(pArgInf[2].m_int)/86400;
+			pArgInf[0].m_date += double(pArgInf[2].m_int) / 86400.0;
 			pArgInf[0].m_date = toEDate(pArgInf[0].m_date);
 			break;
 		}

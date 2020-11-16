@@ -9,9 +9,7 @@
 */
 LIBAPI(int, krnln_year)
 {
-	DATE objDate;
 	INT nYear, nMonth, nDay;
-	DATE dt = modf(ArgInf.m_date,&objDate);
-	GetDatePart(objDate,nYear, nMonth, nDay);
+	GetDatePart(ArgInf.m_date, nYear, nMonth, nDay);
 	return nYear;
 }

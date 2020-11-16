@@ -22,14 +22,12 @@ LIBAPI(char*, krnln_TimeToText)
 
 	}else if(pArgInf[1].m_int==3)
 	{
-		DATE dd,dt;
 		INT nHour, nMinute, nSecond;
-		dt = modf(ArgInf.m_date,&dd);
-		GetTimePart(dt,nHour, nMinute, nSecond);
+		GetTimePart(ArgInf.m_date, nHour, nMinute, nSecond);
 		sprintf(str,"%d ±%d∑÷%d√Î",nHour, nMinute, nSecond);
 
 	}else{
-		DateTimeFormat(str,ArgInf.m_date);
+		DateTimeFormat(str, ArgInf.m_date);
 	}
 	INT nLen = mystrlen(str);
 	char* pText = (char*)E_MAlloc_Nzero(nLen+1);

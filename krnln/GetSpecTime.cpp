@@ -1,11 +1,24 @@
 #include "stdafx.h"
 #include <math.h>
 
+#include <oleauto.h>
+#pragma comment(lib, "OleAut32.lib")
+
 //取指定时间 参数时间值都是正确的
 //1899年12月30日0时00分00秒 为0基准,单位为天数的小数值
 double GetSpecDateTime(INT nYear, INT nMonth, INT nDay, INT nHour,INT nMinute,INT nSecond)
 {
-	
+	double dDate = 0;
+	SYSTEMTIME st = {0};
+	st.wYear = (WORD)nYear;
+	st.wMonth = (WORD)nMonth;
+	st.wDay = (WORD)nDay;
+	st.wHour = (WORD)nHour;
+	st.wMinute = (WORD)nHour;
+	st.wSecond = (WORD)nSecond;
+	SystemTimeToVariantTime(&st, &dDate);
+	return dDate;
+	/*
 	double nSecCount = nHour * 3600;//总秒数
 	nSecCount+=(nMinute*60);
 	nSecCount+=nSecond;
@@ -101,5 +114,5 @@ double GetSpecDateTime(INT nYear, INT nMonth, INT nDay, INT nHour,INT nMinute,IN
 	dDate = -(nCountDay - 1 + dTime);
 	return dDate; 
 	
-
+	*/
 }
