@@ -102,7 +102,7 @@ DATE toEDate(DATE dt)
 
 	DATE dtZS;
 	DATE dtXS = modf(dt, &dtZS);
-	if (dtXS < 1.0e-7) { //小数部分为0
+	if (fabs(dtXS) < 1.0e-7) { //小数部分为0
 		return dtZS;//直接返回整数部分
 	}
 	dtZS -= 2.0;
