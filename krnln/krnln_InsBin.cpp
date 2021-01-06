@@ -76,10 +76,9 @@ LIBAPI(BOOL, krnln_InsBin)
 	}else if(pFile->nType ==2)//ÄÚ´æÎÄ¼þ
 	{
 		CMyMemFile* pMemFile = (CMyMemFile*) pFile->FileHandle;
+		LPBYTE pBufStart, pBufMax;
 
 		INT orgLoc = pMemFile->GetPosition();
-
-		LPBYTE pBufStart, pBufMax;
 
 		INT nBkLen = pMemFile->GetBufferPtr (CMyMemFile::bufferRead,-1,(void **)&pBufStart,(void **)&pBufMax);
 		LPBYTE pBkData = NULL;
@@ -88,6 +87,8 @@ LIBAPI(BOOL, krnln_InsBin)
 			pBkData = new BYTE[nBkLen];
 			memcpy(pBkData,pBufStart,nBkLen);
 		}
+
+		pMemFile->Seek (orgLoc,CMyMemFile::begin);
 
 		bRet = TRUE;
 		for(INT i=1;i < nArgCount;i++)
