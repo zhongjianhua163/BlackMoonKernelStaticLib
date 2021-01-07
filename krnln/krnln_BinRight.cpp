@@ -20,6 +20,8 @@ LIBAPI(void*, krnln_BinRight)
 	if(nOffset < 0)
 		nOffset = 0;
 	nDataSize = pArgInf[1].m_int;
-
-	return CloneBinData ((LPBYTE)(pArgInf[0].m_pBin + 2*sizeof(INT)+ nOffset),nDataSize);
+	if (nDataSize > pArgInf[0].m_pInt[1]) {
+		nDataSize = pArgInf[0].m_pInt[1];
+	}
+	return CloneBinData ((LPBYTE)(pArgInf[0].m_pBin + 2*sizeof(INT) + nOffset), nDataSize);
 }
