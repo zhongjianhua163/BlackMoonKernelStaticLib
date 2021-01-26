@@ -14,7 +14,7 @@ double GetSpecDateTime(INT nYear, INT nMonth, INT nDay, INT nHour,INT nMinute,IN
 	st.wMonth = (WORD)nMonth;
 	st.wDay = (WORD)nDay;
 	st.wHour = (WORD)nHour;
-	st.wMinute = (WORD)nHour;
+	st.wMinute = (WORD)nMinute;
 	st.wSecond = (WORD)nSecond;
 	SystemTimeToVariantTime(&st, &dDate);
 	return dDate;
