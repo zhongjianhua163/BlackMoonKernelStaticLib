@@ -51,15 +51,47 @@ LIBAPI(char*, krnln_ReadLine)
 			BOOL bFind = FALSE;
 			for (DWORD j=0; j < dwNumOfByteRead; j++)
 			{
-				if (tmpMEMSP.pData[j] == 0 || tmpMEMSP.pData[j] == '\r' || tmpMEMSP.pData[j] == '\n')
+				if (tmpMEMSP.pData[j] == '\0')
 				{
-					if (j < dwNumOfByteRead - 2 && tmpMEMSP.pData[j] == '\r' && tmpMEMSP.pData[j+1] =='\n')
-						orgLoc+=2;// 跳过这两个字节
-					else
-						orgLoc++;// 跳过这个字节
-
-					dwNumOfByteRead = j;
 					bFind = TRUE;
+					dwNumOfByteRead = j;
+					SetFilePointer(hFile, orgLoc + nTLen + j, NULL, FILE_BEGIN);
+					break;
+				}
+				else if (tmpMEMSP.pData[j] == '\n')
+				{
+					bFind = TRUE;
+					dwNumOfByteRead = j;
+					SetFilePointer(hFile, orgLoc + nTLen + j + 1, NULL, FILE_BEGIN);
+					break;
+				}
+				else if (tmpMEMSP.pData[j] == '\r')
+				{
+					if (j + 1 == dwNumOfByteRead)
+					{
+						char szNewline = 0;
+						nRet = ReadFile(hFile, &szNewline, 1, &dwNumOfByteRead, 0);//再读一个字节，看看是不是\r\n组合
+						if (szNewline != '\n')
+						{
+							//不是\r\n组合，把读写位置放到\r后面
+							SetFilePointer(hFile, orgLoc + nTLen + j + 1, NULL, FILE_BEGIN);
+						}
+						//else
+						//{
+							//刚好是\r\n组合，读写位置就不需要动了。
+							//SetFilePointer(hFile, orgLoc + nTLen + j + 2, NULL, FILE_BEGIN);
+						//}
+					}
+					else if (tmpMEMSP.pData[j + 1] == '\n')
+					{
+						SetFilePointer(hFile, orgLoc + nTLen + j + 2, NULL, FILE_BEGIN);
+					}
+					else
+					{
+						SetFilePointer(hFile, orgLoc + nTLen + j + 1, NULL, FILE_BEGIN);
+					}
+					bFind = TRUE;
+					dwNumOfByteRead = j;
 					break;
 				}
 			}
@@ -72,8 +104,6 @@ LIBAPI(char*, krnln_ReadLine)
 		if (nTLen > 0)
 		{
 			pszRet = (LPSTR)E_MAlloc_Nzero(nTLen + 1);
-			orgLoc += nTLen;
-			SetFilePointer(hFile, orgLoc, NULL, FILE_BEGIN);
 			
 			LPSTR pszRetold = pszRet;
 			vector<MEMSP>::iterator iterMEMSP;
@@ -87,71 +117,8 @@ LIBAPI(char*, krnln_ReadLine)
 		}
 		vecMEMSP.clear();
 		return pszRet;
-// 大鸟原本的代码
-// 		HANDLE hFile = (HANDLE)pFile->FileHandle;
-// 		INT orgLoc = SetFilePointer(hFile,0,NULL,FILE_CURRENT);
-// 		if(orgLoc == HFILE_ERROR)
-// 		{
-// 			SetFilePointer(hFile,0,NULL,FILE_END);
-// 			return NULL;
-// 		}
-// 
-// 		DWORD dwNumOfByteRead=0;
-// 		INT nPost = 0;
-// 		INT nLen = 4096;
-// 		DWORD dwByteTop;
-// 		LPSTR pStr;
-// 
-// 		char* pData = (char*)malloc(nLen);
-// 		do
-// 		{
-// 			pStr = pData + nPost;
-// 			INT nRet = ReadFile(hFile, pStr, nLen, &dwByteTop, 0);
-// 			if(nRet == FALSE)
-// 			{
-// 				SetFilePointer(hFile,0,NULL,FILE_END);
-// 				free(pData);
-// 				return NULL;
-// 			}
-// 			INT nPtr = 0;
-// 			BOOL bFind = FALSE;
-// 			while(nPtr < (INT)dwByteTop)
-// 			{
-// 				if(*pStr =='\r' || *pStr =='\n')
-// 				{
-// 					dwNumOfByteRead +=nPtr;
-// 					bFind = TRUE;
-// 					break;
-// 				}
-// 				nPtr++;
-// 				pStr++;
-// 			}
-// 			if(bFind)
-// 				break;
-// 			dwNumOfByteRead +=dwByteTop;
-// 			if((INT)dwByteTop < nLen)
-// 				break;
-// 			nPost = dwNumOfByteRead;
-// 			pData = (char*)realloc(pData,nLen);
-// 
-// 		}while((INT)dwByteTop==nLen);
-// 
-// 		nLen = dwNumOfByteRead;
-// 		pszRet = (LPSTR)E_MAlloc_Nzero(nLen+1);
-// 		orgLoc += nLen;
-// 		if(*pStr =='\r' || *pStr =='\n')
-// 		{
-// 			orgLoc++;
-// 			pStr++;
-// 			if(*pStr =='\n')
-// 				orgLoc++;
-// 		}
-// 		SetFilePointer(hFile,orgLoc,NULL,FILE_BEGIN);
-// 		strncpy(pszRet,pData,nLen);
-// 		pszRet[nLen] = 0;
-// 		
-// 		free(pData);	
-	}else if(pFile->nType ==2)//内存文件
+	}
+	else if(pFile->nType ==2)//内存文件
 	{
 		CMyMemFile* pMemFile = (CMyMemFile*) pFile->FileHandle;
 
@@ -215,15 +182,49 @@ LIBAPI(char*, krnln_ReadLine)
 			E_RC4_Calc(nPos, (unsigned char*)tmpMEMSP.pData, dwNumOfByteRead, pFile->strTable, pFile->nCryptStart, pFile->strMD5);
 			for (DWORD j=0; j < dwNumOfByteRead; j++)
 			{
-				if (tmpMEMSP.pData[j] == 0 || tmpMEMSP.pData[j] == '\r' || tmpMEMSP.pData[j] == '\n')
+				if (tmpMEMSP.pData[j] == '\0')
 				{
-					if (j < dwNumOfByteRead - 2 && tmpMEMSP.pData[j] == '\r' && tmpMEMSP.pData[j+1] =='\n')
-						orgLoc+=2;// 跳过这两个字节
-					else
-						orgLoc++;// 跳过这个字节
-
-					dwNumOfByteRead = j;
 					bFind = TRUE;
+					dwNumOfByteRead = j;
+					SetFilePointer(hFile, orgLoc + nTLen + j, NULL, FILE_BEGIN);
+					break;
+				}
+				else if (tmpMEMSP.pData[j] == '\n')
+				{
+					bFind = TRUE;
+					dwNumOfByteRead = j;
+					SetFilePointer(hFile, orgLoc + nTLen + j + 1, NULL, FILE_BEGIN);
+					break;
+				}
+				else if (tmpMEMSP.pData[j] == '\r')
+				{
+					if (j + 1 == dwNumOfByteRead)
+					{
+						char szNewline = 0;
+						nPos = SetFilePointer(hFile,0,NULL,FILE_CURRENT);
+						nRet = ReadFile(hFile, &szNewline, 1, &dwNumOfByteRead, 0);//再读一个字节，看看是不是\r\n组合
+						E_RC4_Calc(nPos, (unsigned char*)&szNewline, dwNumOfByteRead, pFile->strTable, pFile->nCryptStart, pFile->strMD5);
+						if (szNewline != '\n')
+						{
+							//不是\r\n组合，把读写位置放到\r后面
+							SetFilePointer(hFile, orgLoc + nTLen + j + 1, NULL, FILE_BEGIN);
+						}
+						//else
+						//{
+						//刚好是\r\n组合，读写位置就不需要动了。
+						//SetFilePointer(hFile, orgLoc + nTLen + j + 2, NULL, FILE_BEGIN);
+						//}
+					}
+					else if (tmpMEMSP.pData[j + 1] == '\n')
+					{
+						SetFilePointer(hFile, orgLoc + nTLen + j + 2, NULL, FILE_BEGIN);
+					}
+					else
+					{
+						SetFilePointer(hFile, orgLoc + nTLen + j + 1, NULL, FILE_BEGIN);
+					}
+					bFind = TRUE;
+					dwNumOfByteRead = j;
 					break;
 				}
 			}
@@ -236,8 +237,6 @@ LIBAPI(char*, krnln_ReadLine)
 		if (nTLen > 0)
 		{
 			pszRet = (LPSTR)E_MAlloc_Nzero(nTLen + 1);
-			orgLoc += nTLen;
-			SetFilePointer(hFile, orgLoc, NULL, FILE_BEGIN);
 			
 			LPSTR pszRetold = pszRet;
 			vector<MEMSP>::iterator iterMEMSP;
