@@ -17,131 +17,43 @@
 ' ´óÐ´×ÖÄ¸£¬65--90
 ' Ð¡Ð´×ÖÄ¸£¬97-122
 µ½×Ö½Ú¼¯ (¡°£®£­¡±)  ' 163,174,163,173
-
-
-extern "C" char* _cdecl krnln_BJCase (INT nArgCount,MDATA_INF ArgInf,...)
-{
-	PMDATA_INF pArgInf = &ArgInf;
-	INT nLen = strlen(ArgInf.m_pText);
-	if(nLen==0)return NULL;
-	INT i = 0;
-	INT nBufLen = 0;
-	while(i < nLen)
-	{
-		LPBYTE pSrc = (LPBYTE)ArgInf.m_pText + i;
-		if(* pSrc > 127)//ºº×Ö
-		{
-			i+=2;
-			if(pSrc[0] ==163)
-			{
-				if((176 <= pSrc[1] && pSrc[1] <=185) || (193 <= pSrc[1] && pSrc[1] <=218) || (225 <= pSrc[1] && pSrc[1] <=250) || pSrc[1]==173 || pSrc[1]==174)
-					nBufLen++;
-				else
-					nBufLen+=2;
-			}
-			else
-				nBufLen+=2;
-
-		}
-		else
-		{
-			nBufLen++;
-			i++;
-		}
-	}
-
-	char *pBJText = (char*)E_MAlloc(nBufLen+1);
-	if(nBufLen==nLen)
-	{
-		strcpy(pBJText,ArgInf.m_pText);
-		return pBJText;
-	}
-	LPBYTE pText = (LPBYTE)pBJText;
-	i = 0;
-
-	while(i < nLen)
-	{
-		LPBYTE pSrc = (LPBYTE)ArgInf.m_pText + i;
-
-		if(* pSrc > 127)//ºº×Ö
-		{
-			if(pSrc[0] ==163)
-			{
-
-				if (176 <= pSrc[1] && pSrc[1] <=185)//Êý×Ö
-				{
-					*pText = 48 + pSrc[1] - 176;
-					pText++;
-					
-				}else if (193 <= pSrc[1] && pSrc[1] <=218)//´óÐ´×ÖÄ¸
-				{
-					*pText = 65 + pSrc[1] - 193;
-					pText++;		
-				}else if (225 <= pSrc[1] && pSrc[1] <=250)
-				{
-					*pText = 97 + pSrc[1] - 225;
-					pText++;	
-				}else if(pSrc[1]==173)//¸ººÅ
-				{
-					*pText = '-';
-					pText++;
-
-				}
-				else if(pSrc[1]==174)//¾äºÅ
-				{
-					*pText = '.';
-					pText++;
-				}
-				else
-				{
-					memcpy(pText,pSrc,2);
-					pText+=2;
-				}
-			}
-			else
-			{
-				memcpy(pText,pSrc,2);
-				pText+=2;
-			}
-
-			i+=2;
-		}
-		else
-		{
-			*pText = * pSrc;
-			pText++;
-			i++;
-		}
-	}
-	
-	pBJText[nBufLen] = 0;
-	return pBJText;	
-}
 */
 LIBAPI(char*, krnln_BJCase)
 {
 	PMDATA_INF pArgInf = &ArgInf;
-	INT nLen = mystrlen(ArgInf.m_pText);
-	if(nLen==0)return NULL;
-	LPSTR pszSrc = ArgInf.m_pText;
-	BOOL bRet = replaceText(pszSrc, (LPSTR)"£¯", (LPSTR)"/",FALSE);
-	BOOL bFree =FALSE;
-	bFree |=bRet;
-		
-	bRet = replaceText(pszSrc, (LPSTR)"£Ü", (LPSTR)"\\",bFree);
+	size_t nLen = mystrlen(ArgInf.m_pText);
+	if (nLen == 0) return NULL;
 
-	bFree |=bRet;
-	
+	char* pszLast = ArgInf.m_pText + nLen;
+	char* pszFirst = ArgInf.m_pText;
+	char* pszSrc = (char*)malloc(nLen + 1);
+	char* pszTmp = pszSrc;
+	size_t sSublen;
+	for (;;)
+	{
+		char* pPos = strstr(pszFirst, "£Ü");
+		if (!pPos) break;
+		sSublen = pPos - pszFirst;
+		if (sSublen > 0)
+		{
+			memcpy(pszTmp, pszFirst, sSublen);
+		}
+		pszTmp[sSublen] = '\\';
+		pszTmp += sSublen + 1;
+		pszFirst = pPos	+ 2;
+	}
+	sSublen = pszLast - pszFirst;
+	if (sSublen > 0)
+	{
+		memcpy(pszTmp, pszFirst, sSublen);
+		pszTmp += sSublen;
+	}
+	pszTmp[0] = '\0';
+
 	nLen = mystrlen(pszSrc);
-	INT nBufLen = nLen+1;
-	char *pBJText = (char*)malloc(nBufLen);
-	memset(pBJText,0,nBufLen);
-	//pBJText[0]=0;
+	INT nBufLen = nLen + 1;
+	char *pBJText = (char*)E_MAlloc(nBufLen);
 	LCMapString (2052, LCMAP_HALFWIDTH, pszSrc, nLen, pBJText, nBufLen);
-	if(bFree)
-		free(pszSrc);
-	nLen = mystrlen(pBJText);
-	char *pText = CloneTextData(pBJText,nLen);
-	free(pBJText);
-	return pText;
+	free(pszSrc);
+	return pBJText;
 }
