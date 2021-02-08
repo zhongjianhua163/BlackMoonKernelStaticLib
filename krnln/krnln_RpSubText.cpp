@@ -67,14 +67,11 @@ LIBAPI(char*, krnln_RpSubText)
 	}
 	//MessageBox(NULL,"6","432",MB_OK);
 	// 开始计算
-	PINT pTb = (PINT)malloc(256);
+	PTB pTb = initSubTb();
 	if (!pTb)
 		return CloneTextData(pSrc, nSLen);
 	//MessageBox(NULL,"123","432",MB_OK);
-	pTb[0] = 256; // TSize
-	pTb[1] = 0; // Count
-	pTb[2] = 0; // TLen
-	//MessageBox(NULL,"7","432",MB_OK);
+
 	INT nPos;
 	char* pFirst = pSrc;
 	char* pLast = pSrc + nSLen;
@@ -89,10 +86,10 @@ LIBAPI(char*, krnln_RpSubText)
 			if (nPos == -1)
 				break;
 			if (cp + nPos - pFirst > 0)
-				recSub(&pTb, (INT)pFirst, cp + nPos - pFirst);
+				recSub(&pTb, pFirst, cp + nPos - pFirst);
 		
 			if (nSubLen > 0)
-				recSub(&pTb, (INT)pSub, nSubLen);
+				recSub(&pTb, pSub, nSubLen);
 		
 			cp += nPos + nDLen;
 			pFirst = cp;
@@ -106,10 +103,10 @@ LIBAPI(char*, krnln_RpSubText)
 			if (nPos == -1)
 				break;
 			if (cp + nPos - pFirst > 0)
-				recSub(&pTb, (INT)pFirst, cp + nPos - pFirst);
+				recSub(&pTb, pFirst, cp + nPos - pFirst);
 			
 			if (nSubLen > 0)
-				recSub(&pTb, (INT)pSub, nSubLen);
+				recSub(&pTb, pSub, nSubLen);
 			
 			cp += nPos + nDLen;
 			pFirst = cp;
@@ -117,276 +114,14 @@ LIBAPI(char*, krnln_RpSubText)
 	}
 	//MessageBox(NULL,"8","432",MB_OK);
 	if (pLast - pFirst > 0)
-		recSub(&pTb, (INT)pFirst, pLast - pFirst);
+		recSub(&pTb, pFirst, pLast - pFirst);
 	
 	//MessageBox(NULL,"9","432",MB_OK);
 	// 复制计算结果
-	char* pRetn = (char*)E_MAlloc_Nzero(pTb[2] + 1);
-	char* pRetnTmp = pRetn;
-	
-	nCount = pTb[1];
-	PINT pTbtmp = pTb;
-	pTbtmp += 3;
-	INT nTLen;
-	//sprintf(pMsg,"nCount:%d,addr:%x",nCount,pTb);
-	//MessageBox(NULL,pMsg,"432",MB_OK);
-	//MessageBox(NULL,"10","432",MB_OK);
-	for (int i = 0; i < nCount; i++)
-	{
-		nTLen = pTbtmp[1];
-		//sprintf(pMsg,"addr:%x,nTLen:%d",pTbtmp[0],nTLen);
-		//MessageBox(NULL,pMsg,"432",MB_OK);
-		memcpy(pRetnTmp, (void*)(pTbtmp[0]), nTLen);
-		pRetnTmp += nTLen;
-		pTbtmp += 2;
-	}
-	//MessageBox(NULL,"11","432",MB_OK);
-	pRetn[pTb[2]] = '\0';
+	char* pRetn = SubTbtoString(pTb);
 	if (pTb)
 		free(pTb);
 	//MessageBox(NULL,"12","432",MB_OK);
 	return pRetn;
 }
-// { // 大鸟原版
-// 	PMDATA_INF pArgInf = &ArgInf;
-// 	INT nLen = strlen(ArgInf.m_pText);
-// 	INT nSubLen = strlen(pArgInf[1].m_pText);
-// 	if(nLen==0)return NULL;
-// 	if(nSubLen==0 || nSubLen > nLen)
-// 		return CloneTextData(ArgInf.m_pText);
-// 	
-// 	char* pStrRpl = NULL;
-// 	INT nStrRpl = 0;
-// 	if(pArgInf[2].m_dtDataType !=_SDT_NULL)
-// 	{
-// 		pStrRpl = pArgInf[2].m_pText;
-// 		nStrRpl = strlen(pStrRpl);
-// 	}
-// 
-// 	INT nStart;
-// 	if(pArgInf[3].m_dtDataType ==_SDT_NULL)
-// 		nStart = 1;
-// 	else
-// 		nStart = pArgInf[3].m_int;
-// 
-// 	INT nRplCount;
-// 	if(pArgInf[4].m_dtDataType ==_SDT_NULL)
-// 		nRplCount = 0x7fffffff;
-// 	else
-// 		nRplCount = pArgInf[4].m_int;
-// 
-// 	INT nEnd = nLen - nSubLen;
-// 	if(nStart > nEnd+1 || nRplCount <= 0  || nStart <= 0)//寻找的文本长于开始寻找位置 或 没有替换次数
-// 		return CloneTextData(ArgInf.m_pText);
-// //开始替换
-// 	CFreqMem cDest;
-// 
-// 	char* pStart = pArgInf->m_pText + nStart -1;
-// 	char* pEnd = pArgInf->m_pText + nEnd+1;
-// 	INT nFind = 0;
-// 	char* pSrc = pArgInf->m_pText;
-// 	if(pArgInf[5].m_bool) //区分大小写
-// 	{
-// 		while(pStart < pEnd)
-// 		{
-// 			if(strncmp(pStart,pArgInf[1].m_pText,nSubLen)==0)
-// 			{
-// 				INT nStr = pStart - pSrc;
-// 				cDest.Append((LPBYTE)pSrc,nStr);//复制上次段
-// 				if(pStrRpl)
-// 					cDest.Append((LPBYTE)pStrRpl,nStrRpl);//复制替换文本
-// 
-// 				pStart+=nSubLen;
-// 				pSrc = pStart; //到下一段;
-// 				nFind++;
-// 				if(nFind == nRplCount)
-// 					break;
-// 
-// 			}
-// 			else
-// 			{
-// 				if(*pStart<0)
-// 					pStart+=2;
-// 				else
-// 					pStart++;
-// 			}
-// 		}
-// 
-// 	}
-// 	else
-// 	{
-// 		while(pStart < pEnd)
-// 		{
-// 			if(strnicmp(pStart,pArgInf[1].m_pText,nSubLen)==0)
-// 			{
-// 				INT nStr = pStart - pSrc;
-// 				cDest.Append((LPBYTE)pSrc,nStr);//复制上次段
-// 				if(pStrRpl)
-// 					cDest.Append((LPBYTE)pStrRpl,nStrRpl);//复制替换文本
-// 
-// 				pStart+=nSubLen;
-// 				pSrc = pStart; //到下一段;
-// 				nFind++;
-// 				if(nFind == nRplCount)
-// 					break;
-// 			}
-// 			else
-// 			{
-// 
-// 				if(*pStart<0)
-// 					pStart+=2;
-// 				else
-// 					pStart++;
-// 			}
-// 
-// 		}
-// 	}
-// 	if(pStart - pArgInf->m_pText<= nLen){
-// 		INT nLen = tcsallbytes(pSrc);
-// 		cDest.Append((LPBYTE)pSrc, nLen);
-// 	}
-// 	char* m_pText = 
-// 		CloneTextData((char *)cDest.GetPtr(),cDest.GetSize());
-// 	cDest.Free();
-// 	return m_pText;
-// 	/*
-// //统计找到的次数和缓冲长度
-// 	char* pStart = ArgInf.m_pText + nStart -1;
-// 	char* pEnd = ArgInf.m_pText + nEnd+1;
-// 	INT nFind = 0;
-// 	if(pArgInf[5].m_bool) //区分大小写
-// 	{
-// 		while(pStart < pEnd)
-// 		{
-// 			if(strncmp(pStart,pArgInf[1].m_pText,nSubLen)==0)
-// 			{
-// 				nFind++;
-// 				if(nFind == nRplCount)
-// 					break;
-// 				pStart+=nSubLen;
-// 			}
-// 			else
-// 			{
-// 				if(*pStart<0)
-// 					pStart+=2;
-// 				else
-// 					pStart++;
-// 			}
-// 		}
-// 
-// 	}
-// 	else
-// 	{
-// 		while(pStart < pEnd)
-// 		{
-// 			if(strnicmp(pStart,pArgInf[1].m_pText,nSubLen)==0)
-// 			{
-// 				nFind++;
-// 				if(nFind == nRplCount)
-// 					break;
-// 				pStart+=nSubLen;
-// 			}
-// 			else
-// 			{
-// 				if(*pStart<0)
-// 					pStart+=2;
-// 				else
-// 					pStart++;
-// 			}
-// 		}
-// 	}
-// 	if(nFind==0)//一个也没找到
-// 		return StrCpyForE(ArgInf.m_pText);
-// 
-// 	INT nBuf = nLen + (nStrRpl - nSubLen) * nFind;
-// 	char *pText = (char*)E_MAlloc(nBuf+1);
-// 	char* pDest = pText;
-// 	
-// 
-// 
-// //开始替换
-// 
-// 	pStart = ArgInf.m_pText + nStart -1;
-// 	pEnd = ArgInf.m_pText + nEnd+1;
-// 	char* pSrc = ArgInf.m_pText;
-// 	if(pArgInf[5].m_bool) //区分大小写
-// 	{
-// 		while(pStart < pEnd)
-// 		{
-// 			if(strncmp(pStart,pArgInf[1].m_pText,nSubLen)==0)
-// 			{
-// 				INT nStr = pStart - pSrc;
-// 				strncpy(pDest,pSrc,nStr);//复制上次段
-// 				pDest+=nStr;
-// 				*pDest =0;
-// 				if(pStrRpl)
-// 				{
-// 					strncpy(pDest,pStrRpl,nStrRpl);//复制替换文本
-// 					pDest+=nStrRpl;
-// 					*pDest =0;
-// 				}
-// 				pStart+=nSubLen;
-// 				pSrc = pStart; //到下一段;
-// 				nFind--;
-// 
-// 				if(nFind == 0)
-// 				{
-// 					
-// 					if(pStart - ArgInf.m_pText<= nLen)
-// 						strcat(pText,pSrc);
-// 					break;
-// 				}
-// 			}
-// 			else
-// 			{
-// 				if(*pStart<0)
-// 					pStart+=2;
-// 				else
-// 					pStart++;
-// 			}
-// 		}
-// 
-// 	}
-// 	else
-// 	{
-// 		while(pStart < pEnd)
-// 		{
-// 			if(strnicmp(pStart,pArgInf[1].m_pText,nSubLen)==0)
-// 			{
-// 				INT nStr = pStart - pSrc;
-// 				strncpy(pDest,pSrc,nStr);//复制上次段
-// 				pDest+=nStr;
-// 				*pDest =0;
-// 				if(pStrRpl)
-// 				{
-// 					strncpy(pDest,pStrRpl,nStrRpl);//复制替换文本
-// 					pDest+=nStrRpl;
-// 					*pDest =0;
-// 				}
-// 				pStart+=nSubLen;
-// 				pSrc = pStart; //到下一段;
-// 				nFind--;
-// 				if(nFind == 0)
-// 				{
-// 
-// 					if(pStart - ArgInf.m_pText<= nLen)
-// 						strcat(pText,pSrc);
-// 
-// 					break;
-// 				}
-// 			}
-// 			else
-// 			{
-// 
-// 				if(*pStart<0)
-// 					pStart+=2;
-// 				else
-// 					pStart++;
-// 			}
-// 
-// 		}
-// 	}
-// 	pText [nBuf]=0;
-// 	return pText;
-// 	*/
-// }
+

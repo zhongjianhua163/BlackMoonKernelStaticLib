@@ -10,6 +10,18 @@ typedef struct _MEMSP_{
 	int nLen;
 }MEMSP, *PMEMSP;
 
+typedef struct _TBRECORD{
+	PVOID	addr;	//数据地址
+	DWORD	len;	//数据长度
+}TBRECORD, *PTBRECORD;
+
+typedef struct _TB{
+	DWORD		size;	//内存块大小
+	DWORD		count;	//记录数量
+	DWORD		len;	//记录总长
+	TBRECORD	rec[1]; //记录数据
+}TB, *PTB;
+
 extern unsigned char lowtable[];
 extern unsigned char uptable[];
 
@@ -23,9 +35,9 @@ typedef size_t (*MYSTRLEN)(const char *str);
 extern MYSTRLEN mystrlen;
 
 int __fastcall myinstring(unsigned char *src, int slen,unsigned char *des, int dlen);
-PINT __cdecl initSubTb();
-void __fastcall recSub(PINT* tb, INT addr, INT len);
-char* __cdecl SubTbtoString(PINT ptb);
+PTB __cdecl initSubTb();
+void __fastcall recSub(PTB* tb, PVOID addr, DWORD len);
+char* __cdecl SubTbtoString(PTB ptb);
 INT __fastcall mystristr(char* str1, char* str2);
 INT __fastcall mystrstr(char* str1, char* str2);
 

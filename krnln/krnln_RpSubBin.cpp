@@ -180,13 +180,9 @@ LIBAPI(void*, krnln_RpSubBin)
 	}
 
 	// 开始计算
-	PINT pTb = (PINT)malloc(256);
+	PTB pTb = initSubTb();
 	if (!pTb)
 		return CloneBinData(pSrc, nSLen);
-
-	pTb[0] = 256; // TSize
-	pTb[1] = 0; // Count
-	pTb[2] = 0; // TLen
 
 	INT nPos;
 	LPBYTE pFirst = pSrc;
@@ -202,10 +198,10 @@ LIBAPI(void*, krnln_RpSubBin)
 		if (nPos == -1)
 			break;
 		if (pSearch + nPos - pFirst > 0)
-			recSub(&pTb, (INT)pFirst, pSearch + nPos - pFirst);
+			recSub(&pTb, pFirst, pSearch + nPos - pFirst);
 
 		if (nSubLen > 0)
-			recSub(&pTb, (INT)pSub, nSubLen);
+			recSub(&pTb, pSub, nSubLen);
 
 		pSearch += nPos + nDLen;
 		pFirst = pSearch;
@@ -213,31 +209,27 @@ LIBAPI(void*, krnln_RpSubBin)
 	}
 	//MessageBox(NULL,"4","432",MB_OK);
 	if (pLast - pFirst > 0)
-		recSub(&pTb, (INT)pFirst, pLast - pFirst);
+		recSub(&pTb, pFirst, pLast - pFirst);
 
 	//MessageBox(NULL,"5","432",MB_OK);
 	// 复制计算结果
-	LPBYTE pRetn = (LPBYTE)E_MAlloc_Nzero(pTb[2] + 2*sizeof(INT));
+	LPBYTE pRetn = (LPBYTE)E_MAlloc_Nzero(pTb->len + 2*sizeof(INT));
 	LPBYTE pRetnTmp = pRetn;
 	*(LPINT)pRetnTmp = 1;
 	pRetnTmp += sizeof(INT);
-	*(LPINT)pRetnTmp = pTb[2];
+	*(LPINT)pRetnTmp = pTb->len;
 	pRetnTmp += sizeof(INT);
 
-	nCount = pTb[1];
-	PINT pTbtmp = pTb;
-	pTbtmp += 3;
-	INT nTLen;
+	nCount = pTb->count;
+	PTBRECORD pRec = &pTb->rec[0];
 	//sprintf(pMsg,"nCount:%d,addr:%x",nCount,pTb);
 	//MessageBox(NULL,pMsg,"432",MB_OK);
 	for (int i = 0; i < nCount; i++)
 	{
-		nTLen = pTbtmp[1];
 		//sprintf(pMsg,"addr:%x,nTLen:%d",pTbtmp[0],nTLen);
 		//MessageBox(NULL,pMsg,"432",MB_OK);
-		memcpy(pRetnTmp, (void*)(pTbtmp[0]), nTLen);
-		pRetnTmp += nTLen;
-		pTbtmp += 2;
+		memcpy(pRetnTmp, pRec[i].addr, pRec[i].len);
+		pRetnTmp += pRec[i].len;
 	}
 	if (pTb)
 		free(pTb);

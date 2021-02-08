@@ -34,13 +34,9 @@ LIBAPI(void*, krnln_split)
 		nCount = -1;//返回一个成员
 
 	// 开始计算
-	PINT pTb = (PINT)malloc(256);
+	PTB pTb = initSubTb();
 	if (!pTb)
 		return E_NULLARRAY();
-
-	pTb[0] = 256; // TSize
-	pTb[1] = 0; // Count
-	pTb[2] = 0; // TLen
 
 	INT nPos;
 	char* pFirst = pSrc;
@@ -51,7 +47,7 @@ LIBAPI(void*, krnln_split)
 		if (nPos == -1)
 			break;
 		cp += nPos;
-		recSub(&pTb, (INT)pFirst, cp - pFirst);
+		recSub(&pTb, pFirst, cp - pFirst);
 		cp += nSubLen;
 		pFirst = cp;
 	}
@@ -59,12 +55,11 @@ LIBAPI(void*, krnln_split)
 	INT nSlen = mystrlen(cp) + cp - pSrc;
 	char* pLast = pSrc + nSlen;
 	if (pLast - pFirst > 0 && nCount != 0)
-		recSub(&pTb, (INT)pFirst, pLast - pFirst);
+		recSub(&pTb, pFirst, pLast - pFirst);
 
 	// 建立数组数据。
-	nCount = pTb[1];
-	PINT pTbtmp = pTb;
-	pTbtmp += 3;
+	nCount = pTb->count;
+	PTBRECORD pRec = &pTb->rec[0];
 	INT nSize = nCount * sizeof (DWORD);
 	p = (LPBYTE)E_MAlloc_Nzero (sizeof (INT) * 2 + nSize);
 	*(LPINT)p = 1;  // 数组维数。
@@ -72,8 +67,7 @@ LIBAPI(void*, krnln_split)
 	LPINT pp = (LPINT)(p + 2*sizeof(INT));
 	for (int i=0; i < nCount; i++)
 	{
-		*pp = (INT)CloneTextData((char*)(pTbtmp[0]), pTbtmp[1]);
-		pTbtmp += 2;
+		*pp = (INT)CloneTextData((char*)(pRec[i].addr), pRec[i].len);
 		pp++;
 	}
 
@@ -81,85 +75,4 @@ LIBAPI(void*, krnln_split)
 		free(pTb);
 	return p;  // 返回内容数组。
 }
-// {// 大鸟原版
-// 	PMDATA_INF pArgInf = &ArgInf;
-// 	LPTSTR szBeSplited = pArgInf [0].m_pText;
-// 	// 如果某个具有 AS_DEFAULT_VALUE_IS_EMPTY 标志的参数用户程序中没有为其提供参数值，
-// 	// 则其数据类型为 _SDT_NULL 。
-// 	LPTSTR szMark = pArgInf [1].m_dtDataType == _SDT_NULL ? "," : pArgInf [1].m_pText;
-// 	INT nCount = pArgInf [2].m_dtDataType == _SDT_NULL ? -1 : max (0, pArgInf [2].m_int);
-// 	
-// 	INT nLen1 = strlen (szBeSplited);
-// 	INT nLen2 = strlen (szMark);
-// 	
-// 	CMyDWordArray aryText;
-// 	
-// 	if (nLen1 > 0 && nCount != 0)
-// 	{
-// 		if (nLen2 == 0)
-// 		{
-// 			// 有关 CloneTextData 请参见
-// 			/*INT nLen = strlen(szBeSplited);
-// 			char *pText = (char*)E_MAlloc(nLen+1);
-// 			strcpy(pText,szBeSplited);*/
-// 			char *pText = CloneTextData(szBeSplited);
-// 			aryText.Add ((DWORD)pText);
-// 		}
-// 		else
-// 		{
-// 			LPTSTR pBegin = szBeSplited;
-// 			LPTSTR ps = pBegin;
-// 			
-// 			while (nLen1 >= nLen2)
-// 			{
-// 				if (!memcmp (ps, szMark, nLen2))
-// 				{
-// 					INT nLen = ps - pBegin;
-// 					/*char *pText = (char*)E_MAlloc(nLen+1);
-// 					strncpy(pText,pBegin,nLen);
-// 					pText[nLen]=0;*/
-// 					char *pText = CloneTextData(pBegin,nLen);
-// 					aryText.Add ((DWORD)pText);
-// 					ps += nLen2;
-// 					nLen1 -= nLen2;
-// 					pBegin = ps;
-// 					if (nCount != -1)
-// 					{
-// 						nCount--;
-// 						if (nCount == 0)  break;
-// 					}
-// 				}
-// 				else
-// 				{
-// 					if (IS_CC (*ps))
-// 					{
-// 						if (ps [1] == 0)  break;
-// 						ps++;
-// 						nLen1--;
-// 					}
-// 					ps++;
-// 					nLen1--;
-// 				}
-// 			}
-// 			
-// 			if (*pBegin != '\0' && nCount != 0)
-// 			{
-// 				/*INT nLen = strlen(pBegin);
-// 				char *pText = (char*)E_MAlloc(nLen+1);
-// 				strcpy(pText,pBegin);*/
-// 				char *pText = CloneTextData(pBegin);
-// 				aryText.Add ((DWORD)pText);
-// 			}
-// 		}
-// 	}
-// 	
-// 	// 建立数组数据。
-// 	INT nSize = aryText.GetDWordCount () * sizeof (DWORD);
-// 	LPBYTE p = (LPBYTE)E_MAlloc_Nzero (sizeof (INT) * 2 + nSize);
-// 	*(LPINT)p = 1;  // 数组维数。
-// 	*(LPINT)(p + sizeof (INT)) = aryText.GetDWordCount ();
-// 	memcpy (p + sizeof (INT) * 2, aryText.GetPtr (), nSize);
-// 	//MessageBox(NULL,"ok2",NULL,MB_OK);
-// 	//Sleep(100);
-// 	return p;  // 返回内容数组。
-// }
+

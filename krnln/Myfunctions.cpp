@@ -290,68 +290,58 @@ int __fastcall myinstring(unsigned char *src, int slen, unsigned char *des, int 
 // 		return -1;
 }
 
-char* __cdecl SubTbtoString(PINT ptb)
+char* __cdecl SubTbtoString(PTB ptb)
 {
-	if (!ptb || ptb[2] == 0)
+	if (!ptb || ptb->len == 0)
 		return NULL;
-	char* pText = (char*)E_MAlloc_Nzero(ptb[2] + 1);
+	char* pText = (char*)E_MAlloc_Nzero(ptb->len + 1);
 	char* pRetnTmp = pText;
 	
-	int nCount = ptb[1];
-	PINT pTbtmp = ptb;
-	pTbtmp += 3;
+	int nCount = ptb->count;
+	PTBRECORD pRec = &ptb->rec[0];
 	for (int i = 0; i < nCount; i++)
 	{
-		INT nTLen = pTbtmp[1];
-		memcpy(pRetnTmp, (void*)(pTbtmp[0]), nTLen);
-		pRetnTmp += nTLen;
-		pTbtmp += 2;
+		memcpy(pRetnTmp, pRec[i].addr, pRec[i].len);
+		pRetnTmp += pRec[i].len;
 	}
-	pText[ptb[2]] = '\0';
+	pText[ptb->len] = '\0';
 	return pText;
 }
 
-PINT __cdecl initSubTb()
+PTB __cdecl initSubTb()
 {
-	PINT pTb = (PINT)malloc(256);
+	PTB pTb = (PTB)malloc(4096);
 	if (!pTb)
 		return NULL;
-	pTb[0] = 256; // TSize
-	pTb[1] = 0; // Count
-	pTb[2] = 0; // TLen
+	pTb->size = 4096;
+	pTb->count = 0;
+	pTb->len = 0;
 	return pTb;
 }
 
-void __fastcall recSub(PINT* tb, INT addr, INT len)
+void __fastcall recSub(PTB* tb, PVOID addr, DWORD len)
 {
-	/*
-	struct tb{
-		int TSize
-		int Count
-		int TLen
-		record[]
-		  int addr
-		  int len
-	};
-	*/
-	register PINT pTmp = *tb;
-	INT nTSize = pTmp[0]; //表总长
-	INT nCount = pTmp[1]; //成员数
-	INT nOffset = (nCount+1) * 2*sizeof(INT) + 3*sizeof(INT); //写入偏移
-	if (nOffset > nTSize) //内存不够，重新分配
+	register PTB pTmp = *tb;
+	DWORD dwTSize = pTmp->size; //表总长
+	if (sizeof(TB) + pTmp->count * sizeof(TBRECORD) > dwTSize) //内存不够，重新分配
 	{
-		nTSize <<= 1;
-		if (nOffset > nTSize) return;
-		pTmp = (PINT)realloc(pTmp, nTSize);
-		if (!pTmp) return;
-		pTmp[0] = nTSize;
+		dwTSize <<= 1;
+		PTB pTmp2 = (PTB)realloc(pTmp, dwTSize);
+		if (!pTmp2) {
+			pTmp2 = (PTB)malloc(dwTSize);
+			if (!pTmp2)	return;
+
+			memcpy(pTmp2, pTmp, pTmp->size);
+			free(pTmp);
+			pTmp = pTmp2;
+		}
+		pTmp->size = dwTSize;
 		*tb = pTmp;
 	}
-	pTmp[1] = nCount + 1;//成员数+1
-	pTmp[2] += len;
-	pTmp += nCount*2+3;
-	pTmp[0] = addr;
-	pTmp[1] = len;
+	pTmp->rec[pTmp->count].addr = addr;
+	pTmp->rec[pTmp->count].len = len;
+	pTmp->count++;
+	pTmp->len += len;
 }
 
 INT __fastcall mystristr(char* str1, char* str2)

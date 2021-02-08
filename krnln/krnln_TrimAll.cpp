@@ -15,13 +15,10 @@ LIBAPI(char*, krnln_TrimAll)
 	if (!*str1) return NULL;
 
 	// 开始计算
-	PINT pTb = (PINT)malloc(256);
+	PTB pTb = initSubTb();
 	if (!pTb)
 		return NULL;
-	
-	pTb[0] = 256; // TSize
-	pTb[1] = 0; // Count
-	pTb[2] = 0; // TLen
+
 	char* pFirst = pSrc;
 	while (1)
 	{
@@ -55,80 +52,11 @@ LIBAPI(char*, krnln_TrimAll)
 				str1++;
 		}
 		if (str1 - pFirst > 0)
-			recSub(&pTb, (INT)pFirst, str1 - pFirst);
+			recSub(&pTb, pFirst, str1 - pFirst);
 	}
-	INT nLen = pTb[2];
-	INT nCount = pTb[1];
-	register PINT pTbtmp = pTb;
-	pTbtmp+=3;
-	char* pText = (char*)E_MAlloc_Nzero(nLen + 1);
-	register char* pText2 = pText;
-	for (int i=0; i < nCount; i++)
-	{
-		memcpy(pText2, (char*)(pTbtmp[0]), pTbtmp[1]);
-		pText2 += pTbtmp[1];
-		pTbtmp += 2;
-	}
-	pText[nLen] = '\0';
+
+	char* pText = SubTbtoString(pTb);
 	if (pTb)
 		free(pTb);
 	return pText;
 }
-// {// 大鸟原版
-// 	INT nLen = mystrlen(ArgInf.m_pText);
-// 	if(nLen==0)return NULL;
-// 	char *pText = (char*)E_MAlloc_Nzero(nLen+1);
-// 
-// 	INT i = 0;
-// 	char* pSrc = ArgInf.m_pText;
-// 	char* pStart ;//= ArgInf.m_pText;
-// 	char* pDest = pText;
-// 	while(i < nLen)
-// 	{
-// 		while(*pSrc == ' ' || strncmp(pSrc,"　",2)==0)
-// 		{
-// 
-// 			if(*pSrc< 0)
-// 			{
-// 				i+=2;
-// 				pSrc+=2;
-// 			}
-// 			else
-// 			{
-// 				pSrc++;
-// 				i++;
-// 			}
-// 		}
-// 		pStart = pSrc;
-// 
-// 		while(*pSrc != 0 && *pSrc != ' ' && strncmp(pSrc,"　",2)!=0)
-// 		{
-// 			if(*pSrc< 0)
-// 			{
-// 				i+=2;
-// 				pSrc+=2;
-// 			}
-// 			else
-// 			{
-// 				pSrc++;
-// 				i++;
-// 			}
-// 		}
-// 		DWORD dwLen = pSrc - pStart;
-// 		if(dwLen)
-// 		{
-// 			strncpy(pDest,pStart,dwLen);
-// 			pDest+=dwLen;
-// 		}
-// 		if(*pSrc == 0)
-// 			break;
-// 	}
-// 	*pDest = 0;
-// 	nLen = mystrlen(pText);
-// 	if(nLen == 0)
-// 	{
-// 		E_MFree(pText);
-// 		pText = NULL;
-// 	}
-// 	return pText;
-// }

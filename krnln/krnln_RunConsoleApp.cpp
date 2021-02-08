@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Myfunctions.h"
 #include <stdio.h>
-BOOL __cdecl ReadPepi(HANDLE hFile, LPINT* ppTb)
+BOOL __cdecl ReadPepi(HANDLE hFile, PTB* ppTb)
 {
 	DWORD nSize;
 	char* pBuffer = NULL;
@@ -21,8 +21,8 @@ BOOL __cdecl ReadPepi(HANDLE hFile, LPINT* ppTb)
 		}
 		if (!nSize)
 			break;
-		recSub(ppTb, (INT)pBuffer, nSize);
-		recSub(ppTb, (INT)pHH, 2);
+		recSub(ppTb, pBuffer, nSize);
+		recSub(ppTb, pHH, 2);
 		pBuffer = NULL;
 	}
 	if(pBuffer) free(pBuffer);
@@ -104,8 +104,8 @@ LIBAPI(BOOL, krnln_RunConsoleApp)
 			if (CreateProcess(NULL, pCMD, NULL, NULL, TRUE, NULL, NULL, NULL, &si, &pi))
 			{
 				BOOL bWait = TRUE;
-				PINT pTbOut = initSubTb();
-				PINT pTbError = initSubTb();
+				PTB pTbOut = initSubTb();
+				PTB pTbError = initSubTb();
 				do 
 				{
 					if (bWait)
