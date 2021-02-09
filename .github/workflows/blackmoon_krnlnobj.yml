@@ -2,33 +2,33 @@ name: BlackMoon Krnln OBJ
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   bmkrobj-debug-win32:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    # Add msuild to local environment
-    - name: Setup MSBuild
-      uses: warrenbuckley/Setup-MSBuild@v1
+      # Add msuild to local environment
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
 
-    # Test build
-    - name: Build BlackMoon Krnln OBJ
-      run: msbuild Project/krnln_VS2019_Obj.vcxproj /p:configuration=debug /p:platform=win32 -maxcpucount:4
-  
+      # Test build
+      - name: Build BlackMoon Krnln OBJ
+        run: msbuild Project/krnln_VS2019_Obj.vcxproj /p:configuration=debug /p:platform=win32 -maxcpucount:4
+
   bmkrobj-release-win32:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    # Add msuild to local environment
-    - name: Setup MSBuild
-      uses: warrenbuckley/Setup-MSBuild@v1
-      
-    # Test build
-    - name: Build BlackMoon Krnln OBJ
-      run: msbuild Project/krnln_VS2019_Obj.vcxproj /p:configuration=release /p:platform=win32 -maxcpucount:4
+      # Add msuild to local environment
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+
+      # Test build
+      - name: Build BlackMoon Krnln OBJ
+        run: msbuild Project/krnln_VS2019_Obj.vcxproj /p:configuration=release /p:platform=win32 -maxcpucount:4
