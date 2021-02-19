@@ -332,9 +332,9 @@ void __fastcall recSub(PTB* tb, PVOID addr, DWORD len)
 			if (!pTmp2)	return;
 
 			memcpy(pTmp2, pTmp, pTmp->size);
-			free(pTmp);
-			pTmp = pTmp2;
+			free(pTmp);	
 		}
+		pTmp = pTmp2;
 		pTmp->size = dwTSize;
 		*tb = pTmp;
 	}
