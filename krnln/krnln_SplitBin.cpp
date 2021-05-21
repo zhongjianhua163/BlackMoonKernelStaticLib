@@ -46,10 +46,7 @@ LIBAPI(void*, krnln_SplitBin)
 		nCount = -1;//返回一个成员
 
 	// 开始计算
-	PTB pTb = initSubTb();
-	if (!pTb)
-		return E_NULLARRAY();
-	
+	TBR tbr;
 	INT nPos;
 	INT nSYLen = nSLen;
 	LPBYTE pFirst = pSrc;
@@ -60,18 +57,17 @@ LIBAPI(void*, krnln_SplitBin)
 		if (nPos == -1)
 			break;
 		cp += nPos;
-		recSub(&pTb, pFirst, cp - pFirst);
+		tbr.add(pFirst, cp - pFirst);
 		cp += nSubLen;
 		nSYLen -= nPos + nSubLen;
 		pFirst = cp;
 	}
 	LPBYTE pLast = pSrc + nSLen;
 	if (pLast - pFirst > 0 && nCount != 0)
-		recSub(&pTb, pFirst, pLast - pFirst);
+		tbr.add(pFirst, pLast - pFirst);
 	
 	// 建立数组数据。
-	nCount = pTb->count;
-	PTBRECORD pRec = &pTb->rec[0];
+	nCount = tbr.m_nCount;
 	INT nSize = nCount * sizeof (DWORD);
 	LPBYTE p = (LPBYTE)E_MAlloc_Nzero (sizeof (INT) * 2 + nSize);
 	*(LPINT)p = 1;  // 数组维数。
@@ -79,11 +75,8 @@ LIBAPI(void*, krnln_SplitBin)
 	LPINT pp = (LPINT)(p + 2*sizeof(INT));
 	for (int i=0; i < nCount; i++)
 	{
-		*pp = (INT)CloneBinData((LPBYTE)(pRec[i].addr), pRec[i].len);
+		*pp = (INT)CloneBinData((LPBYTE)(tbr.m_data[i].addr), tbr.m_data[i].len);
 		pp++;
 	}
-	
-	if (pTb)
-		free(pTb);
 	return p;  // 返回内容数组。
 }

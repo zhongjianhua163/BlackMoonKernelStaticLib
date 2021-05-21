@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Myfunctions.h"
 #include <stdio.h>
-BOOL __cdecl ReadPepi(HANDLE hFile, PTB* ppTb)
+BOOL __cdecl ReadPepi(HANDLE hFile, TBR* tbr)
 {
 	DWORD nSize;
 	char* pBuffer = NULL;
@@ -21,8 +21,8 @@ BOOL __cdecl ReadPepi(HANDLE hFile, PTB* ppTb)
 		}
 		if (!nSize)
 			break;
-		recSub(ppTb, pBuffer, nSize);
-		recSub(ppTb, pHH, 2);
+		tbr->add(pBuffer, nSize);
+		tbr->add(pHH, 2);
 		pBuffer = NULL;
 	}
 	if(pBuffer) free(pBuffer);
@@ -104,8 +104,8 @@ LIBAPI(BOOL, krnln_RunConsoleApp)
 			if (CreateProcess(NULL, pCMD, NULL, NULL, TRUE, NULL, NULL, NULL, &si, &pi))
 			{
 				BOOL bWait = TRUE;
-				PTB pTbOut = initSubTb();
-				PTB pTbError = initSubTb();
+				TBR tbrOut;
+				TBR tbrError;
 				do 
 				{
 					if (bWait)
@@ -118,20 +118,16 @@ LIBAPI(BOOL, krnln_RunConsoleApp)
 				bSucess = TRUE;
 				if (pStdOut)
 				{
-					ReadPepi(hFile1, &pTbOut);
+					ReadPepi(hFile1, &tbrOut);
 					if (*pStdOut) E_MFree(*pStdOut);
-					*pStdOut = SubTbtoString(pTbOut);
+					*pStdOut = tbrOut.toString();
 				}
 				if (pStdError)
 				{
-					ReadPepi(hFile2, &pTbError);
+					ReadPepi(hFile2, &tbrError);
 					if (*pStdError) E_MFree(*pStdError);
-					*pStdError = SubTbtoString(pTbError);
+					*pStdError = tbrError.toString();
 				}
-				if (pTbOut)
-					free(pTbOut);
-				if (pTbError)
-					free(pTbError);
 			}
 		}
 	}

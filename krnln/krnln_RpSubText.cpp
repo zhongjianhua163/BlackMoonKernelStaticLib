@@ -37,26 +37,24 @@ LIBAPI(char*, krnln_RpSubText)
 	char* pStart = pSrc + nStart;
 	for (; *cp && cp < pStart; cp++)
 		if (*cp < 0) cp++; // 汉字
-	//MessageBox(NULL,"1","432",MB_OK);
+
 	if (!*cp)
 		return CloneTextData(pSrc, cp - pSrc);
 
 	INT nSLen = (cp + mystrlen(cp)) - pSrc;
-	//MessageBox(NULL,"2","432",MB_OK);
 	//待搜索文本
 	char* pDes = pArgInf[1].m_pText;
 	INT nDLen = 0;
 	if (pDes)
 		nDLen = mystrlen(pDes);
 	//替换次数
-	//MessageBox(NULL,"3","432",MB_OK);
 	INT nCount = pArgInf[4].m_int;
 	if (pArgInf[4].m_dtDataType == _SDT_NULL)
 		nCount = 0x7FFFFFFF;// 最大替换次数21亿
-	//MessageBox(NULL,"4","432",MB_OK);
+
 	if (nDLen <=0 || nCount<=0) // 关键参数不合法，直接返回原文本
 		return CloneTextData(pSrc, nSLen);
-	//MessageBox(NULL,"5","432",MB_OK);
+
 	char* pSub = NULL;
 	INT nSubLen = 0;
 	if (pArgInf[2].m_dtDataType != _SDT_NULL)
@@ -65,19 +63,12 @@ LIBAPI(char*, krnln_RpSubText)
 		if (pSub)
 			nSubLen = mystrlen(pSub);
 	}
-	//MessageBox(NULL,"6","432",MB_OK);
-	// 开始计算
-	PTB pTb = initSubTb();
-	if (!pTb)
-		return CloneTextData(pSrc, nSLen);
-	//MessageBox(NULL,"123","432",MB_OK);
 
+	// 开始计算
+	TBR tbr;
 	INT nPos;
 	char* pFirst = pSrc;
 	char* pLast = pSrc + nSLen;
-	//char* pMsg = (char*)malloc(256);
-	//sprintf(pMsg,"addr:%x",pTb);
-	//MessageBox(NULL,pMsg,"432",MB_OK);
 	if (pArgInf[5].m_bool) // 区分大小写
 	{
 		for (; nCount > 0; nCount--)
@@ -86,10 +77,10 @@ LIBAPI(char*, krnln_RpSubText)
 			if (nPos == -1)
 				break;
 			if (cp + nPos - pFirst > 0)
-				recSub(&pTb, pFirst, cp + nPos - pFirst);
+				tbr.add(pFirst, cp + nPos - pFirst);
 		
 			if (nSubLen > 0)
-				recSub(&pTb, pSub, nSubLen);
+				tbr.add(pSub, nSubLen);
 		
 			cp += nPos + nDLen;
 			pFirst = cp;
@@ -103,25 +94,20 @@ LIBAPI(char*, krnln_RpSubText)
 			if (nPos == -1)
 				break;
 			if (cp + nPos - pFirst > 0)
-				recSub(&pTb, pFirst, cp + nPos - pFirst);
+				tbr.add(pFirst, cp + nPos - pFirst);
 			
 			if (nSubLen > 0)
-				recSub(&pTb, pSub, nSubLen);
+				tbr.add(pSub, nSubLen);
 			
 			cp += nPos + nDLen;
 			pFirst = cp;
 		}
 	}
-	//MessageBox(NULL,"8","432",MB_OK);
+
 	if (pLast - pFirst > 0)
-		recSub(&pTb, pFirst, pLast - pFirst);
+		tbr.add(pFirst, pLast - pFirst);
 	
-	//MessageBox(NULL,"9","432",MB_OK);
 	// 复制计算结果
-	char* pRetn = SubTbtoString(pTb);
-	if (pTb)
-		free(pTb);
-	//MessageBox(NULL,"12","432",MB_OK);
-	return pRetn;
+	return tbr.toString();
 }
 

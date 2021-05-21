@@ -15,10 +15,7 @@ LIBAPI(char*, krnln_TrimAll)
 	if (!*str1) return NULL;
 
 	// ¿ªÊ¼¼ÆËã
-	PTB pTb = initSubTb();
-	if (!pTb)
-		return NULL;
-
+	TBR tbr;
 	char* pFirst = pSrc;
 	while (1)
 	{
@@ -52,11 +49,7 @@ LIBAPI(char*, krnln_TrimAll)
 				str1++;
 		}
 		if (str1 - pFirst > 0)
-			recSub(&pTb, pFirst, str1 - pFirst);
+			tbr.add(pFirst, str1 - pFirst);
 	}
-
-	char* pText = SubTbtoString(pTb);
-	if (pTb)
-		free(pTb);
-	return pText;
+	return tbr.toString();
 }

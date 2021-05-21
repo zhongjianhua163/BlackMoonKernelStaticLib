@@ -15,12 +15,18 @@ typedef struct _TBRECORD{
 	DWORD	len;	//数据长度
 }TBRECORD, *PTBRECORD;
 
-typedef struct _TB{
-	DWORD		size;	//内存块大小
-	DWORD		count;	//记录数量
-	DWORD		len;	//记录总长
-	TBRECORD	rec[1]; //记录数据
-}TB, *PTB;
+class TBR
+{
+public:
+	TBR();
+	~TBR();
+	void add(PVOID addr, size_t len);
+	char* toString(); //返回值需要释放
+	int m_nCount;
+	int m_nTCount;
+	size_t m_nTLen;
+	PTBRECORD m_data;
+};
 
 extern unsigned char lowtable[];
 extern unsigned char uptable[];
@@ -35,9 +41,6 @@ typedef size_t (*MYSTRLEN)(const char *str);
 extern MYSTRLEN mystrlen;
 
 int __fastcall myinstring(unsigned char *src, int slen,unsigned char *des, int dlen);
-PTB __cdecl initSubTb();
-void __fastcall recSub(PTB* tb, PVOID addr, DWORD len);
-char* __cdecl SubTbtoString(PTB ptb);
 INT __fastcall mystristr(char* str1, char* str2);
 INT __fastcall mystrstr(char* str1, char* str2);
 

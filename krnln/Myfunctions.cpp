@@ -290,58 +290,69 @@ int __fastcall myinstring(unsigned char *src, int slen, unsigned char *des, int 
 // 		return -1;
 }
 
-char* __cdecl SubTbtoString(PTB ptb)
+char* TBR::toString()
 {
-	if (!ptb || ptb->len == 0)
+	if (m_nCount <= 0 || m_nTLen <= 0 || !m_data)
+	{
 		return NULL;
-	char* pText = (char*)E_MAlloc_Nzero(ptb->len + 1);
+	}
+	char* pText = (char*)E_MAlloc_Nzero(m_nTLen + 1);
 	char* pRetnTmp = pText;
 	
-	int nCount = ptb->count;
-	PTBRECORD pRec = &ptb->rec[0];
-	for (int i = 0; i < nCount; i++)
+	for (int i = 0; i < m_nCount; i++)
 	{
-		memcpy(pRetnTmp, pRec[i].addr, pRec[i].len);
-		pRetnTmp += pRec[i].len;
+		memcpy(pRetnTmp, m_data[i].addr, m_data[i].len);
+		pRetnTmp += m_data[i].len;
 	}
-	pText[ptb->len] = '\0';
+	pText[m_nTLen] = '\0';
 	return pText;
 }
 
-PTB __cdecl initSubTb()
+TBR::TBR()
 {
-	PTB pTb = (PTB)malloc(4096);
-	if (!pTb)
-		return NULL;
-	pTb->size = 4096;
-	pTb->count = 0;
-	pTb->len = 0;
-	return pTb;
+	m_nCount = 0;
+	m_nTCount = 0;
+	m_nTLen = 0;
+	m_data = NULL;
 }
-
-void __fastcall recSub(PTB* tb, PVOID addr, DWORD len)
+TBR::~TBR()
 {
-	register PTB pTmp = *tb;
-	DWORD dwTSize = pTmp->size; //表总长
-	if (sizeof(TB) + pTmp->count * sizeof(TBRECORD) > dwTSize) //内存不够，重新分配
+	if (m_data)
 	{
-		dwTSize <<= 1;
-		PTB pTmp2 = (PTB)realloc(pTmp, dwTSize);
-		if (!pTmp2) {
-			pTmp2 = (PTB)malloc(dwTSize);
-			if (!pTmp2)	return;
-
-			memcpy(pTmp2, pTmp, pTmp->size);
-			free(pTmp);	
-		}
-		pTmp = pTmp2;
-		pTmp->size = dwTSize;
-		*tb = pTmp;
+		free(m_data);
 	}
-	pTmp->rec[pTmp->count].addr = addr;
-	pTmp->rec[pTmp->count].len = len;
-	pTmp->count++;
-	pTmp->len += len;
+}
+void TBR::add(PVOID addr, size_t len)
+{
+	if (!m_data)
+	{
+		m_data = (PTBRECORD)malloc(512 * sizeof(TBRECORD));
+		if (!m_data)
+			return;
+		m_nTCount = 512;
+	}
+	if (m_nCount >= m_nTCount)
+	{
+		int nNewCount = m_nTCount << 1;
+		PVOID pNewData = realloc(m_data, nNewCount * sizeof(TBRECORD));
+		if (!pNewData)
+		{
+			pNewData = malloc(sizeof(TBRECORD) * nNewCount);
+			if (!pNewData)
+				return;
+			memcpy(pNewData, m_data, sizeof(TBRECORD) * m_nTCount);
+			free(m_data);
+		}
+		m_data = (TBRECORD*)pNewData;
+		m_nTCount = nNewCount;
+	}
+	if (len < 0)
+	{
+		len = 0;
+	}
+	m_data[m_nCount].addr = addr;
+	m_data[m_nCount++].len = len;
+	m_nTLen += len;
 }
 
 INT __fastcall mystristr(char* str1, char* str2)
