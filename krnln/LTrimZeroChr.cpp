@@ -37,7 +37,7 @@ void LTrimZeroChr(char* str)
 		{
 			*z = '\0';
 		}
-		else if(str == p + 1) //以小数点结尾则删除小数点
+		else if(z == p + 1) //以小数点结尾则删除小数点
 		{
 			*p = '\0';
 		}
