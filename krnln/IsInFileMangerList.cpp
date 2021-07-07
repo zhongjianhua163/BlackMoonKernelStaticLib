@@ -10,6 +10,8 @@ BOOL IsInFileMangerList(PFILEELEMENT pFile)
 	{
 		if(pObjFile == pFile)
 			return TRUE;
+		if (pObjFile == (PFILEELEMENT)pObjFile->pLast)
+			break;
 		pObjFile = (PFILEELEMENT)pObjFile->pLast;
 	}
 	return FALSE;

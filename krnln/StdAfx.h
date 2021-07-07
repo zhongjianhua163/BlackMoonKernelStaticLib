@@ -104,9 +104,9 @@ typedef struct
 	INT nType;  
 	void* FileHandle;
 	void* pLast;
-	unsigned char strMD5[33];
-	unsigned char strTable[258];
 	INT nCryptStart;
+	unsigned char strMD5[36];
+	unsigned char strTable[258];
 }
 FILEELEMENT, *PFILEELEMENT;
 
