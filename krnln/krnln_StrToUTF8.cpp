@@ -43,3 +43,56 @@ LIBAPI(void*, krnln_StrToUTF8)
 	return pSrc;
 }
 
+//    调用格式： 〈字节集〉 文本到UTF16 （文本型 待转换的文本） - 系统核心支持库->文本操作
+//    英文名称：StrToUTF16
+//    将所指定文本转换到UTF16格式后返回,注意所返回UTF16文本数据包括结束零字符.本命令为初级命令。
+//    参数<1>的名称为“待转换的文本”，类型为“文本型（text）”。提供待转换到UTF16格式的文本。
+//
+//    操作系统需求： Windows
+LIBAPI(void*, krnln_fnStrToUTF16)
+{
+	PMDATA_INF pArgInf = &ArgInf;
+	char* pSrc = pArgInf[0].m_pText;
+	if (!pSrc || !*pSrc) return NULL;
+	
+	//先将ASCII转成UNICODE
+	int nNum = MultiByteToWideChar(CP_ACP, 0, pSrc, -1, NULL, 0);
+	if (nNum <=0) return NULL;
+	
+	WCHAR* wcsUnicode = new WCHAR[nNum];
+	nNum = MultiByteToWideChar(CP_ACP, 0, pSrc, -1, wcsUnicode, nNum);
+	if (nNum <= 0)
+	{
+		delete []wcsUnicode;
+		return NULL;
+	}
+	wcsUnicode[nNum - 1] = 0;
+	
+	//再由UNICODE转UTF8
+	nNum = WideCharToMultiByte(CP_UTF8, 0, wcsUnicode, -1, NULL, 0, NULL, NULL);
+	if (nNum <= 0)
+	{
+		delete []wcsUnicode;
+		return NULL;
+	}
+
+	char* pszUtf8 = new char[nNum];
+	nNum = WideCharToMultiByte(CP_UTF8, 0, wcsUnicode, -1, pszUtf8, nNum, NULL, NULL);
+
+	//再由UTF8转UTF16
+	nNum = MultiByteToWideChar(CP_UTF8, 0, pszUtf8, -1, NULL, 0);
+	if (nNum > 0)
+	{
+		pSrc = (char*)E_MAlloc_Nzero(nNum * 2 + 2*sizeof(int));
+		if (pSrc)
+		{
+			*(LPINT)pSrc = 1;
+			char* pDes = pSrc + 2*sizeof(int);
+			nNum = MultiByteToWideChar(CP_UTF8, 0, pszUtf8, -1, (LPWSTR)pDes, nNum);
+			*(LPINT)(pSrc + sizeof(int)) = nNum * 2; // 保留结尾符'\0' 与易语言保持一致
+		}
+	}
+	delete []wcsUnicode;
+	delete []pszUtf8;
+	return pSrc;
+}

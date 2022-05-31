@@ -90,7 +90,7 @@ PDESTROY BlackMoonFreeAllUserDll = NULL;
 		{
 			if (0xC483 == *(unsigned short*)(pRetnAddr)) // 是否为add esp, xxx;
 			{
-				bThreeParam = (0x0C == *(pRetnAddr+2)); // 平栈数量为12，表示有三个参数
+				bThreeParam = (0x0C <= *(pRetnAddr+2)); // 平栈数量为12，表示有三个参数
 			}
 		}
 		if (bThreeParam) // 易语言5.8版本及以上才会有三个参数，旧的版本只有一个参数。
