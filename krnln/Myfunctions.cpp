@@ -514,7 +514,7 @@ int boyer_moore(unsigned char* string, int stringlen, unsigned char* pat, int pa
 		i += max(delta1[string[i]], delta2[j]);
 	}
 	free(delta2);
-	return 0;
+	return -1;
 }
 
 
