@@ -78,7 +78,7 @@ LIBAPI(int, krnln_InBin)
 					return i + off;
 		return -1;
 	default:  // 长子串使用BM算法,
-		int naddr = BoyerMoore(pSrc, nLen, pDes, nSubLen);
+		int naddr = boyer_moore(pSrc, nLen, pDes, nSubLen);
 		if (naddr >= 0)
 			return naddr + off;
 	}

@@ -17,7 +17,7 @@ extern "C" {
 	void  _cdecl E_Init(){
 		hBlackMoonHeap =::GetProcessHeap();
 		AfxOleInit();
-		//CoInitialize(0);
+		CoInitialize(0);
 		BlackMoonInitAllElib();
 	}
 

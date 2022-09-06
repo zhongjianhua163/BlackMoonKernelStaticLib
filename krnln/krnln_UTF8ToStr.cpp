@@ -9,48 +9,35 @@
 LIBAPI(char*, krnln_UTF8ToStr)
 {
 	char* pSrc;
-	int nl, al;
+	char* pRet = NULL;
+	int nUnicodeLen, nAnsiLen;
 	WCHAR *unicodetext;
 
-	if(ArgInf.m_pBin == NULL) return NULL;
-	if (ArgInf.m_pInt[1] <= 0) return NULL;
+	if (ArgInf.m_pBin == NULL || ArgInf.m_pInt[1] <= 0) 
+		return NULL;
 
 	pSrc = (char*)ArgInf.m_pBin;
 	pSrc += 2*sizeof(INT);
 
 	//先从UTF-8转成UNICODE
-	nl = MultiByteToWideChar(CP_UTF8, 0, pSrc, -1, NULL, 0);
-	if (nl <= 0) return NULL;
-
-	unicodetext = new WCHAR[nl];
-	nl = MultiByteToWideChar(CP_UTF8, 0, pSrc, -1, unicodetext, nl);
-	if (0 >= nl)
-	{
-		delete []unicodetext;
+	nUnicodeLen = MultiByteToWideChar(CP_UTF8, 0, pSrc, ArgInf.m_pInt[1], NULL, 0);
+	if (nUnicodeLen <= 0) 
 		return NULL;
-	}
-	unicodetext[nl - 1] = 0;
+
+	unicodetext = new WCHAR[nUnicodeLen + 1];
+	MultiByteToWideChar(CP_UTF8, 0, pSrc, ArgInf.m_pInt[1], unicodetext, nUnicodeLen);
+	unicodetext[nUnicodeLen] = '\0';
 
 	//再由UNICDOE转成ANSI
-	al = WideCharToMultiByte(936, 0, unicodetext, -1, NULL, 0, NULL, NULL);
-	pSrc = NULL;
-	if (al > 0)
+	nAnsiLen = WideCharToMultiByte(936, 0, unicodetext, -1, NULL, 0, NULL, NULL);
+	if (nAnsiLen > 0)
 	{
-		pSrc = (char*)E_MAlloc_Nzero(al);
-		if (pSrc)
-		{
-			al = WideCharToMultiByte(936, 0, unicodetext, -1, pSrc, al, NULL, NULL);
-			if (0 >= al)
-			{
-				delete []unicodetext;
-				E_MFree(pSrc);
-				return NULL;
-			}
-			pSrc[al - 1] = 0;
-		}
+		pRet = (char*)E_MAlloc_Nzero(nAnsiLen); //nAnsiLen包含空中止
+		if (pRet)
+			WideCharToMultiByte(936, 0, unicodetext, -1, pRet, nAnsiLen, NULL, NULL);
 	}
 	delete []unicodetext;
-	return pSrc;
+	return pRet;
 }
 
 //    调用格式： 〈文本型〉 UTF16到文本 （字节集 待转换的UTF16文本数据） - 系统核心支持库->文本操作
@@ -65,18 +52,19 @@ LIBAPI(char*, krnln_fnUTF16ToStr)
 	int nl, al;
 	WCHAR *unicodetext;
 	
-	if(ArgInf.m_pBin == NULL) return NULL;
-	if (ArgInf.m_pInt[1] <= 0) return NULL;
+	if(ArgInf.m_pBin == NULL || ArgInf.m_pInt[1] <= 0)
+		return NULL;
 	
 	pSrc = (char*)ArgInf.m_pBin;
 	pSrc += 2*sizeof(INT);
 	
 	//先从UTF-16转成UTF-8
-	nl = WideCharToMultiByte(CP_UTF8, 0, (LPWSTR)pSrc, -1, NULL, 0, NULL, NULL);
+	nl = WideCharToMultiByte(CP_UTF8, 0, (LPWSTR)pSrc, ArgInf.m_pInt[1], NULL, 0, NULL, NULL);
 	if (nl <= 0) return NULL;
 
-	char* pszUtf8 = new char[nl];
-	nl = WideCharToMultiByte(CP_UTF8, 0, (LPWSTR)pSrc, -1, pszUtf8, nl, NULL, NULL);
+	char* pszUtf8 = new char[nl + 1];
+	nl = WideCharToMultiByte(CP_UTF8, 0, (LPWSTR)pSrc, ArgInf.m_pInt[1], pszUtf8, nl, NULL, NULL);
+	pszUtf8[nl] = '\0';
 
 	pSrc = pszUtf8;
 
@@ -95,7 +83,6 @@ LIBAPI(char*, krnln_fnUTF16ToStr)
 		delete []unicodetext;
 		return NULL;
 	}
-	unicodetext[nl - 1] = 0;
 	
 	//再由UNICDOE转成ANSI
 	al = WideCharToMultiByte(936, 0, unicodetext, -1, NULL, 0, NULL, NULL);
@@ -104,17 +91,7 @@ LIBAPI(char*, krnln_fnUTF16ToStr)
 	{
 		pSrc = (char*)E_MAlloc_Nzero(al);
 		if (pSrc)
-		{
-			al = WideCharToMultiByte(936, 0, unicodetext, -1, pSrc, al, NULL, NULL);
-			if (0 >= al)
-			{
-				delete []pszUtf8;
-				delete []unicodetext;
-				E_MFree(pSrc);
-				return NULL;
-			}
-			pSrc[al - 1] = 0;
-		}
+			WideCharToMultiByte(936, 0, unicodetext, -1, pSrc, al, NULL, NULL);
 	}
 	delete []pszUtf8;
 	delete []unicodetext;

@@ -32,7 +32,7 @@ extern unsigned char lowtable[];
 extern unsigned char uptable[];
 
 int __fastcall mymemchr(unsigned char *pSrc, int nLen, unsigned char Des);
-int BoyerMoore(unsigned char *text, int n, unsigned char *pattern, int m);
+int boyer_moore(unsigned char* string, int stringlen, unsigned char* pat, int patlen);
 
 int inline MyMemCmp(unsigned char* a, unsigned char* b, int len);
 
