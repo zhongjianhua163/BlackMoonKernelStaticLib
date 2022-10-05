@@ -323,3 +323,50 @@ LIBAPI(void, krnln_SetErrorManger)
 	else
 		fnEError_callback = NULL;
 }
+
+/*
+	调用格式： 〈文本型〉 置DLL装载目录 （［文本型 DLL装载目录］） - 系统核心支持库->其他
+	英文名称：SetDllCmdLoadPath
+	本命令用来设置当程序中执行到DLL命令时装载其DLL库文件的优先装载路径，即系统将优先到该路径下去装载指定的DLL文件。本命令所设置结果对所有DLL命令设置中的未指定全路径的DLL库文件装载均有影响，且在程序运行期间全程有效。命令执行后返回系统在本次设置以前的值。本命令为高级命令。
+	参数<1>的名称为“DLL装载目录”，类型为“文本型（text）”，可以被省略。本参数指定系统对DLL命令配置中DLL库文件的优先装载路径，如果被省略，则默认值为空文本。
+
+	操作系统需求： Windows
+*/
+
+#if _MSC_VER < 1916 //VS2017 VS2019
+typedef BOOL (WINAPI *MySetDllDirectoryA)(LPCSTR lpPathName);
+typedef DWORD (WINAPI *MyGetDllDirectoryA)(DWORD nBufferLength, LPSTR lpBuffer);
+#endif
+
+LIBAPI(char*, _krnln_SetDllCmdLoadPath)
+{
+	char szPath[MAX_PATH];
+#if _MSC_VER >= 1916 //VS2017 VS2019
+	DWORD dwLen = GetDllDirectoryA(MAX_PATH, szPath);
+	if (ArgInf.m_pText) {
+		SetDllDirectoryA(ArgInf.m_pText);
+	}
+#else
+	HMODULE hKernel32 = GetModuleHandle("Kernel32.dll");
+	if (!hKernel32)
+		return NULL;
+
+	MyGetDllDirectoryA MyGetDllDirectory = (MyGetDllDirectoryA)GetProcAddress(hKernel32, "GetDllDirectoryA");
+	MySetDllDirectoryA MySetDllDirectory = (MySetDllDirectoryA)GetProcAddress(hKernel32, "SetDllDirectoryA");
+
+	if(!MyGetDllDirectory || !MySetDllDirectory)
+		return NULL;
+
+	DWORD dwLen = MyGetDllDirectory(MAX_PATH, szPath);
+	if (ArgInf.m_pText) {
+		MySetDllDirectory(ArgInf.m_pText);
+	}
+#endif
+	char* pText = NULL;
+	if (dwLen > 0 && dwLen < MAX_PATH) {
+		pText = (char*)E_MAlloc_Nzero(dwLen);
+		memcpy(pText, szPath, dwLen);
+		pText[dwLen] = '\0';
+	}
+	return pText;
+}
