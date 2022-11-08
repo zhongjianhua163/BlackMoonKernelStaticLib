@@ -60,6 +60,7 @@
     <ClCompile Include="..\krnln\krnln_ClearClipBoard.cpp" />
     <ClCompile Include="..\krnln\krnln_close.cpp" />
     <ClCompile Include="..\krnln\krnln_cos.cpp" />
+    <ClCompile Include="..\krnln\krnln_create.cpp" />
     <ClCompile Include="..\krnln\krnln_CryptOpen.cpp" />
     <ClCompile Include="..\krnln\krnln_CurDir.cpp" />
     <ClCompile Include="..\krnln\krnln_day.cpp" />

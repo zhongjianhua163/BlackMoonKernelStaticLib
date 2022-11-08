@@ -726,6 +726,9 @@
     <ClCompile Include="..\krnln\StdAfx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\krnln\krnln_create.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Object Include="..\krnln\Diskid32.obj" />
