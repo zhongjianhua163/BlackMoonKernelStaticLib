@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include"ATLComTime.h"
+#include"shlwapi.h"
 #pragma pack(1)
 
 
@@ -10,6 +10,7 @@ struct ColumnInfo//字段信息
     int Type = 0;
     int StrDataLenth = 20;
 };
+typedef ColumnInfo* lpColumInfo;
 int  CreateEdb(const char* Filename, ColumnInfo* ColumnArry, unsigned int ColumnNum);
 BOOL IsValidName(const char* text);
 char* refilename(const char* Filename, const char* extensionname);
@@ -300,6 +301,8 @@ int  CreateEdb(const char* Filename, ColumnInfo* ColumnArry, unsigned int Column
 
 #pragma endregion
 #pragma region 文本辅助类
+
+
 char* refilename(const char* Filename, const char* extensionname) {
     char NewPath[MAX_PATH];
     char* suffix;
@@ -404,18 +407,24 @@ BOOL IsValidName(const char* text) {
 LIBAPI(BOOL, krnln_create)
 {
     PMDATA_INF pArgInf = &ArgInf;
+    
+
     if (pArgInf[0].m_dtDataType != SDT_TEXT)
     {
         return FALSE;
     }
+    
     const char* filename = pArgInf[0].m_pText;
-    if ((pArgInf[1].m_dtDataType & DT_IS_ARY) != DT_IS_ARY || nArgCount != 2)
+
+   
+    if ( nArgCount != 2)
     {
         return FALSE;
     }
     
     DWORD nElementCount;
-    ColumnInfo* pAryDataBegin = (ColumnInfo*)GetAryElementInf(pArgInf[1].m_pAryData, nElementCount);
+    lpColumInfo* pAryDataBegin = (lpColumInfo*)GetAryElementInf(pArgInf[1].m_pAryData, nElementCount);
+
     if (nElementCount < 1) {//参数二规定必须为数组
         return FALSE;
     }
@@ -425,13 +434,14 @@ LIBAPI(BOOL, krnln_create)
         delete[]InAryData;
         return FALSE;
     }
+    
     if (nElementCount > 0)
     {
         for (INT i = 0; i < nElementCount; i++) {
-
-            InAryData[i].Name = pAryDataBegin[i].Name;
-            InAryData[i].StrDataLenth= pAryDataBegin[i].StrDataLenth;
-            InAryData[i].Type = pAryDataBegin[i].Type;
+            InAryData[i].Name = pAryDataBegin[i]->Name;
+            InAryData[i].StrDataLenth = pAryDataBegin[i]->StrDataLenth;
+            InAryData[i].Type = pAryDataBegin[i]->Type;
+            
         }
 
     }//memcppy
@@ -439,7 +449,5 @@ LIBAPI(BOOL, krnln_create)
     delete[]InAryData;
     return ret;
 }
-
-
 
 
