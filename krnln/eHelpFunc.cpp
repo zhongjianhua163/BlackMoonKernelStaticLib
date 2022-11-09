@@ -114,7 +114,7 @@ PDESTROY BlackMoonFreeAllUserDll = NULL;
 	}
 
 	void*  _cdecl E_MAlloc (DWORD Param1){
-
+		
 		if(hBlackMoonHeap==NULL)
 			hBlackMoonHeap =::GetProcessHeap();
 		void * pData = HeapAlloc(hBlackMoonHeap, HEAP_ZERO_MEMORY, Param1);//malloc(Param1);//
@@ -123,7 +123,28 @@ PDESTROY BlackMoonFreeAllUserDll = NULL;
 			//ZeroMemory(pData,Param1);
 		//else
 		{
-			MessageBox(0, "内存不足", "error", MB_ICONERROR);
+			char ErrorString[255];
+			char** pRetnAddr = (char**)(&Param1 - 1); // 取返回地址
+			wsprintf(ErrorString, "申请%d字节内存失败.\r\n"
+				"栈信息:\r\n"
+				"0x%08X\r\n0x%08X\r\n"
+				"0x%08X\r\n0x%08X\r\n"
+				"0x%08X\r\n0x%08X\r\n"
+				"0x%08X\r\n0x%08X\r\n"
+				"0x%08X\r\n0x%08X\r\n"
+				"0x%08X\r\n0x%08X\r\n"
+				"0x%08X\r\n0x%08X\r\n"
+				"0x%08X\r\n0x%08X\r\n", 
+				Param1,
+				pRetnAddr[0], pRetnAddr[1],
+				pRetnAddr[2], pRetnAddr[3],
+				pRetnAddr[4], pRetnAddr[5],
+				pRetnAddr[6], pRetnAddr[7],
+				pRetnAddr[8], pRetnAddr[9],
+				pRetnAddr[10], pRetnAddr[11],
+				pRetnAddr[12], pRetnAddr[13],
+				pRetnAddr[14], pRetnAddr[15]);
+			MessageBox(0, ErrorString, "error", MB_ICONERROR);
 			E_End (0);
 		}
 
@@ -138,7 +159,28 @@ PDESTROY BlackMoonFreeAllUserDll = NULL;
 		
 		if(!pData)
 		{
-			MessageBox(0, "内存不足", "error", MB_ICONERROR);
+			char ErrorString[255];
+			char** pRetnAddr = (char**)(&Param1 - 1); // 取返回地址
+			wsprintf(ErrorString, "申请%d字节内存失败.\r\n"
+				"栈信息:\r\n"
+				"0x%08X\r\n0x%08X\r\n"
+				"0x%08X\r\n0x%08X\r\n"
+				"0x%08X\r\n0x%08X\r\n"
+				"0x%08X\r\n0x%08X\r\n"
+				"0x%08X\r\n0x%08X\r\n"
+				"0x%08X\r\n0x%08X\r\n"
+				"0x%08X\r\n0x%08X\r\n"
+				"0x%08X\r\n0x%08X\r\n", 
+				Param1,
+				pRetnAddr[0], pRetnAddr[1],
+				pRetnAddr[2], pRetnAddr[3],
+				pRetnAddr[4], pRetnAddr[5],
+				pRetnAddr[6], pRetnAddr[7],
+				pRetnAddr[8], pRetnAddr[9],
+				pRetnAddr[10], pRetnAddr[11],
+				pRetnAddr[12], pRetnAddr[13],
+				pRetnAddr[14], pRetnAddr[15]);
+			MessageBox(0, ErrorString, "error", MB_ICONERROR);
 			E_End (0);
 		}
 		
@@ -157,6 +199,27 @@ PDESTROY BlackMoonFreeAllUserDll = NULL;
 	
 		if(!pData)
 		{
+			char ErrorString[255];
+			char** pRetnAddr = (char**)(&Param2 - 2); // 取返回地址
+			wsprintf(ErrorString, "申请%d字节内存失败.\r\n"
+				"栈信息:\r\n"
+				"0x%08X\r\n0x%08X\r\n"
+				"0x%08X\r\n0x%08X\r\n"
+				"0x%08X\r\n0x%08X\r\n"
+				"0x%08X\r\n0x%08X\r\n"
+				"0x%08X\r\n0x%08X\r\n"
+				"0x%08X\r\n0x%08X\r\n"
+				"0x%08X\r\n0x%08X\r\n"
+				"0x%08X\r\n0x%08X\r\n", 
+				Param1,
+				pRetnAddr[0], pRetnAddr[1],
+				pRetnAddr[2], pRetnAddr[3],
+				pRetnAddr[4], pRetnAddr[5],
+				pRetnAddr[6], pRetnAddr[7],
+				pRetnAddr[8], pRetnAddr[9],
+				pRetnAddr[10], pRetnAddr[11],
+				pRetnAddr[12], pRetnAddr[13],
+				pRetnAddr[14], pRetnAddr[15]);
 			MessageBox(0, "内存不足", "error", MB_ICONERROR);
 			E_End (0);
 		}
