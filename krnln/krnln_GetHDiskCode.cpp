@@ -1,19 +1,43 @@
 #include "stdafx.h"
-/*
-    µ÷ÓÃ¸ñÊ½£º ¡´ÕûÊıĞÍ¡µ È¡Ó²ÅÌÌØÕ÷×Ö £¨£© - ÏµÍ³ºËĞÄÖ§³Ö¿â->ÆäËû
-    Ó¢ÎÄÃû³Æ£ºGetHDiskCode
-    ·µ»ØµçÄÔÖĞµÚÒ»¸öÎïÀíÓ²ÅÌµÄÎïÀíÌØÕ÷×Ö£¬¸ÃÌØÕ÷×ÖÊÇ½öÓ²¼şÏà¹ØµÄ£¬Ò²¾ÍÊÇËµÓëÈÎºÎÈí¼şÏµÍ³¶¼ÎŞ¹Ø£¨°üÀ¨²Ù×÷ÏµÍ³£©¡£ÓÃ»§¿ÉÒÔÊ¹ÓÃ´ËÌØÕ÷×ÖÀ´ÏŞÖÆ×Ô¼ºµÄ³ÌĞò½öÔÚÄ³Ò»Ì¨¼ÆËã»úÉÏÔËĞĞ£¬ÒÔ±£»¤×Ô¼ºÈí¼şµÄ°æÈ¨¡£±¾ÃüÁî¿ÉÒÔÔÚÈÎºÎ Windows ÏµÍ³°æ±¾ÏÂÔËĞĞ¡£ÃüÁîÖ´ĞĞºóÈç¹û·µ»Ø 0 £¬±íÊ¾´Ë´ÎÈ¡Ó²ÅÌÌØÕ÷×ÖÊ§°Ü¡£ÓÉÓÚÓĞ¿ÉÄÜÊÇÒòÎªÔİÊ±µÄ I/O ³åÍ»Ôì³É£¬Òò´ËÊ§°Üºó¿ÉÒÔµÈ´ıÒ»¶ÎËæ»úÊ±¼äºóÔÙÊÔ£¨¿ÉÒÔ²Î¿´Àı³Ì£©¡£Èç¹ûÖØ¸´³¢ÊÔËÄÎå´ÎºóÈÔÈ»Ê§°Ü£¬±íÃ÷¸ÃÓ²ÅÌÎŞ·¨È¡³öÌØÕ÷×Ö¡£±¾ÃüÁîÎª³õ¼¶ÃüÁî¡£
-*/
 
-#pragma region Ó²ÅÌ
-
-typedef struct SENDCMDOUTPARAMS__
+struct  EDRIVERSTATUS {
+    BYTE     bDriverError;
+    BYTE     bIDEError;
+    BYTE     bReserved[2];
+    DWORD   dwReserved[2];
+};
+struct EIDEREGS {
+    BYTE     bFeaturesReg;           // Used for specifying SMART "commands".
+    BYTE     bSectorCountReg;        // IDE sector count register
+    BYTE     bSectorNumberReg;       // IDE sector number register
+    BYTE     bCylLowReg;             // IDE low order cylinder value
+    BYTE     bCylHighReg;            // IDE high order cylinder value
+    BYTE     bDriveHeadReg;          // IDE drive/head register
+    BYTE     bCommandReg;            // Actual IDE command.
+    BYTE     bReserved;                      // reserved for future use.  Must be zero.
+};
+struct SENDCMDOUTPARAMS__
 {
     DWORD cBufferSize; // Size of bBuffer in bytes 
-    DRIVERSTATUS DriverStatus; // Driver status structure. 
+    EDRIVERSTATUS DriverStatus; // Driver status structure. 
     BYTE bBuffer[512]; // Buffer of arbitrary length 
 };
-static inline bool  DoIDENTIFY(HANDLE hDevice, SENDCMDINPARAMS* lpInBuffer, SENDCMDOUTPARAMS__* lpOutBuffer, char arg1, char arg2, LPDWORD lpBytesReturned)
+struct ESENDCMDINPARAMS {
+    DWORD   cBufferSize;            // Buffer size in bytes
+    EIDEREGS irDriveRegs;            // Structure with drive register values.
+    BYTE     bDriveNumber;           // Physical drive number to send
+                                                            // command to (0,1,2,3).
+    BYTE     bReserved[3];           // Reserved for future expansion.
+    DWORD   dwReserved[4];          // For future use.
+    BYTE     bBuffer[1];                     // Input buffer.
+};
+
+struct ESENDCMDOUTPARAMS {
+    DWORD                   cBufferSize;            // Size of bBuffer in bytes
+    EDRIVERSTATUS            DriverStatus;           // Driver status structure.
+    BYTE                    bBuffer[1];             // Buffer of arbitrary length in which to store the data read from the                                                                                  // drive.
+};
+static inline BOOL  DoIDENTIFY(HANDLE hDevice, ESENDCMDINPARAMS* lpInBuffer, SENDCMDOUTPARAMS__* lpOutBuffer, char arg1, char arg2, LPDWORD lpBytesReturned)
 {
     lpInBuffer->irDriveRegs.bSectorCountReg = 1;
     lpInBuffer->irDriveRegs.bSectorNumberReg = 1;
@@ -58,17 +82,18 @@ static inline unsigned int CalcHDCode(UINT* diskdata)
 }
 static inline UINT  ReadPhysicalDriveInNT()
 {
-    UINT diskdata[256] = {};
-    char Plaintext[4] = {};
-    HANDLE hPhysicalDriveIOCTL = {};
-    _SENDCMDINPARAMS InBuffer = {};
-    char Out[528] = {};
-    char OutBuffer[24] = {};
-    DWORD BytesReturned = {};
-    SENDCMDOUTPARAMS__ ReBuffer = {};
-    char* Rebuffval = {};
-    UINT* DiskData = {};
-    UINT ThisBuff = {};
+    UINT diskdata[256] = { 0 };
+
+    char Plaintext[4] = { 0 };
+    HANDLE hPhysicalDriveIOCTL = { 0 };
+    ESENDCMDINPARAMS InBuffer = { 0 };
+    char Out[528] = { 0 };
+    char OutBuffer[24] = { 0 };
+    DWORD BytesReturned = { 0 };
+    SENDCMDOUTPARAMS__ ReBuffer = { 0 };
+    char* Rebuffval = { 0 };
+    UINT* DiskData = { 0 };
+    UINT ThisBuff = { 0 };
     UINT Ret = 0;
     hPhysicalDriveIOCTL = CreateFileA("\\\\.\\PhysicalDrive0", 0xC0000000, 3u, 0, 3u, 0, 0);
     if (hPhysicalDriveIOCTL == INVALID_HANDLE_VALUE)
@@ -113,9 +138,7 @@ static inline UINT  ReadPhysicalDriveInNT()
     }
     return Ret;
 }
-#pragma endregion
 
-#pragma region SICI
 
 typedef struct _SRB_IO_CONTROL
 {
@@ -128,7 +151,7 @@ typedef struct _SRB_IO_CONTROL
 } SRB_IO_CONTROL, * PSRB_IO_CONTROL;
 
 #define  FILE_DEVICE_SCSI              0x0000001b
-#define  SENDIDLENGTH  sizeof (SENDCMDOUTPARAMS) + IDENTIFY_BUFFER_SIZE
+#define  SENDIDLENGTH  sizeof (ESENDCMDOUTPARAMS) + 512
 #define  IOCTL_SCSI_MINIPORT_IDENTIFY  ( ( FILE_DEVICE_SCSI << 16 ) + 0x0501 )
 #define  IOCTL_SCSI_MINIPORT 0x0004D008  //  see NTDDSCSI.H for definition
 
@@ -140,10 +163,10 @@ static inline  UINT   ReadIdeDriveAsScsiDriveInNT()
     char* Rebuffval;
     WORD ThisBuff;
     DWORD BytesReturned;
-    UINT diskdata[256] = {};
-    char InBuffer[sizeof(SRB_IO_CONTROL) + SENDIDLENGTH] = {};
+    UINT diskdata[256] = { 0 };
+    char InBuffer[sizeof(SRB_IO_CONTROL) + SENDIDLENGTH] = { 0 };
     SRB_IO_CONTROL* cP = (SRB_IO_CONTROL*)InBuffer;
-    SENDCMDINPARAMS* pin = (SENDCMDINPARAMS*)(InBuffer + sizeof(SRB_IO_CONTROL));
+    ESENDCMDINPARAMS* pin = (ESENDCMDINPARAMS*)(InBuffer + sizeof(SRB_IO_CONTROL));
     hPhysicalDriveIOCTL = CreateFileA("\\\\.\\Scsi0:", 0xC0000000, OPEN_EXISTING, 0, OPEN_EXISTING, NULL, NULL);
     if (hPhysicalDriveIOCTL != INVALID_HANDLE_VALUE)
     {
@@ -152,7 +175,7 @@ static inline  UINT   ReadIdeDriveAsScsiDriveInNT()
         cP->Length = SENDIDLENGTH;
         cP->ControlCode = IOCTL_SCSI_MINIPORT_IDENTIFY;
         ::strncpy((char*)cP->Signature, "SCSIDISK", 8);
-        if (DeviceIoControl(hPhysicalDriveIOCTL, IOCTL_SCSI_MINIPORT, &InBuffer, sizeof(SRB_IO_CONTROL) + sizeof(SENDCMDINPARAMS) - 1, &InBuffer, sizeof(SRB_IO_CONTROL) + SENDIDLENGTH, &BytesReturned, NULL))
+        if (DeviceIoControl(hPhysicalDriveIOCTL, IOCTL_SCSI_MINIPORT, &InBuffer, sizeof(SRB_IO_CONTROL) + sizeof(ESENDCMDINPARAMS) - 1, &InBuffer, sizeof(SRB_IO_CONTROL) + SENDIDLENGTH, &BytesReturned, NULL))
         {
             DiskData = diskdata;
             Rebuffval = (char*)pin;
@@ -170,19 +193,18 @@ static inline  UINT   ReadIdeDriveAsScsiDriveInNT()
     }
     return Ret;
 }
-#pragma endregion
 
-#pragma region other
-using namespace std;
-static inline int  get_crc32(byte* ARG, size_t lenth)//1
+
+
+static inline int  get_crc32(BYTE* ARG, DWORD lenth)//1
 {
-    intptr_t crcval;
-    size_t Size;
-    size_t i;
+    int crcval;
+    DWORD Size;
+    DWORD i;
     int Ret;
     int position;
     int crc;
-    int table[256] = {};
+    int table[256] = { 0 };
     Size = lenth;
     if (Size < 1) {
         return 0;
@@ -212,11 +234,11 @@ static inline int  get_crc32(byte* ARG, size_t lenth)//1
 static inline int  Getjycode()//·µ»Ø0ËµÃ÷Î´È¡µ½¡£Õâ¸öÖ÷ÒªÊÇ²¹³äÒ×²»ÄÜÔÚÄ³Ğ©ÏµÍ³»òÊÇÓ²ÅÌÉÏÈ¡Ó²ÅÌÌØÕ÷×Ö¡£
 {
     HANDLE hPhysicalDriveIOCTL;
-    byte query[12];
+    BYTE query[12] = { 0 };
     int cbBytesReturned = 0;
-    byte buffer[1024];
+    BYTE buffer[1024] = { 0 };
     int buffersize;
-    bool st = false;
+    BOOL st = FALSE;
     int crc1 = 0;
     hPhysicalDriveIOCTL = CreateFileA("\\\\.\\PhysicalDrive0", 0, (1 | 2), 0, 3, 0, 0);
     if (hPhysicalDriveIOCTL == INVALID_HANDLE_VALUE)
@@ -225,7 +247,7 @@ static inline int  Getjycode()//·µ»Ø0ËµÃ÷Î´È¡µ½¡£Õâ¸öÖ÷ÒªÊÇ²¹³äÒ×²»ÄÜÔÚÄ³Ğ©ÏµÍ³»
     }
     buffersize = 1024;
     st = DeviceIoControl(hPhysicalDriveIOCTL, 2954240, lstrcpynA((LPSTR)query, (LPSTR)query, 0), 12, lstrcpynA((LPSTR)buffer, (LPSTR)buffer, 0), buffersize, (LPDWORD)cbBytesReturned, 0);
-    if (st == true) {
+    if (st == TRUE) {
         crc1 = get_crc32(buffer, 1024);
 
     }
@@ -234,7 +256,11 @@ static inline int  Getjycode()//·µ»Ø0ËµÃ÷Î´È¡µ½¡£Õâ¸öÖ÷ÒªÊÇ²¹³äÒ×²»ÄÜÔÚÄ³Ğ©ÏµÍ³»
 
 }
 
-#pragma endregion
+/*
+    µ÷ÓÃ¸ñÊ½£º ¡´ÕûÊıĞÍ¡µ È¡Ó²ÅÌÌØÕ÷×Ö £¨£© - ÏµÍ³ºËĞÄÖ§³Ö¿â->ÆäËû
+    Ó¢ÎÄÃû³Æ£ºGetHDiskCode
+    ·µ»ØµçÄÔÖĞµÚÒ»¸öÎïÀíÓ²ÅÌµÄÎïÀíÌØÕ÷×Ö£¬¸ÃÌØÕ÷×ÖÊÇ½öÓ²¼şÏà¹ØµÄ£¬Ò²¾ÍÊÇËµÓëÈÎºÎÈí¼şÏµÍ³¶¼ÎŞ¹Ø£¨°üÀ¨²Ù×÷ÏµÍ³£©¡£ÓÃ»§¿ÉÒÔÊ¹ÓÃ´ËÌØÕ÷×ÖÀ´ÏŞÖÆ×Ô¼ºµÄ³ÌĞò½öÔÚÄ³Ò»Ì¨¼ÆËã»úÉÏÔËĞĞ£¬ÒÔ±£»¤×Ô¼ºÈí¼şµÄ°æÈ¨¡£±¾ÃüÁî¿ÉÒÔÔÚÈÎºÎ Windows ÏµÍ³°æ±¾ÏÂÔËĞĞ¡£ÃüÁîÖ´ĞĞºóÈç¹û·µ»Ø 0 £¬±íÊ¾´Ë´ÎÈ¡Ó²ÅÌÌØÕ÷×ÖÊ§°Ü¡£ÓÉÓÚÓĞ¿ÉÄÜÊÇÒòÎªÔİÊ±µÄ I/O ³åÍ»Ôì³É£¬Òò´ËÊ§°Üºó¿ÉÒÔµÈ´ıÒ»¶ÎËæ»úÊ±¼äºóÔÙÊÔ£¨¿ÉÒÔ²Î¿´Àı³Ì£©¡£Èç¹ûÖØ¸´³¢ÊÔËÄÎå´ÎºóÈÔÈ»Ê§°Ü£¬±íÃ÷¸ÃÓ²ÅÌÎŞ·¨È¡³öÌØÕ÷×Ö¡£±¾ÃüÁîÎª³õ¼¶ÃüÁî¡£
+*/
 
 LIBAPI(DWORD, krnln_GetHDiskCode)
 {
