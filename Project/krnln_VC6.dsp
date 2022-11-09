@@ -249,6 +249,10 @@ SOURCE="..\krnln\krnln_cos.cpp"
 # End Source File
 # Begin Source File
 
+SOURCE="..\krnln\krnln_create.cpp"
+# End Source File
+# Begin Source File
+
 SOURCE="..\krnln\krnln_CryptOpen.cpp"
 # End Source File
 # Begin Source File
