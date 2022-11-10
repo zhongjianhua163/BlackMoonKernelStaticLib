@@ -96,6 +96,7 @@ double  GetCOLeDateTime()//‘为了向下兼容原版EDB,验校时间，为了绑定EDT
     pudateIn.st.wSecond = time.wSecond;
     VarDateFromUdateEx(&pudateIn, 0x409u, 0x80000000, &pdateOut);
     return pdateOut;
+
 }//
 int  CreateEdb(const char* Filename, ColumnInfo* ColumnArry,  int ColumnNum) {
 
@@ -333,8 +334,10 @@ int  CreateEdb(const char* Filename, ColumnInfo* ColumnArry,  int ColumnNum) {
         EDTDATA EdTData;
         EdTData.check = checktime;
         if (WriteFile(hFile, &EdTData, sizeof(EDTDATA), 0, 0) == 0) {
+            CloseHandle(hDataFile);
             return -50;
         }
+        CloseHandle(hDataFile);
     }
     return 0;
 }
