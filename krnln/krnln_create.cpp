@@ -162,7 +162,7 @@ int  CreateEdb(const char* Filename, ColumnInfo* ColumnArry, int ColumnNum)
 				StorageLength = 0;
 				break;
 			case 3:
-				StorageLength = 2;
+				StorageLength = 4;
 				break;
 			case 5:
 				StorageLength = 4;
@@ -222,12 +222,12 @@ int  CreateEdb(const char* Filename, ColumnInfo* ColumnArry, int ColumnNum)
 		return -1;
 	}
 	; // memset (取变量数据地址 (EdbData), 0, 160)  ; // EdbData={};
-
+	checktime = GetCOLeDateTime();
 	EdbData.check = checktime;
 	EdbData.ValidColumnNum = ValidColumnNum;
 	EdbData.TotalLength = TotalLength;
 	// 结构体，仅供参考，易里到此为止不再使用;
-	checktime = GetCOLeDateTime(); // 验校时间，用于兼容和绑定EDT文件;
+	// 验校时间，用于兼容和绑定EDT文件;
 	// 以上两个是完全相同的，字节集会方便一点，C++里用结构体更方便;
 
 
