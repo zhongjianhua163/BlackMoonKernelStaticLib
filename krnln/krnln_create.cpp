@@ -1,46 +1,83 @@
 #include "stdafx.h"
-#include"ATLComTime.h"
+#include"shlwapi.h"
+#pragma comment(lib,"shlwapi.lib") 
 #pragma pack(1)
-
-
+#if (_MSC_VER <= 1600)
+WINOLEAUTAPI VarDateFromUdateEx(UDATE* pudateIn, LCID lcid, ULONG dwFlags, DATE* pdateOut);
+#endif
 /*创建暴漏接口*/
 struct ColumnInfo//字段信息
 {
-    const char* Name = NULL;
-    int Type = 0;
-    int StrDataLenth = 20;
+    const char* Name;
+    int Type;
+    int StrDataLenth;
 };
-int  CreateEdb(const char* Filename, ColumnInfo* ColumnArry, unsigned int ColumnNum);
+typedef ColumnInfo* lpColumInfo;
+int  CreateEdb(const char* Filename, ColumnInfo* ColumnArry, int ColumnNum);
 BOOL IsValidName(const char* text);
 char* refilename(const char* Filename, const char* extensionname);
-#pragma region 创建
 
+//struct EDTDATA//EDT创建数据
+//{
+//    const BYTE Typename[4] = { 87,69,68,84 };//标识符WEDB，BYTE[4]和整数都可以，尽量不要用文本型，因为是指针;
+//    const BYTE delimiter1[4] = { 0,0,1,0 };//分隔符0010 65536 也可以两个short，看你怎么写了;
+//    double  check = 0;//COleDateTime::GetTickCount()，每次打开会刷新，兼容原版EDB;;
+//    const  BYTE delimiter2[4] = { 1,0,0,0 };//分隔符0000 0;//分隔符1000 1;
+//    BYTE data[492] = {};
+//};
 struct EDTDATA//EDT创建数据
 {
-    const byte Typename[4] = { 87,69,68,84 };//标识符WEDB，byte[4]和整数都可以，尽量不要用文本型，因为是指针;
-    const byte delimiter1[4] = { 0,0,1,0 };//分隔符0010 65536 也可以两个short，看你怎么写了;
-    double  check = 0;//COleDateTime::GetTickCount()，每次打开会刷新，兼容原版EDB;;
-    const  byte delimiter2[4] = { 1,0,0,0 };//分隔符0000 0;//分隔符1000 1;
-    byte data[492] = {};
+    EDTDATA() {
+
+        BYTE TypenameInit[4] = { 87,69,68,84 };//标识符WEDB，BYTE[4]和整数都可以，尽量不要用文本型，因为是指针;
+        memcpy(Typename, TypenameInit, 4);
+        BYTE delimiter1Init[4] = { 0,0,1,0 };//分隔符0010 65536 也可以两个short，看你怎么写了;
+        memcpy(delimiter1, delimiter1Init, 4);
+        double  check = 0;//COleDateTime::GetTickCount()，每次打开会刷新，兼容原版EDB;;
+        BYTE delimiter2Init[4] = { 1,0,0,0 };//分隔符0000 0;//分隔符1000 1;
+        memcpy(delimiter2, delimiter2Init, 4);
+        memset(data, 0, 492);
+    }
+    BYTE Typename[4];//标识符WEDB，BYTE[4]和整数都可以，尽量不要用文本型，因为是指针;
+    BYTE delimiter1[4];//分隔符0010 65536 也可以两个short，看你怎么写了;
+    double  check;//COleDateTime::GetTickCount()，每次打开会刷新，兼容原版EDB;;
+    BYTE delimiter2[4];//分隔符0000 0;//分隔符1000 1;
+    BYTE data[492];
 };
 struct EDBDATA//EDB创建数据
 {
-    const byte Typename[4] = { 87,69,68,66 };//标识符WEDB，byte[4]和整数都可以，尽量不要用文本型，因为是指针;
-    const byte delimiter1[4] = { 0,0,1,0 };//分隔符0010 65536 也可以两个short，看你怎么写了;
-    double  check = 0;//COleDateTime::GetTickCount()，每次打开会刷新，兼容原版EDB;;
-    const  byte delimiter2[8] = { 0,0,0,0,1,0,0,0 };//分隔符0000 0;//分隔符1000 1;
-    int  TotalLength = 0;//有效字段StorageLength4+各类型长度*数组数量 长度4;;
-    byte  blankbyte[84] = {};//目前未知84个空白长度，应该是留给索引表的;
-    int ValidColumnNum = 0;//第112位后储存的int是有效字段数量;
+    EDBDATA() {
+        const BYTE TypenameInit[4] = { 87,69,68,66 };//标识符WEDB，BYTE[4]和整数都可以，尽量不要用文本型，因为是指针;
+        memcpy(Typename, TypenameInit, 4);
+        const BYTE delimiter1Init[4] = { 0,0,1,0 };//分隔符0010 65536 也可以两个short，看你怎么写了;
+        memcpy(delimiter1, delimiter1Init, 4);
+        check = 0;//COleDateTime::GetTickCount()，每次打开会刷新，兼容原版EDB;;
+        const  BYTE delimiter2Init[8] = { 0,0,0,0,1,0,0,0 };//分隔符0000 0;//分隔符1000 1;
+        memcpy(delimiter2, delimiter2Init, 4);
+        TotalLength = 0;//有效字段StorageLength4+各类型长度*数组数量 长度4;;
+        memset(blankBYTE, 0, 84);
+        ValidColumnNum = 0;//第112位后储存的int是有效字段数量;
+    }
+    BYTE Typename[4];//标识符WEDB，BYTE[4]和整数都可以，尽量不要用文本型，因为是指针;
+    BYTE delimiter1[4];//分隔符0010 65536 也可以两个short，看你怎么写了;
+    double  check;//COleDateTime::GetTickCount()，每次打开会刷新，兼容原版EDB;;
+    BYTE delimiter2[8];//分隔符0000 0;//分隔符1000 1;
+    int  TotalLength;//有效字段StorageLength4+各类型长度*数组数量 长度4;;
+    BYTE  blankBYTE[84];//目前未知84个空白长度，应该是留给索引表的;
+    int ValidColumnNum;//第112位后储存的int是有效字段数量;
 };
 struct COLIMNDATA//单次字段信息创建
 {
-    char ColumnName[16] = {};//名称最大16,边界对齐
-    const byte delimiter[4] = { 0,0,0,0 };//分隔符
-    int ColumnType = 0;
-    int DataLenth = 20;//需求数据长度;
-    int strlenth = 0;//如为文本类型则需要长度;
-    byte Table[40] = {};
+    COLIMNDATA() {
+        memset(this, 0, sizeof(COLIMNDATA));
+        DataLenth = 20;
+    }
+    char ColumnName[16];//名称最大16,边界对齐
+    BYTE delimiter[4];//分隔符
+    int ColumnType;
+    int DataLenth;//需求数据长度;
+    int strlenth;//如为文本类型则需要长度;
+    BYTE Table[40];
 };
 
 double  GetCOLeDateTime()//‘为了向下兼容原版EDB,验校时间，为了绑定EDT
@@ -48,7 +85,7 @@ double  GetCOLeDateTime()//‘为了向下兼容原版EDB,验校时间，为了绑定EDT
 
     SYSTEMTIME time;
     GetLocalTime(&time);
-    DATE pdateOut;
+    double pdateOut;
     UDATE pudateIn;
     pudateIn.st.wDayOfWeek = time.wDayOfWeek;
     pudateIn.st.wYear = time.wYear;
@@ -59,10 +96,11 @@ double  GetCOLeDateTime()//‘为了向下兼容原版EDB,验校时间，为了绑定EDT
     pudateIn.st.wSecond = time.wSecond;
     VarDateFromUdateEx(&pudateIn, 0x409u, 0x80000000, &pdateOut);
     return pdateOut;
-}//
-int  CreateEdb(const char* Filename, ColumnInfo* ColumnArry, unsigned int ColumnNum) {
 
-    byte* Data = NULL;
+}//
+int  CreateEdb(const char* Filename, ColumnInfo* ColumnArry, int ColumnNum) {
+
+    BYTE* Data = NULL;
     // int DataLenth = 0;
     int Index;//判断字段重复计数
     int i;//全局计次
@@ -81,8 +119,8 @@ int  CreateEdb(const char* Filename, ColumnInfo* ColumnArry, unsigned int Column
     HANDLE hFile = NULL;
     HANDLE hDataFile = NULL;
 
-    //byte ColumnNameByte[16] = {  };//长度最大且固定为16;
-    //byte NowData[72];
+    //BYTE ColumnNameByte[16] = {  };//长度最大且固定为16;
+    //BYTE NowData[72];
     //lpReOpenBuff;//原版使用;
 
 
@@ -187,7 +225,9 @@ int  CreateEdb(const char* Filename, ColumnInfo* ColumnArry, unsigned int Column
     ; // hFile=OpenFile (refilename (Filename, ".edb"), lpReOpenBuff, 位或 (E常量_OF_SHARE_EXCLUSIVE, E常量_OF_CREATE, E常量_OF_WRITE));
     ; // 现代人请用→;
     ; // HANDLE hFile = CreateFileA(refilename(Filename, ".edb").c_str(), GENERIC_WRITE, 0, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_ARCHIVE, 0);;
-    hFile = CreateFileA(refilename(Filename, ".edb"), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_ARCHIVE, 0);//CREATE_ALWAYS是为了在"清空命令中使用文件覆盖快速完成清空"
+    char* infilename = refilename(Filename, ".edb");
+    hFile = CreateFileA(infilename, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_ARCHIVE, 0);//CREATE_ALWAYS是为了在"清空命令中使用文件覆盖快速完成清空"
+    delete[]infilename;
     ; // 调试输出 (refilename (Filename, ".edb"));
     ; // (hFile == INVALID_HANDLE_VALUE);
     ; // (hFile == HFILE_ERROR);
@@ -276,7 +316,7 @@ int  CreateEdb(const char* Filename, ColumnInfo* ColumnArry, unsigned int Column
         AllColumnData[i].strlenth = strlenth; // 文本类型长度;
     }
     DataLenth = sizeof(EdbData) + sizeof(COLIMNDATA) * ColumnNum;
-    Data = new byte[DataLenth];
+    Data = new BYTE[DataLenth];
     memcpy(Data, &EdbData, sizeof(EdbData));
     memcpy(Data + sizeof(EdbData), AllColumnData, sizeof(COLIMNDATA) * ColumnNum);
     WriteFile(hFile, Data, DataLenth, 0, 0);
@@ -284,7 +324,9 @@ int  CreateEdb(const char* Filename, ColumnInfo* ColumnArry, unsigned int Column
     delete[]Data;
     CloseHandle(hFile);
     if (HaveByteorRemark == true) { // 如果为字节集或备注型，则创建绑定EDT文件{
-        hDataFile = CreateFileA(refilename(Filename, ".EDT"), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_ARCHIVE, 0);
+        char* inedtname = refilename(Filename, ".EDT");
+        hDataFile = CreateFileA(inedtname, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_ARCHIVE, 0);
+        delete[]inedtname;
         ; // hDataFile=OpenFile (refilename (Filename, ".edt"), lpReOpenBuff, 4113);
         if (hDataFile == INVALID_HANDLE_VALUE) {
             return -50;
@@ -292,16 +334,20 @@ int  CreateEdb(const char* Filename, ColumnInfo* ColumnArry, unsigned int Column
         EDTDATA EdTData;
         EdTData.check = checktime;
         if (WriteFile(hFile, &EdTData, sizeof(EDTDATA), 0, 0) == 0) {
+            CloseHandle(hDataFile);
             return -50;
         }
+        CloseHandle(hDataFile);
     }
     return 0;
 }
 
-#pragma endregion
-#pragma region 文本辅助类
+
+
+
+
 char* refilename(const char* Filename, const char* extensionname) {
-    char NewPath[MAX_PATH];
+    char* NewPath = new char[MAX_PATH];
     char* suffix;
     strcpy(NewPath, Filename);
     suffix = PathFindExtensionA(extensionname);
@@ -335,7 +381,7 @@ BOOL Isvalidchar(const char* str) {
     if (first & 0x80)//如果文本为汉字
     {
         char second = *(str + 1);
-        if (((byte)first != 163 || (byte)second != 223) && !Isfullwidthnum(first, second) && !Isfullwidthletter(first, second) && ((byte)first < 0x81u || (byte)first > 0xA0u) && (byte)first < 0xAAu) {
+        if (((BYTE)first != 163 || (BYTE)second != 223) && !Isfullwidthnum(first, second) && !Isfullwidthletter(first, second) && ((BYTE)first < 0x81u || (BYTE)first > 0xA0u) && (BYTE)first < 0xAAu) {
             if (first == -87)//char[0]==-87进入符号段，char[1]==96则为“ー”其余为标点符号
             {
                 if (second != 96) {
@@ -345,16 +391,16 @@ BOOL Isvalidchar(const char* str) {
             }
             if (first == -92)//char[0]==-87进入日文段，char[1]>96则为“ー”其余为标点符号
             {
-                if ((byte)second >= 0xA1u)
+                if ((BYTE)second >= 0xA1u)
                 {
-                    if ((byte)second > 0xF3u) {
+                    if ((BYTE)second > 0xF3u) {
                         return -1;
                     }
                     return 1;
                 }
                 return -1;
             }
-            if (first != -91 || (byte)second < 0xA1u || (byte)second > 0xF6u) {//非法字符区域{}
+            if (first != -91 || (BYTE)second < 0xA1u || (BYTE)second > 0xF6u) {//非法字符区域{}
                 return -1;
             }
         }
@@ -374,7 +420,7 @@ BOOL IsValidName(const char* text) {
     if (!text) {
         return 0;
     }
-    byte NowChar = 0;
+    BYTE NowChar = 0;
     int textlenth = strlen(text);
 
     if (*text >= 48 && *text <= 57 || *text == 46) {
@@ -384,7 +430,7 @@ BOOL IsValidName(const char* text) {
         return false;
     }
 
-    for (size_t i = 0; i < textlenth; i++) {
+    for (int i = 0; i < textlenth; i++) {
         NowChar = text[i];
 
         if (!IsDBCSLeadByteEx(CP_ACP, NowChar)) {
@@ -399,23 +445,29 @@ BOOL IsValidName(const char* text) {
     }
     return 1;
 }
-#pragma endregion
+
 
 LIBAPI(BOOL, krnln_create)
 {
     PMDATA_INF pArgInf = &ArgInf;
+
+
     if (pArgInf[0].m_dtDataType != SDT_TEXT)
     {
         return FALSE;
     }
+
     const char* filename = pArgInf[0].m_pText;
-    if ((pArgInf[1].m_dtDataType & DT_IS_ARY) != DT_IS_ARY || nArgCount != 2)
+
+
+    if (nArgCount != 2)
     {
         return FALSE;
     }
-    
+
     DWORD nElementCount;
-    ColumnInfo* pAryDataBegin = (ColumnInfo*)GetAryElementInf(pArgInf[1].m_pAryData, nElementCount);
+    lpColumInfo* pAryDataBegin = (lpColumInfo*)GetAryElementInf(pArgInf[1].m_pAryData, nElementCount);
+
     if (nElementCount < 1) {//参数二规定必须为数组
         return FALSE;
     }
@@ -425,13 +477,14 @@ LIBAPI(BOOL, krnln_create)
         delete[]InAryData;
         return FALSE;
     }
+
     if (nElementCount > 0)
     {
-        for (INT i = 0; i < nElementCount; i++) {
+        for (DWORD i = 0; i < nElementCount; i++) {
+            InAryData[i].Name = pAryDataBegin[i]->Name;
+            InAryData[i].StrDataLenth = pAryDataBegin[i]->StrDataLenth;
+            InAryData[i].Type = pAryDataBegin[i]->Type;
 
-            InAryData[i].Name = pAryDataBegin[i].Name;
-            InAryData[i].StrDataLenth= pAryDataBegin[i].StrDataLenth;
-            InAryData[i].Type = pAryDataBegin[i].Type;
         }
 
     }//memcppy
@@ -439,7 +492,4 @@ LIBAPI(BOOL, krnln_create)
     delete[]InAryData;
     return ret;
 }
-
-
-
 
