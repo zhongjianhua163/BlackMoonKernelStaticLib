@@ -6,6 +6,7 @@ struct  EDRIVERSTATUS {
     BYTE     bReserved[2];
     DWORD   dwReserved[2];
 };
+
 struct EIDEREGS {
     BYTE     bFeaturesReg;           // Used for specifying SMART "commands".
     BYTE     bSectorCountReg;        // IDE sector count register
@@ -16,12 +17,14 @@ struct EIDEREGS {
     BYTE     bCommandReg;            // Actual IDE command.
     BYTE     bReserved;                      // reserved for future use.  Must be zero.
 };
+
 struct SENDCMDOUTPARAMS__
 {
     DWORD cBufferSize; // Size of bBuffer in bytes 
     EDRIVERSTATUS DriverStatus; // Driver status structure. 
     BYTE bBuffer[512]; // Buffer of arbitrary length 
 };
+
 struct ESENDCMDINPARAMS {
     DWORD   cBufferSize;            // Buffer size in bytes
     EIDEREGS irDriveRegs;            // Structure with drive register values.
@@ -37,6 +40,7 @@ struct ESENDCMDOUTPARAMS {
     EDRIVERSTATUS            DriverStatus;           // Driver status structure.
     BYTE                    bBuffer[1];             // Buffer of arbitrary length in which to store the data read from the                                                                                  // drive.
 };
+
 static inline BOOL  DoIDENTIFY(HANDLE hDevice, ESENDCMDINPARAMS* lpInBuffer, SENDCMDOUTPARAMS__* lpOutBuffer, char arg1, char arg2, LPDWORD lpBytesReturned)
 {
     lpInBuffer->irDriveRegs.bSectorCountReg = 1;
@@ -80,10 +84,10 @@ static inline unsigned int CalcHDCode(UINT* diskdata)
     v2 = GetCode(diskdata, 23, 26) + v1;
     return GetCode(diskdata, 10, 19) + v2 + ((diskdata[1] + diskdata[3] + diskdata[6] + diskdata[21]) << 16);
 }
+
 static inline UINT  ReadPhysicalDriveInNT()
 {
     UINT diskdata[256] = { 0 };
-
     char Plaintext[4] = { 0 };
     HANDLE hPhysicalDriveIOCTL = { 0 };
     ESENDCMDINPARAMS InBuffer = { 0 };
@@ -95,46 +99,35 @@ static inline UINT  ReadPhysicalDriveInNT()
     UINT* DiskData = { 0 };
     UINT ThisBuff = { 0 };
     UINT Ret = 0;
-    hPhysicalDriveIOCTL = CreateFileA("\\\\.\\PhysicalDrive0", 0xC0000000, 3u, 0, 3u, 0, 0);
-    if (hPhysicalDriveIOCTL == INVALID_HANDLE_VALUE)
-    {
 
+    hPhysicalDriveIOCTL = CreateFileA("\\\\.\\PhysicalDrive0", 0xC0000000, 3u, 0, 3u, 0, 0);
+    if (hPhysicalDriveIOCTL == INVALID_HANDLE_VALUE) {
         return  0;
     }
-    else
-    {
-
+    else {
         memset(&OutBuffer, 0, 0x18u);
         BytesReturned = 0;
         DeviceIoControl(hPhysicalDriveIOCTL, 0x74080u, 0, 0, &OutBuffer, 0x18u, &BytesReturned, 0);
-        if (OutBuffer[1] > 0u)
-        {
-
+        if (OutBuffer[1] > 0u) {
             Plaintext[0] = (OutBuffer[1] & 0x10) != 0 ? -95 : -20;
             memset(&InBuffer, 0, 0x20u);
             InBuffer.bBuffer[0] = 0;
             memset(&ReBuffer, 0, 0x210u);
 
-            if (DoIDENTIFY(hPhysicalDriveIOCTL, &InBuffer, &ReBuffer, Plaintext[0], 0, &BytesReturned))
-            {
-
+            if (DoIDENTIFY(hPhysicalDriveIOCTL, &InBuffer, &ReBuffer, Plaintext[0], 0, &BytesReturned)) {
                 DiskData = diskdata;
                 Rebuffval = (char*)ReBuffer.bBuffer;
-                for (size_t i = 0; i < 100; i++)
-                {
+                for (size_t i = 0; i < 100; i++) {
                     ++DiskData;
                     ThisBuff = *(WORD*)Rebuffval;
                     Rebuffval += 2;
                     *(DiskData - 1) = ThisBuff;
-
                 }
                 Ret = CalcHDCode(diskdata);
-
             }
         }
         CloseHandle(hPhysicalDriveIOCTL);
-        Ret;
-
+        //Ret;
     }
     return Ret;
 }
@@ -165,27 +158,33 @@ static inline  UINT   ReadIdeDriveAsScsiDriveInNT()
     DWORD BytesReturned;
     UINT diskdata[256] = { 0 };
     char InBuffer[sizeof(SRB_IO_CONTROL) + SENDIDLENGTH] = { 0 };
+
     SRB_IO_CONTROL* cP = (SRB_IO_CONTROL*)InBuffer;
     ESENDCMDINPARAMS* pin = (ESENDCMDINPARAMS*)(InBuffer + sizeof(SRB_IO_CONTROL));
+
     hPhysicalDriveIOCTL = CreateFileA("\\\\.\\Scsi0:", 0xC0000000, OPEN_EXISTING, 0, OPEN_EXISTING, NULL, NULL);
-    if (hPhysicalDriveIOCTL != INVALID_HANDLE_VALUE)
-    {
+    if (hPhysicalDriveIOCTL != INVALID_HANDLE_VALUE) {
         cP->HeaderLength = sizeof(SRB_IO_CONTROL);
         cP->Timeout = 10000;
         cP->Length = SENDIDLENGTH;
         cP->ControlCode = IOCTL_SCSI_MINIPORT_IDENTIFY;
         ::strncpy((char*)cP->Signature, "SCSIDISK", 8);
-        if (DeviceIoControl(hPhysicalDriveIOCTL, IOCTL_SCSI_MINIPORT, &InBuffer, sizeof(SRB_IO_CONTROL) + sizeof(ESENDCMDINPARAMS) - 1, &InBuffer, sizeof(SRB_IO_CONTROL) + SENDIDLENGTH, &BytesReturned, NULL))
+        if (DeviceIoControl(hPhysicalDriveIOCTL, 
+            IOCTL_SCSI_MINIPORT, 
+            &InBuffer, 
+            sizeof(SRB_IO_CONTROL) + sizeof(ESENDCMDINPARAMS) - 1, 
+            &InBuffer, 
+            sizeof(SRB_IO_CONTROL) + SENDIDLENGTH, 
+            &BytesReturned, 
+            NULL)) 
         {
             DiskData = diskdata;
             Rebuffval = (char*)pin;
-            for (size_t i = 0; i < 100; i++)
-            {
+            for (size_t i = 0; i < 100; i++) {
                 ++DiskData;
                 ThisBuff = *(WORD*)Rebuffval;
                 Rebuffval += 2;
                 *(DiskData - 1) = ThisBuff;
-
             }
             Ret = CalcHDCode(diskdata);
         }
@@ -193,8 +192,6 @@ static inline  UINT   ReadIdeDriveAsScsiDriveInNT()
     }
     return Ret;
 }
-
-
 
 static inline int  get_crc32(BYTE* ARG, DWORD lenth)//1
 {
@@ -221,7 +218,7 @@ static inline int  get_crc32(BYTE* ARG, DWORD lenth)//1
         }
         table[i] = crc;
     }
-    crcval = 4294967295;
+    crcval = (int)4294967295;
     for (i = 0; i < Size; i++) {
         position = (ARG[i] ^ (crcval & 255)) + 1; // ²é±í;
         crcval = (((crcval >> 8) & 16777215) ^ table[position]);
@@ -240,20 +237,20 @@ static inline int  Getjycode()//·µ»Ø0ËµÃ÷Î´È¡µ½¡£Õâ¸öÖ÷ÒªÊÇ²¹³äÒ×²»ÄÜÔÚÄ³Ð©ÏµÍ³»
     int buffersize;
     BOOL st = FALSE;
     int crc1 = 0;
+
     hPhysicalDriveIOCTL = CreateFileA("\\\\.\\PhysicalDrive0", 0, (1 | 2), 0, 3, 0, 0);
-    if (hPhysicalDriveIOCTL == INVALID_HANDLE_VALUE)
-    {
+    if (hPhysicalDriveIOCTL == INVALID_HANDLE_VALUE){
         return  0;
     }
+
     buffersize = 1024;
     st = DeviceIoControl(hPhysicalDriveIOCTL, 2954240, lstrcpynA((LPSTR)query, (LPSTR)query, 0), 12, lstrcpynA((LPSTR)buffer, (LPSTR)buffer, 0), buffersize, (LPDWORD)cbBytesReturned, 0);
     if (st == TRUE) {
         crc1 = get_crc32(buffer, 1024);
-
     }
+
     CloseHandle(hPhysicalDriveIOCTL);
     return crc1;
-
 }
 
 /*
@@ -265,21 +262,11 @@ static inline int  Getjycode()//·µ»Ø0ËµÃ÷Î´È¡µ½¡£Õâ¸öÖ÷ÒªÊÇ²¹³äÒ×²»ÄÜÔÚÄ³Ð©ÏµÍ³»
 LIBAPI(DWORD, krnln_GetHDiskCode)
 {
     int Ret;
-
-
-    Ret = ReadPhysicalDriveInNT();
-    if (!Ret)
-    {
-        Ret = ReadIdeDriveAsScsiDriveInNT();
-
-        if (!Ret)
-        {
-            Ret = Getjycode();
-            if (!Ret)
-            {
+    if (!(Ret = ReadPhysicalDriveInNT())) {
+        if (!(Ret = ReadIdeDriveAsScsiDriveInNT())) {
+            if (!(Ret = Getjycode())) {
                 return 0;
             }
-
         }
     }
     return Ret;
