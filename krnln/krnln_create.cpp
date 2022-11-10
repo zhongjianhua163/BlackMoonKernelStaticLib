@@ -25,7 +25,7 @@ struct EDTDATA//EDT创建数据
 	EDTDATA() {
 		Typename = 'TDEW'; //标识符WEDT
 		delimiter1 = 0x00010000;//分隔符
-		double  check = 0;//COleDateTime::GetTickCount()，每次打开会刷新，兼容原版EDB;;
+		check = 0;//COleDateTime::GetTickCount()，每次打开会刷新，兼容原版EDB;;
 		delimiter2 = 1;//分隔符
 		memset(data, 0, 492);
 	}
