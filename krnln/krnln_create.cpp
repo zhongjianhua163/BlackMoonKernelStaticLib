@@ -193,18 +193,16 @@ int  CreateEdb(const char* Filename, ColumnInfo* ColumnArry, int ColumnNum)
 			ValidColumnNum = ValidColumnNum + 1; // 全部完成以后有效字段自加1个，遇到无效字段截停;
 		}
 	}
+
+	//判断是否有重复字段
 	for (i = 0; i < ColumnNum; i++) {
 		NowColumnName = ColumnArry[i].Name;
-		if (ColumnNum > 0) {
-			Index = 0;
-			do {
-				if (Index != i) {
-					if (NowColumnName == ColumnArry[Index].Name) {
-						return -20;
-					}
+		for (Index = 0; Index < ColumnNum; ++Index) {
+			if (Index != i) {
+				if (0 == strcmp(NowColumnName, ColumnArry[Index].Name)) {
+					return -20;
 				}
-				Index = Index + 1;
-			} while (Index <= ColumnNum);
+			}
 		}
 	}
 	; // 此为古代版本，吴总应该是这么写的，易用起来没用问题，毕竟申请不了大于两G的内存;
@@ -274,7 +272,7 @@ int  CreateEdb(const char* Filename, ColumnInfo* ColumnArry, int ColumnNum)
 					Nowstrlenth = 0;
 					break;
 				case 3:
-					Nowstrlenth = 2;
+					Nowstrlenth = 4;
 					break;
 				case 5:
 					Nowstrlenth = 4;
