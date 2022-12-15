@@ -4,10 +4,10 @@
 
 //文本操作 - 到半角
 /*
-    调用格式： 〈文本型〉 到半角 （文本型 欲变换的文本） - 系统核心支持库->文本操作
-    英文名称：BJCase
-    将文本中的全角字母、空格或数字变换为半角，返回变换后的结果文本。本命令为初级命令。
-    参数<1>的名称为“欲变换的文本”，类型为“文本型（text）”。
+	调用格式： 〈文本型〉 到半角 （文本型 欲变换的文本） - 系统核心支持库->文本操作
+	英文名称：BJCase
+	将文本中的全角字母、空格或数字变换为半角，返回变换后的结果文本。本命令为初级命令。
+	参数<1>的名称为“欲变换的文本”，类型为“文本型（text）”。
 
 ' 数字范围163开头，176--185
 ' 大写字母，163开头，193--218
@@ -18,6 +18,37 @@
 ' 小写字母，97-122
 到字节集 (“．－”)  ' 163,174,163,173
 */
+//string toh(const std::string& str) {
+//	std::string result;
+//	unsigned char fc;
+//	unsigned char lc;
+//	for (std::string::size_type i = 0; i < str.size(); i++) {
+//		fc = str[i];
+//		lc = str[i + 1];
+//		if (fc == 163)
+//		{
+//			result += (unsigned char)str[i + 1] - 128;
+//			i++;
+//			continue;
+//		}
+//		else if (fc > 163)    //汉字
+//		{
+//			result += str.substr(i, 2);
+//			i++;
+//			continue;
+//		}
+//		else if (fc == 161 && lc == 161)    ///处理全角空格
+//		{
+//			result += "";
+//			i++;
+//		}
+//		else {
+//			result += str.substr(i, 1);
+//		}
+//
+//	}
+//	return result;
+//}
 LIBAPI(char*, krnln_BJCase)
 {
 	PMDATA_INF pArgInf = &ArgInf;
@@ -40,7 +71,7 @@ LIBAPI(char*, krnln_BJCase)
 		}
 		pszTmp[sSublen] = '\\';
 		pszTmp += sSublen + 1;
-		pszFirst = pPos	+ 2;
+		pszFirst = pPos + 2;
 	}
 	sSublen = pszLast - pszFirst;
 	if (sSublen > 0)
@@ -52,8 +83,8 @@ LIBAPI(char*, krnln_BJCase)
 
 	nLen = mystrlen(pszSrc);
 	INT nBufLen = nLen + 1;
-	char *pBJText = (char*)E_MAlloc(nBufLen);
-	LCMapString (2052, LCMAP_HALFWIDTH, pszSrc, nLen, pBJText, nBufLen);
+	char* pBJText = (char*)E_MAlloc(nBufLen);
+	LCMapString(2052, LCMAP_HALFWIDTH, pszSrc, nLen, pBJText, nBufLen);
 	free(pszSrc);
 	return pBJText;
 }
