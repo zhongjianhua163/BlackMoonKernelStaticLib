@@ -67,7 +67,7 @@ char* towf(char* s) {
 		ret = (char*)E_MAlloc(mystrlen(rs) + 1);
 		memset(ret, 0, mystrlen(rs) + 1);
 		strcpy(ret, rs);
-		delete[]ws;
+		delete[]rs;
 
 	}
 	return ret;
