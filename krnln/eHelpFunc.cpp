@@ -247,14 +247,12 @@ PDESTROY BlackMoonFreeAllUserDll = NULL;
 				
 			}
 		
-
-			if(IsBadReadPtr(Param1,8))
+			//判断是否是有效的堆内存
+			if (HeapValidate(hBlackMoonHeap, HEAP_NO_SERIALIZE, Param1) == 0)
 			{
-				//char ErrorString [255];
-				//wsprintf(ErrorString, "%08X = ", Param1);
-				//MessageBox(NULL,ErrorString,"无效指针",MB_OK);
 				return;
 			}
+
 
 			HeapFree(hBlackMoonHeap, 0 , Param1);  //free(Param1);//
 
