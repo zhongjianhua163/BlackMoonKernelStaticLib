@@ -2,55 +2,55 @@
 #include <stdio.h>
 #include "LTrimZeroChr.h"
 #include "Myfunctions.h"
-char* SDataToStr (PMDATA_INF pArgInf)
+char* SDataToStr(PMDATA_INF pArgInf)
 {
 	char* pSrc = NULL;
-	char str [MAX_PATH];
-	if((pArgInf->m_dtDataType & DT_IS_ARY) == 0)//非数组
+	char str[MAX_PATH];
+	if ((pArgInf->m_dtDataType & DT_IS_ARY) == 0)//非数组
 	{
-		
-		
-		switch(pArgInf->m_dtDataType)
+
+
+		switch (pArgInf->m_dtDataType)
 		{
 		case SDT_BYTE:
 		case SDT_SHORT:
 		case SDT_INT:
 		case SDT_SUB_PTR:
-			sprintf(str,"%d",pArgInf->m_int);
+			sprintf(str, "%d", pArgInf->m_int);
 			pSrc = str;
 			break;
 		case SDT_INT64:
-			sprintf(str,"%I64d",pArgInf->m_int64);
+			sprintf(str, "%I64d", pArgInf->m_int64);
 			pSrc = str;
 			break;
 		case SDT_FLOAT:
-			sprintf(str,"%f",pArgInf->m_float);
+			sprintf(str, "%f", pArgInf->m_float);
 			LTrimZeroChr(str);
 			pSrc = str;
 			break;
 		case SDT_DOUBLE:
-			sprintf(str,"%.13g",pArgInf->m_double);
+			sprintf(str, "%.13g", pArgInf->m_double);
 			LTrimZeroChr(str);
 			pSrc = str;
 			break;
 		case SDT_BOOL:
-			if(pArgInf->m_bool)
-				strcpy(str,"真");
+			if (pArgInf->m_bool)
+				strcpy(str, "真");
 			else
-				strcpy(str,"假");
+				strcpy(str, "假");
 			pSrc = str;
 			break;
 
 		case SDT_DATE_TIME:
-			DateTimeFormat(str,pArgInf->m_double);
+			DateTimeFormat(str, pArgInf->m_double);
 			pSrc = str;
 			break;
 		}
-		if(pSrc)
+		if (pSrc)
 		{
 			INT nLen = mystrlen(str);
-			pSrc = (LPSTR)malloc(nLen+1);
-			strcpy(pSrc,str);
+			pSrc = (LPSTR)malloc(nLen + 1);
+			strcpy(pSrc, str);
 		}
 	}
 	return pSrc;

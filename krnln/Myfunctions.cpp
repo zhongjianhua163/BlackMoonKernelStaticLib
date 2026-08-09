@@ -56,63 +56,63 @@ int __fastcall isSSE2()
 		cpuid;
 		mov res, edx;
 	}
-	bIsSSE2 =  res & (1 << 26);
+	bIsSSE2 = res & (1 << 26);
 	bIsSSE2Check = TRUE;
 	return bIsSSE2;
 }
 
 int inline MyMemCmp(unsigned char* a, unsigned char* b, int len)
 {
-	for (int i=0; i<(len>>2); i++)
+	for (int i = 0; i < (len >> 2); i++)
 	{
-		if (((int*)a)[0]!=((int*)b)[0])
+		if (((int*)a)[0] != ((int*)b)[0])
 			return 1;
-		a+=4;b+=4;
+		a += 4;b += 4;
 	}
-	if ((len&2) != 0)
+	if ((len & 2) != 0)
 	{
-		if (((short*)a)[0]!=((short*)b)[0])
+		if (((short*)a)[0] != ((short*)b)[0])
 			return 1;
-		a+=2;b+=2;
+		a += 2;b += 2;
 	}
-	if ((len&1) != 0 && a[0]!=b[0])
+	if ((len & 1) != 0 && a[0] != b[0])
 		return 1;
 	return 0;
 }
 
-static size_t mystrlen_normal(const char *pStr)
+static size_t mystrlen_normal(const char* pStr)
 {
-	const char *char_ptr;
-    const unsigned int *longword_ptr;
-    register unsigned int longword, himagic, lomagic;
-	const char *cp;
-	
-    for (char_ptr = pStr; ((unsigned int) char_ptr & (sizeof(unsigned int) - 1)) != 0;
-	++char_ptr) {
-        if (*char_ptr == '\0')
-            return char_ptr - pStr;
-    }
-	
-    longword_ptr = (unsigned int*) char_ptr;
-    himagic = 0x80808080L;
-    lomagic = 0x01010101L;
-    while (1) {
-        longword = *longword_ptr++;
-        if (((longword - lomagic) & ~longword & himagic) != 0) {
-            cp = (const char*) (longword_ptr - 1);
-            if (cp[0] == 0)
-                return cp - pStr;
-            if (cp[1] == 0)
-                return cp - pStr + 1;
-            if (cp[2] == 0)
-                return cp - pStr + 2;
-            if (cp[3] == 0)
-                return cp - pStr + 3;
-        }
-    }
+	const char* char_ptr;
+	const unsigned int* longword_ptr;
+	register unsigned int longword, himagic, lomagic;
+	const char* cp;
+
+	for (char_ptr = pStr; ((unsigned int)char_ptr & (sizeof(unsigned int) - 1)) != 0;
+		++char_ptr) {
+		if (*char_ptr == '\0')
+			return char_ptr - pStr;
+	}
+
+	longword_ptr = (unsigned int*)char_ptr;
+	himagic = 0x80808080L;
+	lomagic = 0x01010101L;
+	while (1) {
+		longword = *longword_ptr++;
+		if (((longword - lomagic) & ~longword & himagic) != 0) {
+			cp = (const char*)(longword_ptr - 1);
+			if (cp[0] == 0)
+				return cp - pStr;
+			if (cp[1] == 0)
+				return cp - pStr + 1;
+			if (cp[2] == 0)
+				return cp - pStr + 2;
+			if (cp[3] == 0)
+				return cp - pStr + 3;
+		}
+	}
 }
 
-static size_t mystrlen_SSE2(const char *pStr)
+static size_t mystrlen_SSE2(const char* pStr)
 {
 	size_t res = 0;
 	__asm
@@ -129,27 +129,27 @@ static size_t mystrlen_SSE2(const char *pStr)
 		and ecx, 0Fh;                        // lower 4 bits indicate misalignment
 		and eax, 0FFFFFFF0h;                 // align pointer by 16
 		// movdqa xmm1, [eax];               // read from nearest preceding boundary
-		_EMIT 0x66; 
-		_EMIT 0x0F; 
-		_EMIT 0x6F; 
+		_EMIT 0x66;
+		_EMIT 0x0F;
+		_EMIT 0x6F;
 		_EMIT 0x08;
 		// pcmpeqb xmm1,xmm0;                // compare 16 bytes with zero
 		_EMIT 0x66;
 		_EMIT 0x0F;
 		_EMIT 0x74;
-		_EMIT 0xC8;   
+		_EMIT 0xC8;
 		// pmovmskb edx, xmm1;               // get one bit for each byte result
 		_EMIT 0x66;
 		_EMIT 0x0F;
 		_EMIT 0xD7;
-		_EMIT 0xD1;   
+		_EMIT 0xD1;
 		shr edx, cl;                         // shift out false bits
 		shl edx, cl;                         // shift back again
 		bsf edx, edx;                        // find first 1 - bit
 		jne A200;                            // found
-		
+
 		//; Main loop, search 16 bytes at a time
-A100 :		
+	A100:
 		add eax, 10h;                        // increment pointer by 16
 		// movdqa   xmm1, [eax];             // read 16 bytes aligned
 		_EMIT 0x66;
@@ -160,27 +160,27 @@ A100 :
 		_EMIT 0x66;
 		_EMIT 0x0F;
 		_EMIT 0x74;
-		_EMIT 0xC8;   
+		_EMIT 0xC8;
 		// pmovmskb edx, xmm1;               // get one bit for each byte result
 		_EMIT 0x66;
 		_EMIT 0x0F;
 		_EMIT 0xD7;
-		_EMIT 0xD1;   
+		_EMIT 0xD1;
 		bsf edx, edx;                        // find first 1 - bit
 		//; (moving the bsf out of the loop and using test here would be faster for long strings on old processors,
 		//;  but we are assuming that most strings are short, and newer processors have higher priority)
 		je A100;                            // loop if not found
-		
-A200 : //; Zero - byte found.Compute string length
+
+	A200: //; Zero - byte found.Compute string length
 		sub eax, pStr;                        // subtract start address
 		add eax, edx;                        // add byte index
 		mov res, eax;
-END__:
+	END__:
 	}
 	return res;
 }
 
-size_t mystrlen_auto(const char *pStr)
+size_t mystrlen_auto(const char* pStr)
 { // 此函数为自适配函数，只会被调用一次。
 	if (isSSE2())
 	{ // 支持SSE2指令集
@@ -196,39 +196,39 @@ size_t mystrlen_auto(const char *pStr)
 }
 MYSTRLEN mystrlen = mystrlen_auto;
 
-int __fastcall mymemchr(unsigned char *pSrc, int nLen, unsigned char Des)
+int __fastcall mymemchr(unsigned char* pSrc, int nLen, unsigned char Des)
 {
-	register unsigned int longword, dmagic, *longword_ptr;
-	unsigned char *cp;
-	unsigned char *char_ptr = pSrc;
-    for (int i = 0; i < (nLen & 3);i++)
-        if (*char_ptr++ == Des)
-            return char_ptr - pSrc - 1;
-	
-	dmagic = Des | (Des<<8) | (Des<<16) | (Des<<24);
+	register unsigned int longword, dmagic, * longword_ptr;
+	unsigned char* cp;
+	unsigned char* char_ptr = pSrc;
+	for (int i = 0; i < (nLen & 3);i++)
+		if (*char_ptr++ == Des)
+			return char_ptr - pSrc - 1;
+
+	dmagic = Des | (Des << 8) | (Des << 16) | (Des << 24);
 	for (longword_ptr = (unsigned int*)char_ptr; longword_ptr < (unsigned int*)(pSrc + nLen); longword_ptr++)
-    {
-        longword = *longword_ptr ^ dmagic;
-        if (((longword - 0x01010101) & ~longword & 0x80808080) != 0)
+	{
+		longword = *longword_ptr ^ dmagic;
+		if (((longword - 0x01010101) & ~longword & 0x80808080) != 0)
 		{
-            cp = (unsigned char*)(longword_ptr);
-            if (cp[0] == Des)
-                return cp - pSrc;
-            if (cp[1] == Des)
-                return cp - pSrc + 1;
-            if (cp[2] == Des)
-                return cp - pSrc + 2;
-            if (cp[3] == Des)
-                return cp - pSrc + 3;
-        }
-    }
+			cp = (unsigned char*)(longword_ptr);
+			if (cp[0] == Des)
+				return cp - pSrc;
+			if (cp[1] == Des)
+				return cp - pSrc + 1;
+			if (cp[2] == Des)
+				return cp - pSrc + 2;
+			if (cp[3] == Des)
+				return cp - pSrc + 3;
+		}
+	}
 	return -1;
 }
 
-int __fastcall myinstring(unsigned char *src, int slen, unsigned char *des, int dlen)
+int __fastcall myinstring(unsigned char* src, int slen, unsigned char* des, int dlen)
 {
-//	register unsigned char* naddr;
-//	int sl;int i;int j;
+	//	register unsigned char* naddr;
+	//	int sl;int i;int j;
 	int i;
 	if (!src || !des || !slen || !dlen || dlen > slen)
 		return -1;
@@ -238,37 +238,37 @@ int __fastcall myinstring(unsigned char *src, int slen, unsigned char *des, int 
 	case 1:  // 短子串直接暴力搜索
 		return mymemchr(src, slen, des[0]);
 	case 2:
-		for (i=0; i < slen - 1; i++)
-			if (((short*)(src+i))[0] == ((short*)des)[0])
+		for (i = 0; i < slen - 1; i++)
+			if (((short*)(src + i))[0] == ((short*)des)[0])
 				return i;
 		return -1;
 	case 3:
-		for (i=0; i < slen - 2; i++)
-			if (((short*)(src+i))[0] == ((short*)des)[0])
-				if (src[i+2] == des[2])
+		for (i = 0; i < slen - 2; i++)
+			if (((short*)(src + i))[0] == ((short*)des)[0])
+				if (src[i + 2] == des[2])
 					return i;
 		return -1;
 	case 4:
-		for (i=0; i < slen - 3; i++)
-			if (((int*)(src+i))[0] == ((int*)des)[0])
+		for (i = 0; i < slen - 3; i++)
+			if (((int*)(src + i))[0] == ((int*)des)[0])
 				return i;
 		return -1;
 	case 5:
-		for (i=0; i < slen - 4; i++)
-			if (((int*)(src+i))[0] == ((int*)des)[0])
-				if (src[i+4] == des[4])
+		for (i = 0; i < slen - 4; i++)
+			if (((int*)(src + i))[0] == ((int*)des)[0])
+				if (src[i + 4] == des[4])
 					return i;
 		return -1;
 	case 6:
-		for (i=0; i < slen - 5; i++)
-			if (((int*)(src+i))[0] == ((int*)des)[0])
-				if (((short*)(src+i+4))[0] == ((short*)(des+4))[0])
-					return i;	
+		for (i = 0; i < slen - 5; i++)
+			if (((int*)(src + i))[0] == ((int*)des)[0])
+				if (((short*)(src + i + 4))[0] == ((short*)(des + 4))[0])
+					return i;
 		return -1;
 	default:// 长子串使用BM算法,
 		return boyer_moore(src, slen, des, dlen);
 	}
-	
+
 }
 
 char* TBR::toString()
@@ -279,7 +279,7 @@ char* TBR::toString()
 	}
 	char* pText = (char*)E_MAlloc_Nzero(m_nTLen + 1);
 	char* pRetnTmp = pText;
-	
+
 	for (int i = 0; i < m_nCount; i++)
 	{
 		memcpy(pRetnTmp, m_data[i].addr, m_data[i].len);
@@ -338,18 +338,18 @@ void TBR::add(PVOID addr, size_t len)
 
 INT __fastcall mystristr(char* str1, char* str2)
 {
-	register char *cp = str1;
-	register char *s1, *s2;
+	register char* cp = str1;
+	register char* s1, * s2;
 	register unsigned char* lt = lowtable;
 	while (*cp)
 	{
 		s1 = cp;
 		s2 = str2;
-		while ( *s1 && *s2 && (*s1==*s2 || lt[(unsigned char)(*s1)]==lt[(unsigned char)(*s2)]) )
+		while (*s1 && *s2 && (*s1 == *s2 || lt[(unsigned char)(*s1)] == lt[(unsigned char)(*s2)]))
 			s1++, s2++;
 		if (!*s2)
 			return cp - str1;
-		
+
 		if (*cp < 0)
 		{
 			cp++;
@@ -363,17 +363,17 @@ INT __fastcall mystristr(char* str1, char* str2)
 
 INT __fastcall mystrstr(char* str1, char* str2)
 {
-	register char *cp = str1;
-	register char *s1, *s2;
+	register char* cp = str1;
+	register char* s1, * s2;
 	while (*cp)
 	{
 		s1 = cp;
 		s2 = str2;
-		while ( *s1 && *s2 && !(*s1-*s2) )
+		while (*s1 && *s2 && !(*s1 - *s2))
 			s1++, s2++;
 		if (!*s2)
 			return cp - str1;
-		
+
 		if (*cp < 0)
 		{
 			cp++;
@@ -520,11 +520,11 @@ int boyer_moore(unsigned char* string, int stringlen, unsigned char* pat, int pa
 
 void swap_hex(unsigned char* str, int len)
 {
-	for (int i=0; i<len/2; i+= sizeof(WORD))
+	for (int i = 0; i < len / 2; i += sizeof(WORD))
 	{
-		WORD temp = *(WORD*)(str+len-i-sizeof(WORD));
+		WORD temp = *(WORD*)(str + len - i - sizeof(WORD));
 		*(WORD*)(str + len - i - sizeof(WORD)) = *(WORD*)(str + i);
-		*(WORD*)(str+i) = temp;
+		*(WORD*)(str + i) = temp;
 	}
 }
 
@@ -586,14 +586,14 @@ void E_RC4(unsigned char* data, int datalen, unsigned char* keytable)
 
 #define ERC4_TLEN 258
 #define ERC4_CHUNK 4096
-BOOL E_RC4_Calc(int pos, unsigned char *pData,int nDlen, unsigned char *pKeytable, int nCryptStart, unsigned char *pMD5)
+BOOL E_RC4_Calc(int pos, unsigned char* pData, int nDlen, unsigned char* pKeytable, int nCryptStart, unsigned char* pMD5)
 {
 	int nCTLen, nCTRemain;
 	int nTableLen, nTableIndex;
 	int nChunk, nOChunk;
-	int nF,nB;
+	int nF, nB;
 	unsigned char pTableTMP[ERC4_TLEN];
-	unsigned char *pTableData, *pTableData2;
+	unsigned char* pTableData, * pTableData2;
 	unsigned char pNewPass[40]; // 4 + 32 + 4
 
 	memcpy(pTableTMP, pKeytable, ERC4_TLEN);
@@ -609,8 +609,8 @@ BOOL E_RC4_Calc(int pos, unsigned char *pData,int nDlen, unsigned char *pKeytabl
 		pos = nCTLen;
 	}
 
-	E_RC4_updatetable(4*(pos/ERC4_CHUNK), pTableTMP);
-	nTableLen = 4*(nDlen/ERC4_CHUNK) + 8;
+	E_RC4_updatetable(4 * (pos / ERC4_CHUNK), pTableTMP);
+	nTableLen = 4 * (nDlen / ERC4_CHUNK) + 8;
 	if (nTableLen % 4 > 0)
 		nTableLen = nTableLen + nTableLen % 4;
 
@@ -619,8 +619,8 @@ BOOL E_RC4_Calc(int pos, unsigned char *pData,int nDlen, unsigned char *pKeytabl
 	pTableData2 = pTableData;
 	E_RC4(pTableData, nTableLen, pTableTMP);
 
-	nTableIndex = pos/ERC4_CHUNK;
-	nChunk = pos%ERC4_CHUNK;
+	nTableIndex = pos / ERC4_CHUNK;
+	nChunk = pos % ERC4_CHUNK;
 	if (nChunk >= 0)
 	{
 		nF = *((int*)pTableData);
@@ -628,7 +628,7 @@ BOOL E_RC4_Calc(int pos, unsigned char *pData,int nDlen, unsigned char *pKeytabl
 
 		*((int*)pNewPass) = nF;
 		memcpy(pNewPass + 4, pMD5, 32);
-		*((int*)(pNewPass+36)) = nB;
+		*((int*)(pNewPass + 36)) = nB;
 
 		nTableIndex++;
 		pTableData += 4;
@@ -647,14 +647,14 @@ BOOL E_RC4_Calc(int pos, unsigned char *pData,int nDlen, unsigned char *pKeytabl
 	{
 		nF = *((int*)pTableData);
 		nB = nTableIndex ^ nF;
-		
+
 		*((int*)pNewPass) = nF;
 		memcpy(pNewPass + 4, pMD5, 32);
-		*((int*)(pNewPass+36)) = nB;
-		
+		*((int*)(pNewPass + 36)) = nB;
+
 		nTableIndex++;
 		pTableData += 4;
-		
+
 		E_RC4_init(pTableTMP, pNewPass, 40);
 		E_RC4_updatetable(nChunk + 36, pTableTMP);
 
@@ -670,6 +670,6 @@ BOOL E_RC4_Calc(int pos, unsigned char *pData,int nDlen, unsigned char *pKeytabl
 		pData += ERC4_CHUNK;
 	}
 
-	delete []pTableData2;
+	delete[]pTableData2;
 	return TRUE;
 }
